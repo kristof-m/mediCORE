@@ -64,7 +64,7 @@ public class MojeRezervacieController {
                 card = buildCard(r, "Zrušená", "#757575", "#f5f5f5", false);
                 cancelledContainer.getChildren().add(card);
             } else if (terminTime.isBefore(now)) {
-                card = buildCard(r, "Absolvovaná", "#388e3c", "#e8f5e9", false);
+                card = buildCard(r, "Absolvovaná", "#388e3c", "#e8f5e9", false, true);
                 pastContainer.getChildren().add(card);
             } else {
                 card = buildCard(r, "Nadchádzajúca", "#1a9e8f", "#e8f5f3", true);
@@ -84,6 +84,10 @@ public class MojeRezervacieController {
     }
 
     private VBox buildCard(Rezervacia r, String statusText, String statusColor, String statusBg, boolean showCancel) {
+        return buildCard(r, statusText, statusColor, statusBg, showCancel, false);
+    }
+
+    private VBox buildCard(Rezervacia r, String statusText, String statusColor, String statusBg, boolean showCancel, boolean showBookAgain) {
         Lekar lekar = lekarDAO.findById(r.getLekarId());
         Procedura procedura = proceduraDAO.findAll().stream()
             .filter(p -> p.getId() == r.getProceduraId()).findFirst().orElse(null);
@@ -124,16 +128,33 @@ public class MojeRezervacieController {
                 makeDetail("Čas:", termin.getDatumCas().format(timeFmt))
             );
         }
+        if (lekar != null) {
+            String location = lekarDAO.getLocation(lekar.getId());
+            if (!location.isBlank()) {
+                detailRow.getChildren().add(makeDetail("Miesto:", location));
+            }
+        }
 
         card.getChildren().addAll(topRow, detailRow);
 
-        if (showCancel) {
+        if (showCancel || showBookAgain) {
             HBox btnRow = new HBox(10);
             btnRow.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
-            Button cancelBtn = new Button("Zrušiť rezerváciu");
-            cancelBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #d32f2f; -fx-border-color: #d32f2f; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 6 14; -fx-cursor: hand;");
-            cancelBtn.setOnAction(e -> handleCancel(r));
-            btnRow.getChildren().add(cancelBtn);
+            if (showBookAgain) {
+                Button bookAgain = new Button("Rezervovať znovu");
+                bookAgain.setStyle("-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 6 14; -fx-cursor: hand;");
+                bookAgain.setOnAction(e -> {
+                    Stage stage = (Stage) bookAgain.getScene().getWindow();
+                    SceneManager.switchTo(stage, "/view/rezervacia-wizard.fxml");
+                });
+                btnRow.getChildren().add(bookAgain);
+            }
+            if (showCancel) {
+                Button cancelBtn = new Button("Zrušiť rezerváciu");
+                cancelBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #d32f2f; -fx-border-color: #d32f2f; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 6 14; -fx-cursor: hand;");
+                cancelBtn.setOnAction(e -> handleCancel(r));
+                btnRow.getChildren().add(cancelBtn);
+            }
             card.getChildren().add(btnRow);
         }
 

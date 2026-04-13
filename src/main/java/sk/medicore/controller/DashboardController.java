@@ -145,12 +145,22 @@ public class DashboardController {
                 makeDetailLabel("Čas: ", termin.getDatumCas().format(timeFmt))
             );
         }
+        if (lekar != null) {
+            String location = lekarDAO.getLocation(lekar.getId());
+            if (!location.isBlank()) {
+                detailRow.getChildren().add(makeDetailLabel("Miesto: ", location));
+            }
+        }
 
         // Action buttons
         HBox btnRow = new HBox(10);
         btnRow.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
         Button reschedule = new Button("Presunúť");
         reschedule.setStyle("-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-border-color: #1a9e8f; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 6 14; -fx-cursor: hand;");
+        reschedule.setOnAction(e -> {
+            Stage stage = (Stage) reschedule.getScene().getWindow();
+            SceneManager.switchTo(stage, "/view/rezervacia-wizard.fxml");
+        });
 
         Button cancel = new Button("Zrušiť");
         cancel.setStyle("-fx-background-color: transparent; -fx-text-fill: #d32f2f; -fx-border-color: #d32f2f; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 6 14; -fx-cursor: hand;");
