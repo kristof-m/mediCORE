@@ -1,11 +1,13 @@
 package sk.medicore.util;
 
 import sk.medicore.model.Pouzivatel;
+import sk.medicore.model.Rezervacia;
 
 public class SessionManager {
 
     private static SessionManager instance;
     private Pouzivatel currentUser;
+    private Rezervacia rezervaciaToReschedule;
 
     private SessionManager() {}
 
@@ -24,7 +26,16 @@ public class SessionManager {
         return currentUser;
     }
 
+    public void setRezervaciaToReschedule(Rezervacia r) {
+        this.rezervaciaToReschedule = r;
+    }
+
+    public Rezervacia getRezervaciaToReschedule() {
+        return rezervaciaToReschedule;
+    }
+
     public void logout() {
         this.currentUser = null;
+        this.rezervaciaToReschedule = null;
     }
 }

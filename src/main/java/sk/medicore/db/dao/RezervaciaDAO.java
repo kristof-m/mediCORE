@@ -61,6 +61,32 @@ public class RezervaciaDAO {
         }
     }
 
+    public void updateTermin(int rezervaciaId, int newTerminId) {
+        String sql = "UPDATE rezervacie SET termin_id = ?, stav = 'POTVRDENA' WHERE id = ?";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, newTerminId);
+            ps.setInt(2, rezervaciaId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Rezervacia> findByLekarId(int lekarId) {
+        String sql = "SELECT * FROM rezervacie WHERE lekar_id = ? AND stav = 'POTVRDENA' ORDER BY vytvorena_at DESC";
+        List<Rezervacia> list = new ArrayList<>();
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, lekarId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
     public void updateStav(int id, Rezervacia.Stav stav) {
         String sql = "UPDATE rezervacie SET stav = ? WHERE id = ?";
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {

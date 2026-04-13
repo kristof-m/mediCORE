@@ -150,10 +150,17 @@ public class MojeRezervacieController {
                 btnRow.getChildren().add(bookAgain);
             }
             if (showCancel) {
-                Button cancelBtn = new Button("Zrušiť rezerváciu");
+                Button rescheduleBtn = new Button("Presunúť");
+                rescheduleBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-border-color: #1a9e8f; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 6 14; -fx-cursor: hand;");
+                rescheduleBtn.setOnAction(e -> {
+                    SessionManager.getInstance().setRezervaciaToReschedule(r);
+                    Stage stage = (Stage) rescheduleBtn.getScene().getWindow();
+                    SceneManager.switchTo(stage, "/view/rezervacia-presun.fxml");
+                });
+                Button cancelBtn = new Button("Zrušiť");
                 cancelBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #d32f2f; -fx-border-color: #d32f2f; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 6 14; -fx-cursor: hand;");
                 cancelBtn.setOnAction(e -> handleCancel(r));
-                btnRow.getChildren().add(cancelBtn);
+                btnRow.getChildren().addAll(rescheduleBtn, cancelBtn);
             }
             card.getChildren().add(btnRow);
         }

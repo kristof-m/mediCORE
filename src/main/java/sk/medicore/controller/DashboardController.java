@@ -158,8 +158,9 @@ public class DashboardController {
         Button reschedule = new Button("Presunúť");
         reschedule.setStyle("-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-border-color: #1a9e8f; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 6 14; -fx-cursor: hand;");
         reschedule.setOnAction(e -> {
+            SessionManager.getInstance().setRezervaciaToReschedule(r);
             Stage stage = (Stage) reschedule.getScene().getWindow();
-            SceneManager.switchTo(stage, "/view/rezervacia-wizard.fxml");
+            SceneManager.switchTo(stage, "/view/rezervacia-presun.fxml");
         });
 
         Button cancel = new Button("Zrušiť");
