@@ -29,7 +29,6 @@ public class LekarKalendarController {
     @FXML private SidebarLekarController sidebarController;
     @FXML private Label weekRangeLabel;
     @FXML private VBox weekContainer;
-    @FXML private Label emptyLabel;
 
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
 
