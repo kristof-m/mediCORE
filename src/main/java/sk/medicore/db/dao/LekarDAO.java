@@ -33,6 +33,28 @@ public class LekarDAO {
         return list;
     }
 
+    public String getLocation(int lekarId) {
+        String sql = "SELECT pr.budova, pr.poschodie, pr.miestnost FROM pracoviska pr " +
+                     "JOIN lekari l ON pr.id = l.pracovisko_id WHERE l.id = ?";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, lekarId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String budova = rs.getString("budova");
+                String poschodie = rs.getString("poschodie");
+                String miestnost = rs.getString("miestnost");
+                StringBuilder sb = new StringBuilder();
+                if (budova != null) sb.append(budova);
+                if (poschodie != null) sb.append(", Poschodie ").append(poschodie);
+                if (miestnost != null) sb.append(" / Izba ").append(miestnost);
+                return sb.toString();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return "";
+    }
+
     public Lekar findById(int id) {
         String sql = "SELECT p.*, l.specializacia, l.pracovisko_id FROM pouzivatelia p " +
                      "JOIN lekari l ON p.id = l.id WHERE p.id = ?";
