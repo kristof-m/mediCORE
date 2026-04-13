@@ -5,11 +5,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import sk.medicore.db.dao.TerminDAO;
 import sk.medicore.model.Lekar;
 import sk.medicore.model.Termin;
-import sk.medicore.util.SceneManager;
 import sk.medicore.util.SessionManager;
 
 import java.time.LocalDate;
@@ -18,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 public class LekarTerminyController {
 
-    @FXML private Label sidebarMenoLabel;
+    @FXML private SidebarLekarController sidebarController;
     @FXML private DatePicker datePicker;
     @FXML private ComboBox<String> hourPicker;
     @FXML private ComboBox<String> minutePicker;
@@ -38,7 +36,7 @@ public class LekarTerminyController {
         if (user == null) return;
         lekar = (Lekar) user;
 
-        sidebarMenoLabel.setText("Dr. " + lekar.getCeleMeno());
+        sidebarController.setActivePage("terminy");
         datePicker.setValue(LocalDate.now());
 
         for (int h = 7; h <= 18; h++) {
@@ -138,8 +136,16 @@ public class LekarTerminyController {
             Button cancelBtn = new Button("Zrušiť");
             cancelBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #d32f2f; -fx-border-color: #d32f2f; -fx-border-radius: 4; -fx-background-radius: 4; -fx-font-size: 12px; -fx-padding: 4 12; -fx-cursor: hand;");
             cancelBtn.setOnAction(e -> {
-                terminDAO.updateStav(info.terminId(), Termin.Stav.ZRUSENY);
-                loadTerminy();
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                confirm.setTitle("Zrušiť termín");
+                confirm.setHeaderText("Naozaj chcete zrušiť tento termín?");
+                confirm.setContentText(info.datumCas().format(DT_FMT) + " (" + info.trvanieMin() + " min)");
+                confirm.showAndWait().ifPresent(result -> {
+                    if (result == ButtonType.OK) {
+                        terminDAO.updateStav(info.terminId(), Termin.Stav.ZRUSENY);
+                        loadTerminy();
+                    }
+                });
             });
             row.getChildren().add(cancelBtn);
         }
@@ -166,16 +172,4 @@ public class LekarTerminyController {
         return badge;
     }
 
-    @FXML
-    private void handleNavKalendar() {
-        Stage stage = (Stage) sidebarMenoLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/lekar-kalendar.fxml");
-    }
-
-    @FXML
-    private void handleLogout() {
-        SessionManager.getInstance().logout();
-        Stage stage = (Stage) sidebarMenoLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/prihlasenie.fxml");
-    }
 }

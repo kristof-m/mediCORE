@@ -16,9 +16,11 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/prihlasenie.fxml"));
         Parent root = loader.load();
 
-        primaryStage.setTitle("MediCORE");
+        primaryStage.setTitle("MediCORE — Zdravotná rezervačná platforma");
+        primaryStage.setMinWidth(900);
+        primaryStage.setMinHeight(650);
         primaryStage.setScene(new Scene(root, 900, 650));
-        primaryStage.setResizable(true);
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 

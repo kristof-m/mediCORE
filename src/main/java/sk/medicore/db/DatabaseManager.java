@@ -104,75 +104,93 @@ public class DatabaseManager {
     }
 
     private static void seedData(Statement stmt) throws SQLException {
-        // Check if data already exists
         var rs = stmt.executeQuery("SELECT COUNT(*) FROM pouzivatelia");
         rs.next();
-        if (rs.getInt(1) > 0) {
-            rs.close();
-            return;
-        }
+        if (rs.getInt(1) > 0) { rs.close(); return; }
         rs.close();
 
-        String hesloHash = PasswordUtil.hash("heslo123");
+        String h = PasswordUtil.hash("heslo123");
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         // Pracoviska
-        stmt.execute("INSERT INTO pracoviska (id, nazov, budova, poschodie, miestnost) VALUES (1, 'Všeobecná ambulancia', 'Budova A', '3', '301')");
-        stmt.execute("INSERT INTO pracoviska (id, nazov, budova, poschodie, miestnost) VALUES (2, 'Kardiologická ambulancia', 'Budova B', '1', '105')");
-        stmt.execute("INSERT INTO pracoviska (id, nazov, budova, poschodie, miestnost) VALUES (3, 'Fyzioterapia', 'Budova A', '2', '210')");
+        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (1,'Kardiologická ambulancia','Budova A','1','101')");
+        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (2,'Dermatologická ambulancia','Budova B','2','204')");
+        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (3,'Všeobecná ambulancia','Budova C','1','110')");
 
         // Pacient
-        stmt.execute("INSERT INTO pouzivatelia (id, meno, priezvisko, email, heslo_hash, typ) VALUES (1, 'Samuel', 'Thompson', 'pacient@medicore.sk', '" + hesloHash + "', 'PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (1,'Samuel','Thompson','pacient@medicore.sk','" + h + "','PACIENT')");
 
         // Lekári
-        stmt.execute("INSERT INTO pouzivatelia (id, meno, priezvisko, email, heslo_hash, typ) VALUES (2, 'James', 'Johnson', 'johnson@medicore.sk', '" + hesloHash + "', 'LEKAR')");
-        stmt.execute("INSERT INTO pouzivatelia (id, meno, priezvisko, email, heslo_hash, typ) VALUES (3, 'Emily', 'Parker', 'parker@medicore.sk', '" + hesloHash + "', 'LEKAR')");
-
-        stmt.execute("INSERT INTO lekari (id, specializacia, pracovisko_id) VALUES (2, 'Všeobecné lekárstvo', 1)");
-        stmt.execute("INSERT INTO lekari (id, specializacia, pracovisko_id) VALUES (3, 'Kardiológia', 2)");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (2,'Sarah','Johnson','johnson@medicore.sk','" + h + "','LEKAR')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (3,'Emily','Parker','parker@medicore.sk','" + h + "','LEKAR')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (4,'Michael','Chen','chen@medicore.sk','" + h + "','LEKAR')");
+        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (2,'Kardiológia',1)");
+        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (3,'Dermatológia',2)");
+        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (4,'Všeobecná prax',3)");
 
         // Procedúry
-        stmt.execute("INSERT INTO procedury (id, nazov, trvanie_min, popis) VALUES (1, 'Všeobecná konzultácia', 30, 'Základné vyšetrenie a konzultácia so všeobecným lekárom')");
-        stmt.execute("INSERT INTO procedury (id, nazov, trvanie_min, popis) VALUES (2, 'Kardiologické vyšetrenie', 45, 'Kompletné kardiologické vyšetrenie vrátane EKG')");
-        stmt.execute("INSERT INTO procedury (id, nazov, trvanie_min, popis) VALUES (3, 'Fyzioterapia', 60, 'Rehabilitačné cvičenia a fyzioterapeutické procedúry')");
-        stmt.execute("INSERT INTO procedury (id, nazov, trvanie_min, popis) VALUES (4, 'Očné vyšetrenie', 30, 'Komplexné vyšetrenie zraku a očného pozadia')");
-        stmt.execute("INSERT INTO procedury (id, nazov, trvanie_min, popis) VALUES (5, 'Psychologická konzultácia', 60, 'Konzultácia s klinickým psychológom')");
-        stmt.execute("INSERT INTO procedury (id, nazov, trvanie_min, popis) VALUES (6, 'Konzultácia pred operáciou', 45, 'Predoperačné vyšetrenie a konzultácia s chirurgom')");
-        stmt.execute("INSERT INTO procedury (id, nazov, trvanie_min, popis) VALUES (7, 'Odber krvi a laboratórne testy', 20, 'Odber krvi a základné laboratórne vyšetrenia')");
-        stmt.execute("INSERT INTO procedury (id, nazov, trvanie_min, popis) VALUES (8, 'Predĺženie receptu', 15, 'Kontrola a predĺženie existujúceho receptu')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (1,'Kardiologická prehliadka',45,'Kompletné kardiologické vyšetrenie')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (2,'Dermatologická prehliadka',30,'Vyšetrenie kože a kožných ochorení')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (3,'Všeobecná konzultácia',30,'Základná konzultácia so všeobecným lekárom')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (4,'EKG',20,'Elektrokardiogram — záznam srdcovej aktivity')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (5,'Kožné vyšetrenie',30,'Podrobné vyšetrenie kožných zmien a dermatoskopia')");
 
-        // Lekar-Procedury mapping
-        stmt.execute("INSERT INTO lekar_procedury (lekar_id, procedura_id) VALUES (2, 1)");
-        stmt.execute("INSERT INTO lekar_procedury (lekar_id, procedura_id) VALUES (2, 7)");
-        stmt.execute("INSERT INTO lekar_procedury (lekar_id, procedura_id) VALUES (2, 8)");
-        stmt.execute("INSERT INTO lekar_procedury (lekar_id, procedura_id) VALUES (3, 2)");
-        stmt.execute("INSERT INTO lekar_procedury (lekar_id, procedura_id) VALUES (3, 7)");
+        // Lekar-Procedury
+        stmt.execute("INSERT INTO lekar_procedury VALUES (2,1)"); // Johnson → Kardiologická
+        stmt.execute("INSERT INTO lekar_procedury VALUES (2,4)"); // Johnson → EKG
+        stmt.execute("INSERT INTO lekar_procedury VALUES (3,2)"); // Parker  → Dermatologická
+        stmt.execute("INSERT INTO lekar_procedury VALUES (3,5)"); // Parker  → Kožné vyšetrenie
+        stmt.execute("INSERT INTO lekar_procedury VALUES (4,3)"); // Chen    → Všeobecná konzultácia
 
-        // Termíny — generate available slots for next 2 weeks
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0).withNano(0);
-        // If 8am today has already passed, start slots from tomorrow
-        if (LocalDateTime.now().isAfter(now)) {
-            now = now.plusDays(1);
+        // Termíny —————————————————————————————————————————————————
+        // terminId=1: past slot (yesterday) for ZRUSENA test reservation
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1)
+            .withHour(10).withMinute(0).withSecond(0).withNano(0);
+        stmt.execute("INSERT INTO terminy (id,lekar_id,datum_cas,trvanie_min,stav) VALUES (1,2,'"
+            + yesterday.format(fmt) + "',45,'DOSTUPNY')");
+
+        // Collect next 10 business days
+        LocalDateTime[] days = new LocalDateTime[10];
+        int d = 0;
+        LocalDateTime cursor = LocalDateTime.now().plusDays(1)
+            .withHour(0).withMinute(0).withSecond(0).withNano(0);
+        while (d < 10) {
+            if (cursor.getDayOfWeek().getValue() <= 5) days[d++] = cursor;
+            cursor = cursor.plusDays(1);
         }
 
-        int terminId = 1;
-        for (int day = 0; day < 14; day++) {
-            LocalDateTime date = now.plusDays(day);
-            if (date.getDayOfWeek().getValue() > 5) continue; // skip weekends
+        // Hour patterns for variety (10 per doctor)
+        int[] hJ = {8,  9, 10, 11, 13, 14,  8,  9, 10, 11};
+        int[] hP = {9, 10, 11, 14, 15,  9, 10, 11, 14, 15};
+        int[] hC = {8, 10, 13,  9, 14,  8, 11, 13, 10, 14};
 
-            // Dr. Johnson — slots at 8:00, 9:00, 10:00, 11:00, 13:00, 14:00
-            for (int hour : new int[]{8, 9, 10, 11, 13, 14}) {
-                LocalDateTime slot = date.withHour(hour).withMinute(0);
-                stmt.execute("INSERT INTO terminy (id, lekar_id, datum_cas, trvanie_min, stav) VALUES ("
-                        + terminId++ + ", 2, '" + slot.format(fmt) + "', 30, 'DOSTUPNY')");
-            }
-
-            // Dr. Parker — slots at 9:00, 10:00, 11:00, 14:00, 15:00
-            for (int hour : new int[]{9, 10, 11, 14, 15}) {
-                LocalDateTime slot = date.withHour(hour).withMinute(0);
-                stmt.execute("INSERT INTO terminy (id, lekar_id, datum_cas, trvanie_min, stav) VALUES ("
-                        + terminId++ + ", 3, '" + slot.format(fmt) + "', 45, 'DOSTUPNY')");
-            }
+        int id = 2;
+        // Johnson (lekar=2, 45 min) — terminId 2-11, terminId=2 is REZERVOVANY
+        for (int i = 0; i < 10; i++) {
+            LocalDateTime slot = days[i].withHour(hJ[i]).withMinute(0);
+            String stav = (i == 0) ? "REZERVOVANY" : "DOSTUPNY";
+            stmt.execute("INSERT INTO terminy (id,lekar_id,datum_cas,trvanie_min,stav) VALUES ("
+                + id++ + ",2,'" + slot.format(fmt) + "',45,'" + stav + "')");
         }
+        // Parker (lekar=3, 30 min) — terminId 12-21, terminId=15 (i=3) is REZERVOVANY
+        for (int i = 0; i < 10; i++) {
+            LocalDateTime slot = days[i].withHour(hP[i]).withMinute(0);
+            String stav = (i == 3) ? "REZERVOVANY" : "DOSTUPNY";
+            stmt.execute("INSERT INTO terminy (id,lekar_id,datum_cas,trvanie_min,stav) VALUES ("
+                + id++ + ",3,'" + slot.format(fmt) + "',30,'" + stav + "')");
+        }
+        // Chen (lekar=4, 30 min) — terminId 22-31, terminId=26 (i=4) is REZERVOVANY
+        for (int i = 0; i < 10; i++) {
+            LocalDateTime slot = days[i].withHour(hC[i]).withMinute(0);
+            String stav = (i == 4) ? "REZERVOVANY" : "DOSTUPNY";
+            stmt.execute("INSERT INTO terminy (id,lekar_id,datum_cas,trvanie_min,stav) VALUES ("
+                + id++ + ",4,'" + slot.format(fmt) + "',30,'" + stav + "')");
+        }
+
+        // Test rezervácie
+        // 1) POTVRDENA upcoming — Johnson's first slot (terminId=2, REZERVOVANY)
+        stmt.execute("INSERT INTO rezervacie (pacient_id,lekar_id,termin_id,procedura_id,stav) VALUES (1,2,2,1,'POTVRDENA')");
+        // 2) ZRUSENA past — yesterday's slot (terminId=1)
+        stmt.execute("INSERT INTO rezervacie (pacient_id,lekar_id,termin_id,procedura_id,stav) VALUES (1,2,1,1,'ZRUSENA')");
     }
 }

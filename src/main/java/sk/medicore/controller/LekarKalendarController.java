@@ -15,25 +15,23 @@ import sk.medicore.model.Termin;
 import sk.medicore.util.SceneManager;
 import sk.medicore.util.SessionManager;
 
+import sk.medicore.util.DateUtil;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class LekarKalendarController {
 
-    @FXML private Label sidebarMenoLabel;
+    @FXML private SidebarLekarController sidebarController;
     @FXML private Label weekRangeLabel;
     @FXML private VBox weekContainer;
     @FXML private Label emptyLabel;
 
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
-    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("d. MMMM", new Locale("sk"));
-    private static final DateTimeFormatter RANGE_FMT = DateTimeFormatter.ofPattern("d. MMMM yyyy", new Locale("sk"));
 
     private final TerminDAO terminDAO = new TerminDAO();
     private final RezervaciaDAO rezervaciaDAO = new RezervaciaDAO();
@@ -45,7 +43,7 @@ public class LekarKalendarController {
         var user = SessionManager.getInstance().getCurrentUser();
         if (user == null) return;
         lekar = (Lekar) user;
-        sidebarMenoLabel.setText("Dr. " + lekar.getCeleMeno());
+        sidebarController.setActivePage("kalendar");
 
         weekStart = LocalDate.now().with(DayOfWeek.MONDAY);
         loadWeek();
@@ -65,7 +63,7 @@ public class LekarKalendarController {
 
     private void loadWeek() {
         LocalDate weekEnd = weekStart.plusDays(6);
-        weekRangeLabel.setText(weekStart.format(RANGE_FMT) + " — " + weekEnd.format(RANGE_FMT));
+        weekRangeLabel.setText(DateUtil.formatDate(weekStart) + " — " + DateUtil.formatDate(weekEnd));
 
         weekContainer.getChildren().clear();
         emptyLabel.setVisible(false);
@@ -74,8 +72,21 @@ public class LekarKalendarController {
         List<TerminDAO.TerminInfo> all = terminDAO.findEnrichedForWeek(lekar.getId(), weekStart, weekEnd);
 
         if (all.isEmpty()) {
-            emptyLabel.setVisible(true);
-            emptyLabel.setManaged(true);
+            VBox emptyBox = new VBox(12);
+            emptyBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            Label msg = new Label("Tento týždeň nemáte žiadne termíny.");
+            msg.setStyle("-fx-font-size: 13px; -fx-text-fill: #aaa; -fx-padding: 16 0;");
+            emptyBox.getChildren().add(msg);
+            if (weekStart.isAfter(LocalDate.now().minusDays(1))) {
+                Button addBtn = new Button("+ Pridať termín");
+                addBtn.setStyle("-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 8 16; -fx-background-radius: 6; -fx-cursor: hand;");
+                addBtn.setOnAction(e -> {
+                    Stage stage = (Stage) weekContainer.getScene().getWindow();
+                    SceneManager.switchTo(stage, "/view/lekar-terminy.fxml");
+                });
+                emptyBox.getChildren().add(addBtn);
+            }
+            weekContainer.getChildren().add(emptyBox);
             return;
         }
 
@@ -94,9 +105,7 @@ public class LekarKalendarController {
     private VBox buildDaySection(LocalDate day, List<TerminDAO.TerminInfo> items) {
         VBox section = new VBox(8);
 
-        String dayName = day.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("sk"));
-        String dayStr = dayName.substring(0, 1).toUpperCase() + dayName.substring(1)
-            + ", " + day.format(DATE_FMT);
+        String dayStr = DateUtil.formatDayHeading(day);
         Label dayLabel = new Label(dayStr);
         dayLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e; -fx-padding: 0 0 4 0;");
         section.getChildren().add(dayLabel);
@@ -203,16 +212,4 @@ public class LekarKalendarController {
         return badge;
     }
 
-    @FXML
-    private void handleNavTerminy() {
-        Stage stage = (Stage) sidebarMenoLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/lekar-terminy.fxml");
-    }
-
-    @FXML
-    private void handleLogout() {
-        SessionManager.getInstance().logout();
-        Stage stage = (Stage) sidebarMenoLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/prihlasenie.fxml");
-    }
 }

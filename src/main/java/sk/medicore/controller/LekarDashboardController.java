@@ -5,10 +5,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import sk.medicore.db.DatabaseManager;
 import sk.medicore.model.Lekar;
-import sk.medicore.util.SceneManager;
+import sk.medicore.util.DateUtil;
 import sk.medicore.util.SessionManager;
 
 import java.sql.PreparedStatement;
@@ -16,16 +15,14 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class LekarDashboardController {
 
+    @FXML private SidebarLekarController sidebarController;
     @FXML private Label greetingLabel;
     @FXML private Label todayLabel;
-    @FXML private Label sidebarMenoLabel;
     @FXML private Label statDnes;
     @FXML private Label statPacienti;
     @FXML private VBox todayContainer;
@@ -48,13 +45,10 @@ public class LekarDashboardController {
 
         Lekar lekar = (Lekar) user;
 
-        sidebarMenoLabel.setText("Dr. " + lekar.getCeleMeno());
+        sidebarController.setActivePage("dashboard");
         greetingLabel.setText(getGreeting() + ", Dr. " + lekar.getPriezvisko() + "!");
 
-        LocalDate today = LocalDate.now();
-        String dayName = today.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("sk"));
-        todayLabel.setText(dayName.substring(0, 1).toUpperCase() + dayName.substring(1) + ", "
-            + today.format(DateTimeFormatter.ofPattern("d. MMMM yyyy", new Locale("sk"))));
+        todayLabel.setText(DateUtil.formatDayHeading(LocalDate.now()));
 
         loadStats(lekar.getId());
         loadTodayAppointments(lekar.getId());
@@ -173,25 +167,6 @@ public class LekarDashboardController {
         if (poschodie != null) sb.append(", Poschodie ").append(poschodie);
         if (miestnost != null) sb.append(" / Izba ").append(miestnost);
         return sb.toString();
-    }
-
-    @FXML
-    private void handleNavKalendar() {
-        Stage stage = (Stage) greetingLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/lekar-kalendar.fxml");
-    }
-
-    @FXML
-    private void handleNavTerminy() {
-        Stage stage = (Stage) greetingLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/lekar-terminy.fxml");
-    }
-
-    @FXML
-    private void handleLogout() {
-        SessionManager.getInstance().logout();
-        Stage stage = (Stage) greetingLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/prihlasenie.fxml");
     }
 
     private String getGreeting() {

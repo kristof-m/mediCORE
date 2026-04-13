@@ -16,24 +16,22 @@ import sk.medicore.model.Termin;
 import sk.medicore.util.SceneManager;
 import sk.medicore.util.SessionManager;
 
+import sk.medicore.util.DateUtil;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PatientKalendarController {
 
-    @FXML private Label sidebarMenoLabel;
-    @FXML private Label sidebarTypLabel;
+    @FXML private SidebarPacientController sidebarController;
     @FXML private ComboBox<Lekar> lekarCombo;
     @FXML private VBox dniContainer;
     @FXML private Label emptyLabel;
 
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
-    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("d. MMMM yyyy", new Locale("sk"));
 
     private final LekarDAO lekarDAO = new LekarDAO();
     private final TerminDAO terminDAO = new TerminDAO();
@@ -44,8 +42,7 @@ public class PatientKalendarController {
         var user = SessionManager.getInstance().getCurrentUser();
         if (user == null) return;
 
-        sidebarMenoLabel.setText(user.getCeleMeno());
-        sidebarTypLabel.setText("Pacient");
+        sidebarController.setActivePage("kalendar");
 
         lekarCombo.setCellFactory(lv -> new LekarCell());
         lekarCombo.setButtonCell(new LekarCell());
@@ -86,8 +83,7 @@ public class PatientKalendarController {
     private VBox buildDaySection(LocalDate day, List<TerminDAO.TerminInfo> items, Lekar lekar, List<Procedura> procs) {
         VBox section = new VBox(8);
 
-        String dayName = day.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("sk"));
-        String dayStr = dayName.substring(0, 1).toUpperCase() + dayName.substring(1) + ", " + day.format(DATE_FMT);
+        String dayStr = DateUtil.formatDayHeading(day);
 
         Label dayLabel = new Label(dayStr);
         dayLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e; -fx-padding: 0 0 4 0;");
@@ -208,31 +204,4 @@ public class PatientKalendarController {
         }
     }
 
-    // --- Nav ---
-
-    @FXML private void handleNavDashboard() {
-        Stage stage = (Stage) dniContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/dashboard.fxml");
-    }
-
-    @FXML private void handleNavRezervacje() {
-        Stage stage = (Stage) dniContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/moje-rezervacie.fxml");
-    }
-
-    @FXML private void handleNavRezervovat() {
-        Stage stage = (Stage) dniContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/rezervacia-wizard.fxml");
-    }
-
-    @FXML private void handleNavProfil() {
-        Stage stage = (Stage) dniContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/profil.fxml");
-    }
-
-    @FXML private void handleLogout() {
-        SessionManager.getInstance().logout();
-        Stage stage = (Stage) dniContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/prihlasenie.fxml");
-    }
 }

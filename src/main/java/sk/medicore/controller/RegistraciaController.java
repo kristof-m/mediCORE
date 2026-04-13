@@ -40,8 +40,8 @@ public class RegistraciaController {
             return;
         }
 
-        if (password.length() < 6) {
-            showError("Heslo musí mať aspoň 6 znakov.");
+        if (password.length() < 8) {
+            showError("Heslo musí mať aspoň 8 znakov.");
             return;
         }
 
