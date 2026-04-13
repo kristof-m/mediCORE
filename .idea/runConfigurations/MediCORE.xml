@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MediCORE" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <option name="workingDirPath" value="$PROJECT_DIR$" />
+      <option name="goals" value="javafx:run" />
+      <option name="resolveToWorkspace" value="false" />
+    </MavenSettings>
+    <method v="2" />
+  </configuration>
+</component>
