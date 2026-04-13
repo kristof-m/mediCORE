@@ -33,9 +33,25 @@ public class SidebarLekarController {
         navTerminy.setStyle("terminy".equals(page) ? ACTIVE : INACTIVE);
     }
 
-    @FXML private void handleNavDashboard() { navigate("/view/lekar-dashboard.fxml"); }
-    @FXML private void handleNavKalendar()  { navigate("/view/lekar-kalendar.fxml"); }
-    @FXML private void handleNavTerminy()   { navigate("/view/lekar-terminy.fxml"); }
+    @FXML private void handleNavDashboard()     { navigate("/view/lekar-dashboard.fxml"); }
+    @FXML private void handleNavKalendar()      { navigate("/view/lekar-kalendar.fxml"); }
+    @FXML private void handleNavTerminy()       { navigate("/view/lekar-terminy.fxml"); }
+
+    @FXML private void handleNavMojiPacienti() {
+        javafx.scene.control.Alert info = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        info.setTitle("Pripravujeme");
+        info.setHeaderText(null);
+        info.setContentText("Sekcia Moji pacienti bude dostupná v ďalšej verzii.");
+        info.showAndWait();
+    }
+
+    @FXML private void handleNavLekarProfil() {
+        javafx.scene.control.Alert info = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        info.setTitle("Pripravujeme");
+        info.setHeaderText(null);
+        info.setContentText("Sekcia Profil bude dostupná v ďalšej verzii.");
+        info.showAndWait();
+    }
 
     @FXML
     private void handleLogout() {

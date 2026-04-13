@@ -13,8 +13,10 @@ public class SceneManager {
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();
+            boolean wasMaximized = stage.isMaximized();
             Scene scene = new Scene(root, 900, 650);
             stage.setScene(scene);
+            if (wasMaximized) stage.setMaximized(true);
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException("Nepodarilo sa načítať obrazovku: " + fxmlPath, e);

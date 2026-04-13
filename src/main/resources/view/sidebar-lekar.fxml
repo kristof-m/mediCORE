@@ -31,9 +31,9 @@
         <Button fx:id="navTerminy" text="Definovať termíny" maxWidth="Infinity"
                 onAction="#handleNavTerminy"
                 style="-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-background-radius: 0; -fx-cursor: hand; -fx-border-color: transparent;"/>
-        <Button text="Moji pacienti" maxWidth="Infinity"
+        <Button text="Moji pacienti" maxWidth="Infinity" onAction="#handleNavMojiPacienti"
                 style="-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-background-radius: 0; -fx-cursor: hand; -fx-border-color: transparent;"/>
-        <Button text="Profil" maxWidth="Infinity"
+        <Button text="Profil" maxWidth="Infinity" onAction="#handleNavLekarProfil"
                 style="-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-background-radius: 0; -fx-cursor: hand; -fx-border-color: transparent;"/>
     </VBox>
 

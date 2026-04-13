@@ -28,12 +28,8 @@
                         style="-fx-background-color: white; -fx-text-fill: #555; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13px; -fx-padding: 8 16; -fx-cursor: hand;"/>
             </HBox>
 
-            <!-- Week days container -->
+            <!-- Week days container (empty state rendered inside by controller) -->
             <VBox fx:id="weekContainer" spacing="16"/>
-
-            <Label fx:id="emptyLabel" text="Tento týždeň nemáte žiadne termíny."
-                   style="-fx-font-size: 13px; -fx-text-fill: #aaa; -fx-padding: 16 0;"
-                   visible="false" managed="false"/>
 
         </VBox>
     </ScrollPane>
