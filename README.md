@@ -61,28 +61,58 @@ mvn javafx:run
 
 Pri prvom spustení sa automaticky vytvorí súbor `medicore.db` v koreňovom priečinku projektu so všetkými tabuľkami a testnými dátami. Nie je potrebná žiadna inštalácia databázy.
 
+> **Reset databázy:** Ak chceš dáta obnoviť do pôvodného stavu, vymaž `medicore.db` z koreňa projektu a spusti aplikáciu znovu.
+
 ---
 
 ## Testovacie prihlasovacie údaje
 
-| Rola | E-mail | Heslo |
-|------|--------|-------|
-| Pacient | `pacient@medicore.sk` | `heslo123` |
-| Lekár (Všeob. lekárstvo) | `johnson@medicore.sk` | `heslo123` |
-| Lekár (Kardiológia) | `parker@medicore.sk` | `heslo123` |
+Všetky účty používajú heslo: **`heslo123`**
+
+### Pacienti
+
+| Meno | E-mail | Predpripravené dáta |
+|------|--------|---------------------|
+| Samuel Thompson | `pacient@medicore.sk` | 3 absolvované, 1 zrušená, 1 dnešná, 2 nadchádzajúce rezervácie |
+| Lukáš Novák | `novak@medicore.sk` | 1 absolvovaná, 1 zrušená, 1 nadchádzajúca |
+| Eva Kozárová | `kozarova@medicore.sk` | 1 absolvovaná, 1 nadchádzajúca |
+| Tomáš Blaho | `blaho@medicore.sk` | 1 dnešná, 1 zrušená |
+| Nina Horváthová | `horvath@medicore.sk` | 2 dnešné, 1 nadchádzajúca |
+
+### Lekári
+
+| Meno | E-mail | Špecializácia |
+|------|--------|---------------|
+| Dr. Sarah Johnson | `johnson@medicore.sk` | Kardiológia |
+| Dr. Emily Parker | `parker@medicore.sk` | Dermatológia |
+| Dr. Michael Chen | `chen@medicore.sk` | Všeobecná prax |
 
 ---
 
 ## Tok aplikácie
 
+### Pacient
+
 ```
 Prihlásenie ──► Dashboard
                    │
-          ┌────────┼────────────┐
-          ▼        ▼            ▼
-    Moje rezerv.  Rezervovať   Odhlásiť
-          │        termín
-    Zrušiť rez.   (4-krokový wizard)
+       ┌───────────┼──────────────┬────────────┐
+       ▼           ▼              ▼            ▼
+ Moje rezerv.  Rezervovať    Kalendár      Profil
+       │        termín
+ Zrušiť rez.  (4-krokový wizard:
+               Lekár → Procedúra → Termín → Potvrdenie)
+```
+
+### Lekár
+
+```
+Prihlásenie ──► Dashboard (dnešné rezervácie, štatistiky)
+                   │
+         ┌─────────┼─────────────┐
+         ▼         ▼             ▼
+    Môj kalendár  Definovať    Moji pacienti
+    (týždenný)    termíny      (pripravujeme)
 ```
 
 ---
@@ -91,40 +121,54 @@ Prihlásenie ──► Dashboard
 
 ```
 src/main/java/sk/medicore/
-├── Main.java                        # Vstupný bod aplikácie
-├── model/                           # Dátové triedy
-│   ├── Pouzivatel.java              # Abstraktná základná trieda
+├── Main.java                             # Vstupný bod aplikácie
+├── model/                                # Dátové triedy
+│   ├── Pouzivatel.java                   # Abstraktná základná trieda
 │   ├── Pacient.java
 │   ├── Lekar.java
-│   ├── AdministrativnyPracovnik.java
 │   ├── Rezervacia.java
 │   ├── Termin.java
 │   └── Procedura.java
 ├── db/
-│   ├── DatabaseManager.java         # SQLite pripojenie, schéma, seed dáta
-│   └── dao/                         # Data Access Objects
+│   ├── DatabaseManager.java              # SQLite pripojenie, schéma, seed dáta
+│   └── dao/                              # Data Access Objects
 │       ├── PouzivatelDAO.java
 │       ├── LekarDAO.java
 │       ├── RezervaciaDAO.java
 │       ├── TerminDAO.java
 │       └── ProceduraDAO.java
-├── controller/                      # JavaFX kontroléry (MVC)
+├── controller/                           # JavaFX kontroléry (MVC)
 │   ├── PrihlasenieController.java
 │   ├── RegistraciaController.java
+│   ├── SidebarPacientController.java     # Zdieľaný sidebar — pacient
+│   ├── SidebarLekarController.java       # Zdieľaný sidebar — lekár
 │   ├── DashboardController.java
 │   ├── MojeRezervacieController.java
-│   └── RezervaciaWizardController.java
+│   ├── PatientKalendarController.java
+│   ├── ProfilController.java
+│   ├── RezervaciaWizardController.java
+│   ├── LekarDashboardController.java
+│   ├── LekarKalendarController.java
+│   └── LekarTerminyController.java
 └── util/
-    ├── PasswordUtil.java            # SHA-256 hashovanie hesiel
-    ├── SessionManager.java          # Singleton — prihlásený používateľ
-    └── SceneManager.java            # Prepínanie JavaFX scén
+    ├── PasswordUtil.java                 # SHA-256 hashovanie hesiel
+    ├── SessionManager.java               # Singleton — prihlásený používateľ
+    ├── SceneManager.java                 # Prepínanie JavaFX scén
+    └── DateUtil.java                     # Slovenské formáty dátumov
 
-src/main/resources/view/            # FXML obrazovky
+src/main/resources/view/                 # FXML obrazovky
 ├── prihlasenie.fxml
 ├── registracia.fxml
+├── sidebar-pacient.fxml                  # Zdieľaný sidebar komponent
+├── sidebar-lekar.fxml
 ├── dashboard.fxml
 ├── moje-rezervacie.fxml
-└── rezervacia-wizard.fxml
+├── patient-kalendar.fxml
+├── profil.fxml
+├── rezervacia-wizard.fxml
+├── lekar-dashboard.fxml
+├── lekar-kalendar.fxml
+└── lekar-terminy.fxml
 ```
 
 ---
