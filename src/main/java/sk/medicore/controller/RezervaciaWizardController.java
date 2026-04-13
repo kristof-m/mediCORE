@@ -47,6 +47,7 @@ public class RezervaciaWizardController {
     @FXML private Label confirmTrvanie;
 
     private int currentStep = 1;
+    private boolean prefilledMode = false;
     private Procedura selectedProcedura;
     private Lekar selectedLekar;
     private Termin selectedTermin;
@@ -60,7 +61,24 @@ public class RezervaciaWizardController {
 
     @FXML
     public void initialize() {
-        loadProcedures();
+        Lekar prelekar = SessionManager.getInstance().getPreselectedLekar();
+        Termin pretermin = SessionManager.getInstance().getPreselectedTermin();
+        Procedura preprocedura = SessionManager.getInstance().getPreselectedProcedura();
+
+        if (prelekar != null && pretermin != null && preprocedura != null) {
+            prefilledMode = true;
+            selectedLekar = prelekar;
+            selectedTermin = pretermin;
+            selectedProcedura = preprocedura;
+            SessionManager.getInstance().clearPreselectedBooking();
+            goToStep(4);
+            confirmProcedura.setText(preprocedura.getNazov());
+            confirmLekar.setText("Dr. " + prelekar.getCeleMeno() + " — " + prelekar.getSpecializacia());
+            confirmTermin.setText(pretermin.getDatumCas().format(DT_FMT));
+            confirmTrvanie.setText(pretermin.getTrvanieMin() + " minút");
+        } else {
+            loadProcedures();
+        }
     }
 
     private void loadProcedures() {
@@ -221,6 +239,11 @@ public class RezervaciaWizardController {
 
     @FXML
     private void handleBack() {
+        if (prefilledMode) {
+            Stage stage = (Stage) step1Pane.getScene().getWindow();
+            SceneManager.switchTo(stage, "/view/patient-kalendar.fxml");
+            return;
+        }
         if (currentStep > 1) {
             goToStep(currentStep - 1);
         } else {

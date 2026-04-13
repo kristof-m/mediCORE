@@ -176,6 +176,18 @@ public class LekarDashboardController {
     }
 
     @FXML
+    private void handleNavKalendar() {
+        Stage stage = (Stage) greetingLabel.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/lekar-kalendar.fxml");
+    }
+
+    @FXML
+    private void handleNavTerminy() {
+        Stage stage = (Stage) greetingLabel.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/lekar-terminy.fxml");
+    }
+
+    @FXML
     private void handleLogout() {
         SessionManager.getInstance().logout();
         Stage stage = (Stage) greetingLabel.getScene().getWindow();

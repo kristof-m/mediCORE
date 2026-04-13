@@ -215,6 +215,16 @@ public class MojeRezervacieController {
         SceneManager.switchTo(stage, "/view/rezervacia-wizard.fxml");
     }
 
+    @FXML private void handleNavKalendar() {
+        Stage stage = (Stage) upcomingContainer.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/patient-kalendar.fxml");
+    }
+
+    @FXML private void handleNavProfil() {
+        Stage stage = (Stage) upcomingContainer.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/profil.fxml");
+    }
+
     @FXML private void handleLogout() {
         SessionManager.getInstance().logout();
         Stage stage = (Stage) upcomingContainer.getScene().getWindow();

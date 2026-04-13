@@ -26,7 +26,9 @@
                     style="-fx-background-color: #e8f5f3; -fx-text-fill: #1a9e8f; -fx-font-size: 13px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-background-radius: 0; -fx-cursor: hand; -fx-border-color: transparent;"/>
             <Button text="Rezervovať termín" maxWidth="Infinity" onAction="#handleNavRezervovat"
                     style="-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-background-radius: 0; -fx-cursor: hand; -fx-border-color: transparent;"/>
-            <Button text="Profil" maxWidth="Infinity"
+            <Button text="Zobraziť kalendár" maxWidth="Infinity" onAction="#handleNavKalendar"
+                    style="-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-background-radius: 0; -fx-cursor: hand; -fx-border-color: transparent;"/>
+            <Button text="Profil" maxWidth="Infinity" onAction="#handleNavProfil"
                     style="-fx-background-color: transparent; -fx-text-fill: #555; -fx-font-size: 13px; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-background-radius: 0; -fx-cursor: hand; -fx-border-color: transparent;"/>
         </VBox>
         <Region VBox.vgrow="ALWAYS"/>

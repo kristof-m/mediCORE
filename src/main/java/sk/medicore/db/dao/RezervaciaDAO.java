@@ -87,6 +87,18 @@ public class RezervaciaDAO {
         return list;
     }
 
+    public Rezervacia findByTerminId(int terminId) {
+        String sql = "SELECT * FROM rezervacie WHERE termin_id = ? AND stav = 'POTVRDENA' LIMIT 1";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, terminId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return mapRow(rs);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
     public void updateStav(int id, Rezervacia.Stav stav) {
         String sql = "UPDATE rezervacie SET stav = ? WHERE id = ?";
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {

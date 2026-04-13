@@ -218,7 +218,16 @@ public class DashboardController {
     }
 
     @FXML
-    private void handleNavProfil() {}
+    private void handleNavKalendar() {
+        Stage stage = (Stage) greetingLabel.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/patient-kalendar.fxml");
+    }
+
+    @FXML
+    private void handleNavProfil() {
+        Stage stage = (Stage) greetingLabel.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/profil.fxml");
+    }
 
     @FXML
     private void handleLogout() {
