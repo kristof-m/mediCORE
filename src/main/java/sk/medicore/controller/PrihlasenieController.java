@@ -37,7 +37,8 @@ public class PrihlasenieController {
 
         SessionManager.getInstance().setCurrentUser(user);
         Stage stage = (Stage) emailField.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/dashboard.fxml");
+        String nextScene = "LEKAR".equals(user.getTyp()) ? "/view/lekar-dashboard.fxml" : "/view/dashboard.fxml";
+        SceneManager.switchTo(stage, nextScene);
     }
 
     @FXML
