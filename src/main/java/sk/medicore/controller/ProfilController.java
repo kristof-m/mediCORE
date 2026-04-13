@@ -18,8 +18,7 @@ import java.util.List;
 
 public class ProfilController {
 
-    @FXML private Label sidebarMenoLabel;
-    @FXML private Label sidebarTypLabel;
+    @FXML private SidebarPacientController sidebarController;
     @FXML private Label avatarLabel;
     @FXML private Label fullNameLabel;
     @FXML private Label typBadge;
@@ -49,8 +48,7 @@ public class ProfilController {
         String typStr = formatTyp(user.getTyp());
         typLabel.setText(typStr);
         typBadge.setText(typStr);
-        sidebarMenoLabel.setText(user.getCeleMeno());
-        sidebarTypLabel.setText(typStr);
+        sidebarController.setActivePage("profil");
 
         loadStats(user.getId());
     }
@@ -93,7 +91,7 @@ public class ProfilController {
         oldPw.setPromptText("Aktuálne heslo");
 
         PasswordField newPw = new PasswordField();
-        newPw.setPromptText("Nové heslo (min. 6 znakov)");
+        newPw.setPromptText("Nové heslo (min. 8 znakov)");
 
         PasswordField confirmPw = new PasswordField();
         confirmPw.setPromptText("Potvrdenie nového hesla");
@@ -127,8 +125,8 @@ public class ProfilController {
                 event.consume();
                 return;
             }
-            if (newPw.getText().length() < 6) {
-                errorLabel.setText("Nové heslo musí mať aspoň 6 znakov.");
+            if (newPw.getText().length() < 8) {
+                errorLabel.setText("Nové heslo musí mať aspoň 8 znakov.");
                 event.consume();
                 return;
             }
@@ -159,26 +157,6 @@ public class ProfilController {
             case "ADMIN" -> "Administrátor";
             default -> "Pacient";
         };
-    }
-
-    @FXML private void handleNavDashboard() {
-        Stage stage = (Stage) avatarLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/dashboard.fxml");
-    }
-
-    @FXML private void handleNavRezervacje() {
-        Stage stage = (Stage) avatarLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/moje-rezervacie.fxml");
-    }
-
-    @FXML private void handleNavRezervovat() {
-        Stage stage = (Stage) avatarLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/rezervacia-wizard.fxml");
-    }
-
-    @FXML private void handleNavKalendar() {
-        Stage stage = (Stage) avatarLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/patient-kalendar.fxml");
     }
 
     @FXML private void handleLogout() {

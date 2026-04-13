@@ -27,8 +27,7 @@ import java.util.Optional;
 
 public class MojeRezervacieController {
 
-    @FXML private Label sidebarMenoLabel;
-    @FXML private Label sidebarTypLabel;
+    @FXML private SidebarPacientController sidebarController;
     @FXML private VBox upcomingContainer;
     @FXML private VBox pastContainer;
     @FXML private VBox cancelledContainer;
@@ -43,9 +42,7 @@ public class MojeRezervacieController {
         var user = SessionManager.getInstance().getCurrentUser();
         if (user == null) return;
 
-        sidebarMenoLabel.setText(user.getCeleMeno());
-        sidebarTypLabel.setText("Pacient");
-
+        sidebarController.setActivePage("rezervacje");
         loadRezervacje(user.getId());
     }
 
@@ -73,13 +70,13 @@ public class MojeRezervacieController {
         }
 
         if (upcomingContainer.getChildren().isEmpty()) {
-            upcomingContainer.getChildren().add(emptyLabel("Žiadne nadchádzajúce rezervácie."));
+            upcomingContainer.getChildren().add(emptyLabel("Žiadne nadchádzajúce rezervácie.", true));
         }
         if (pastContainer.getChildren().isEmpty()) {
-            pastContainer.getChildren().add(emptyLabel("Žiadne minulé rezervácie."));
+            pastContainer.getChildren().add(emptyLabel("Žiadne minulé rezervácie.", false));
         }
         if (cancelledContainer.getChildren().isEmpty()) {
-            cancelledContainer.getChildren().add(emptyLabel("Žiadne zrušené rezervácie."));
+            cancelledContainer.getChildren().add(emptyLabel("Žiadne zrušené rezervácie.", false));
         }
     }
 
@@ -178,17 +175,34 @@ public class MojeRezervacieController {
         return box;
     }
 
-    private Label emptyLabel(String text) {
+    private javafx.scene.Node emptyLabel(String text, boolean showBookButton) {
+        VBox box = new VBox(12);
+        box.setStyle("-fx-padding: 20 0;");
+        box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         Label l = new Label(text);
-        l.setStyle("-fx-font-size: 13px; -fx-text-fill: #aaa; -fx-padding: 20 0;");
-        return l;
+        l.setStyle("-fx-font-size: 13px; -fx-text-fill: #aaa;");
+        box.getChildren().add(l);
+        if (showBookButton) {
+            Button btn = new Button("+ Rezervovať termín");
+            btn.setStyle("-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 8 16; -fx-background-radius: 6; -fx-cursor: hand;");
+            btn.setOnAction(e -> handleNavRezervovat());
+            box.getChildren().add(btn);
+        }
+        return box;
     }
 
     private void handleCancel(Rezervacia r) {
+        Lekar lekar = lekarDAO.findById(r.getLekarId());
+        Termin termin = terminDAO.findById(r.getTerminId());
+        String info = lekar != null ? "Dr. " + lekar.getCeleMeno() : "Neznámy lekár";
+        if (termin != null) {
+            info += " — " + DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").format(termin.getDatumCas());
+        }
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Zrušenie rezervácie");
         alert.setHeaderText("Naozaj chcete zrušiť rezerváciu?");
-        alert.setContentText("Táto akcia sa nedá vrátiť späť.");
+        alert.setContentText(info + "\n\nTáto akcia sa nedá vrátiť späť.");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -203,31 +217,8 @@ public class MojeRezervacieController {
         return t != null ? t.getDatumCas() : LocalDateTime.MIN;
     }
 
-    @FXML private void handleNavDashboard() {
-        Stage stage = (Stage) upcomingContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/dashboard.fxml");
-    }
-
-    @FXML private void handleNavRezervacje() {}
-
     @FXML private void handleNavRezervovat() {
         Stage stage = (Stage) upcomingContainer.getScene().getWindow();
         SceneManager.switchTo(stage, "/view/rezervacia-wizard.fxml");
-    }
-
-    @FXML private void handleNavKalendar() {
-        Stage stage = (Stage) upcomingContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/patient-kalendar.fxml");
-    }
-
-    @FXML private void handleNavProfil() {
-        Stage stage = (Stage) upcomingContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/profil.fxml");
-    }
-
-    @FXML private void handleLogout() {
-        SessionManager.getInstance().logout();
-        Stage stage = (Stage) upcomingContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/prihlasenie.fxml");
     }
 }

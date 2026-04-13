@@ -28,9 +28,8 @@ import java.util.Optional;
 
 public class DashboardController {
 
+    @FXML private SidebarPacientController sidebarController;
     @FXML private Label greetingLabel;
-    @FXML private Label sidebarMenoLabel;
-    @FXML private Label sidebarTypLabel;
     @FXML private Label statNadchadzajuce;
     @FXML private Label statAbsolvovane;
     @FXML private Label statZrusene;
@@ -48,10 +47,8 @@ public class DashboardController {
         var user = SessionManager.getInstance().getCurrentUser();
         if (user == null) return;
 
-        String greeting = getGreeting() + ", " + user.getMeno() + "!";
-        greetingLabel.setText(greeting);
-        sidebarMenoLabel.setText(user.getCeleMeno());
-        sidebarTypLabel.setText(formatTyp(user.getTyp()));
+        greetingLabel.setText(getGreeting() + ", " + user.getMeno() + "!");
+        sidebarController.setActivePage("dashboard");
 
         loadStats(user.getId());
         loadUpcoming(user.getId());
@@ -184,10 +181,17 @@ public class DashboardController {
     }
 
     private void handleCancel(Rezervacia r) {
+        Lekar lekar = lekarDAO.findById(r.getLekarId());
+        Termin termin = terminDAO.findById(r.getTerminId());
+        String info = lekar != null ? "Dr. " + lekar.getCeleMeno() : "Neznámy lekár";
+        if (termin != null) {
+            info += " — " + DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").format(termin.getDatumCas());
+        }
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Zrušenie rezervácie");
         alert.setHeaderText("Naozaj chcete zrušiť rezerváciu?");
-        alert.setContentText("Táto akcia sa nedá vrátiť späť.");
+        alert.setContentText(info + "\n\nTáto akcia sa nedá vrátiť späť.");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -203,37 +207,10 @@ public class DashboardController {
         return t != null ? t.getDatumCas() : LocalDateTime.MIN;
     }
 
-    @FXML private void handleNavDashboard() {}
-
-    @FXML
-    private void handleNavRezervacje() {
-        Stage stage = (Stage) greetingLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/moje-rezervacie.fxml");
-    }
-
     @FXML
     private void handleNavRezervovat() {
         Stage stage = (Stage) greetingLabel.getScene().getWindow();
         SceneManager.switchTo(stage, "/view/rezervacia-wizard.fxml");
-    }
-
-    @FXML
-    private void handleNavKalendar() {
-        Stage stage = (Stage) greetingLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/patient-kalendar.fxml");
-    }
-
-    @FXML
-    private void handleNavProfil() {
-        Stage stage = (Stage) greetingLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/profil.fxml");
-    }
-
-    @FXML
-    private void handleLogout() {
-        SessionManager.getInstance().logout();
-        Stage stage = (Stage) greetingLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/prihlasenie.fxml");
     }
 
     private String getGreeting() {
@@ -243,11 +220,4 @@ public class DashboardController {
         return "Dobrý večer";
     }
 
-    private String formatTyp(String typ) {
-        return switch (typ) {
-            case "LEKAR" -> "Lekár";
-            case "ADMIN" -> "Administrátor";
-            default -> "Pacient";
-        };
-    }
 }
