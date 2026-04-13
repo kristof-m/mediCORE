@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="sk.medicore.controller.RezervaciaWizardController"
+      prefWidth="900" prefHeight="650"
+      style="-fx-background-color: #f5f5f5;">
+
+    <!-- Top bar -->
+    <HBox style="-fx-background-color: white; -fx-padding: 16 32; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);"
+          alignment="CENTER_LEFT" spacing="16">
+        <Button text="← Späť" onAction="#handleBack"
+                style="-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: transparent;"/>
+        <Label text="MediCORE" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f;" HBox.hgrow="ALWAYS"/>
+
+        <!-- Step indicator -->
+        <HBox spacing="8" alignment="CENTER">
+            <Label fx:id="step1Label" text="1. Procedúra"
+                   style="-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 4 12; -fx-background-radius: 12;"/>
+            <Label text="›" style="-fx-text-fill: #aaa;"/>
+            <Label fx:id="step2Label" text="2. Lekár"
+                   style="-fx-background-color: #ddd; -fx-text-fill: #888; -fx-font-size: 12px; -fx-padding: 4 12; -fx-background-radius: 12;"/>
+            <Label text="›" style="-fx-text-fill: #aaa;"/>
+            <Label fx:id="step3Label" text="3. Termín"
+                   style="-fx-background-color: #ddd; -fx-text-fill: #888; -fx-font-size: 12px; -fx-padding: 4 12; -fx-background-radius: 12;"/>
+            <Label text="›" style="-fx-text-fill: #aaa;"/>
+            <Label fx:id="step4Label" text="4. Potvrdenie"
+                   style="-fx-background-color: #ddd; -fx-text-fill: #888; -fx-font-size: 12px; -fx-padding: 4 12; -fx-background-radius: 12;"/>
+        </HBox>
+    </HBox>
+
+    <!-- Step panes -->
+    <StackPane VBox.vgrow="ALWAYS" style="-fx-padding: 28 32;">
+
+        <!-- Step 1: Procedures -->
+        <ScrollPane fx:id="step1Pane" fitToWidth="true"
+                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox spacing="16">
+                <Label text="Vyberte procedúru" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label text="Vyhľadajte a vyberte typ vyšetrenia alebo procedúry."
+                       style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
+                <FlowPane fx:id="procedureGrid" hgap="16" vgap="16"/>
+            </VBox>
+        </ScrollPane>
+
+        <!-- Step 2: Doctors -->
+        <ScrollPane fx:id="step2Pane" fitToWidth="true" visible="false" managed="false"
+                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox spacing="16">
+                <Label text="Vyberte lekára" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label fx:id="step2SubLabel" text="" style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
+                <VBox fx:id="doctorList" spacing="12"/>
+            </VBox>
+        </ScrollPane>
+
+        <!-- Step 3: Time slots -->
+        <ScrollPane fx:id="step3Pane" fitToWidth="true" visible="false" managed="false"
+                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox spacing="16">
+                <Label text="Vyberte termín" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label fx:id="step3SubLabel" text="" style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
+                <FlowPane fx:id="slotGrid" hgap="12" vgap="12"/>
+            </VBox>
+        </ScrollPane>
+
+        <!-- Step 4: Confirmation -->
+        <VBox fx:id="step4Pane" visible="false" managed="false" spacing="20" alignment="TOP_CENTER">
+            <Label text="Potvrdenie rezervácie" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+            <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 28; -fx-max-width: 500; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
+                  spacing="14">
+                <Label text="Zhrnutie rezervácie" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <HBox spacing="8">
+                    <Label text="Procedúra:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 120;"/>
+                    <Label fx:id="confirmProcedura" text="" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+                </HBox>
+                <HBox spacing="8">
+                    <Label text="Lekár:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 120;"/>
+                    <Label fx:id="confirmLekar" text="" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+                </HBox>
+                <HBox spacing="8">
+                    <Label text="Dátum a čas:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 120;"/>
+                    <Label fx:id="confirmTermin" text="" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+                </HBox>
+                <HBox spacing="8">
+                    <Label text="Trvanie:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 120;"/>
+                    <Label fx:id="confirmTrvanie" text="" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+                </HBox>
+                <Separator/>
+                <Button text="Potvrdiť rezerváciu" onAction="#handleConfirm" maxWidth="Infinity"
+                        style="-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 0; -fx-background-radius: 6; -fx-cursor: hand;"/>
+            </VBox>
+        </VBox>
+
+    </StackPane>
+</VBox>

@@ -1,0 +1,54 @@
+package sk.medicore.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import sk.medicore.db.dao.PouzivatelDAO;
+import sk.medicore.model.Pouzivatel;
+import sk.medicore.util.PasswordUtil;
+import sk.medicore.util.SceneManager;
+import sk.medicore.util.SessionManager;
+
+public class PrihlasenieController {
+
+    @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
+    @FXML private Label errorLabel;
+
+    private final PouzivatelDAO pouzivatelDAO = new PouzivatelDAO();
+
+    @FXML
+    private void handleLogin() {
+        String email = emailField.getText().trim();
+        String password = passwordField.getText();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            showError("Vyplňte e-mail aj heslo.");
+            return;
+        }
+
+        Pouzivatel user = pouzivatelDAO.findByEmail(email);
+        if (user == null || !PasswordUtil.verify(password, user.getHesloHash())) {
+            showError("Nesprávny e-mail alebo heslo.");
+            return;
+        }
+
+        SessionManager.getInstance().setCurrentUser(user);
+        Stage stage = (Stage) emailField.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/dashboard.fxml");
+    }
+
+    @FXML
+    private void handleGoToRegistracia() {
+        Stage stage = (Stage) emailField.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/registracia.fxml");
+    }
+
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+}
