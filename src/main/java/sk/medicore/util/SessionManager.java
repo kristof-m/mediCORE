@@ -1,13 +1,19 @@
 package sk.medicore.util;
 
+import sk.medicore.model.Lekar;
+import sk.medicore.model.Procedura;
 import sk.medicore.model.Pouzivatel;
 import sk.medicore.model.Rezervacia;
+import sk.medicore.model.Termin;
 
 public class SessionManager {
 
     private static SessionManager instance;
     private Pouzivatel currentUser;
     private Rezervacia rezervaciaToReschedule;
+    private Lekar preselectedLekar;
+    private Termin preselectedTermin;
+    private Procedura preselectedProcedura;
 
     private SessionManager() {}
 
@@ -34,8 +40,25 @@ public class SessionManager {
         return rezervaciaToReschedule;
     }
 
+    public void setPreselectedBooking(Lekar lekar, Termin termin, Procedura procedura) {
+        this.preselectedLekar = lekar;
+        this.preselectedTermin = termin;
+        this.preselectedProcedura = procedura;
+    }
+
+    public Lekar getPreselectedLekar() { return preselectedLekar; }
+    public Termin getPreselectedTermin() { return preselectedTermin; }
+    public Procedura getPreselectedProcedura() { return preselectedProcedura; }
+
+    public void clearPreselectedBooking() {
+        this.preselectedLekar = null;
+        this.preselectedTermin = null;
+        this.preselectedProcedura = null;
+    }
+
     public void logout() {
         this.currentUser = null;
         this.rezervaciaToReschedule = null;
+        clearPreselectedBooking();
     }
 }

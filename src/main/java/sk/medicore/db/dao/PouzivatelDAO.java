@@ -53,6 +53,17 @@ public class PouzivatelDAO {
         }
     }
 
+    public void updateHeslo(int userId, String newHesloHash) {
+        String sql = "UPDATE pouzivatelia SET heslo_hash = ? WHERE id = ?";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setString(1, newHesloHash);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Pouzivatel mapRow(ResultSet rs) throws SQLException {
         String typ = rs.getString("typ");
         Pouzivatel p;

@@ -4,6 +4,7 @@ import sk.medicore.db.DatabaseManager;
 import sk.medicore.model.Termin;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,6 +13,91 @@ import java.util.List;
 public class TerminDAO {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /** Enriched view of a termin joined with its active reservation (if any). */
+    public record TerminInfo(
+        int terminId,
+        LocalDateTime datumCas,
+        int trvanieMin,
+        Termin.Stav stav,
+        Integer rezervaciaId,      // null if DOSTUPNY/ZRUSENY
+        String pacientMeno,        // null if no reservation
+        String pacientPriezvisko,  // null if no reservation
+        String proceduraNazov      // null if no reservation
+    ) {}
+
+    public List<TerminInfo> findEnrichedByLekarId(int lekarId) {
+        String sql = "SELECT t.id, t.datum_cas, t.trvanie_min, t.stav, " +
+                     "r.id AS rez_id, p.meno, p.priezvisko, proc.nazov AS proc_nazov " +
+                     "FROM terminy t " +
+                     "LEFT JOIN rezervacie r ON t.id = r.termin_id AND r.stav = 'POTVRDENA' " +
+                     "LEFT JOIN pouzivatelia p ON r.pacient_id = p.id " +
+                     "LEFT JOIN procedury proc ON r.procedura_id = proc.id " +
+                     "WHERE t.lekar_id = ? ORDER BY t.datum_cas DESC";
+        return queryEnriched(sql, lekarId, null, null);
+    }
+
+    public List<TerminInfo> findEnrichedForWeek(int lekarId, LocalDate from, LocalDate to) {
+        String sql = "SELECT t.id, t.datum_cas, t.trvanie_min, t.stav, " +
+                     "r.id AS rez_id, p.meno, p.priezvisko, proc.nazov AS proc_nazov " +
+                     "FROM terminy t " +
+                     "LEFT JOIN rezervacie r ON t.id = r.termin_id AND r.stav = 'POTVRDENA' " +
+                     "LEFT JOIN pouzivatelia p ON r.pacient_id = p.id " +
+                     "LEFT JOIN procedury proc ON r.procedura_id = proc.id " +
+                     "WHERE t.lekar_id = ? AND DATE(t.datum_cas) >= ? AND DATE(t.datum_cas) <= ? " +
+                     "AND t.stav != 'ZRUSENY' ORDER BY t.datum_cas";
+        return queryEnriched(sql, lekarId, from.toString(), to.toString());
+    }
+
+    public boolean hasConflict(int lekarId, LocalDateTime datumCas) {
+        String sql = "SELECT COUNT(*) FROM terminy WHERE lekar_id = ? AND datum_cas = ? AND stav != 'ZRUSENY'";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, lekarId);
+            ps.setString(2, datumCas.format(FMT));
+            ResultSet rs = ps.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void insert(int lekarId, LocalDateTime datumCas, int trvanieMin) {
+        String sql = "INSERT INTO terminy (lekar_id, datum_cas, trvanie_min, stav) VALUES (?, ?, ?, 'DOSTUPNY')";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, lekarId);
+            ps.setString(2, datumCas.format(FMT));
+            ps.setInt(3, trvanieMin);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<TerminInfo> queryEnriched(String sql, int lekarId, String from, String to) {
+        List<TerminInfo> list = new ArrayList<>();
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, lekarId);
+            if (from != null) { ps.setString(2, from); ps.setString(3, to); }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int rezId = rs.getInt("rez_id");
+                Integer rezervaciaId = rs.wasNull() ? null : rezId;
+                list.add(new TerminInfo(
+                    rs.getInt("id"),
+                    LocalDateTime.parse(rs.getString("datum_cas"), FMT),
+                    rs.getInt("trvanie_min"),
+                    Termin.Stav.valueOf(rs.getString("stav")),
+                    rezervaciaId,
+                    rs.getString("meno"),
+                    rs.getString("priezvisko"),
+                    rs.getString("proc_nazov")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
 
     public List<Termin> findByLekarId(int lekarId) {
         String sql = "SELECT * FROM terminy WHERE lekar_id = ? ORDER BY datum_cas";
