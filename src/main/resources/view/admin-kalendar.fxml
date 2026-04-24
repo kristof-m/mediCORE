@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="sk.medicore.controller.AdminKalendarController"
+      prefWidth="900" prefHeight="650"
+      style="-fx-background-color: #f5f5f5;">
+
+    <fx:include fx:id="sidebar" source="sidebar-admin.fxml"/>
+
+    <!-- Main content -->
+    <ScrollPane HBox.hgrow="ALWAYS" fitToWidth="true"
+                style="-fx-background: #f5f5f5; -fx-background-color: #f5f5f5; -fx-border-color: transparent;">
+        <VBox spacing="20" style="-fx-padding: 32;">
+
+            <!-- Title + doctor picker -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <VBox HBox.hgrow="ALWAYS" spacing="2">
+                    <Label text="Kalendár — celá klinika"
+                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                    <Label fx:id="weekRangeLabel" text=""
+                           style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
+                </VBox>
+                <ComboBox fx:id="lekarCombo" promptText="Vybrať lekára"
+                          style="-fx-font-size: 13px; -fx-min-width: 200;"
+                          onAction="#handleLekarSelected"/>
+                <Button text="← Predchádzajúci" onAction="#handlePrevWeek"
+                        style="-fx-background-color: white; -fx-text-fill: #555; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13px; -fx-padding: 8 16; -fx-cursor: hand;"/>
+                <Button text="Ďalší →" onAction="#handleNextWeek"
+                        style="-fx-background-color: white; -fx-text-fill: #555; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13px; -fx-padding: 8 16; -fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Week days container -->
+            <VBox fx:id="weekContainer" spacing="16"/>
+
+        </VBox>
+    </ScrollPane>
+</HBox>
