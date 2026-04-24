@@ -196,6 +196,16 @@ public class MojeRezervacieController {
     private void handleCancel(Rezervacia r) {
         Lekar lekar = lekarDAO.findById(r.getLekarId());
         Termin termin = terminDAO.findById(r.getTerminId());
+
+        if (termin != null && termin.getDatumCas().isBefore(LocalDateTime.now().plusHours(24))) {
+            Alert blocked = new Alert(Alert.AlertType.WARNING);
+            blocked.setTitle("Zrušenie nie je možné");
+            blocked.setHeaderText("Rezerváciu nie je možné zrušiť menej ako 24 hodín pred termínom.");
+            blocked.setContentText("V prípade potreby kontaktujte recepciu.");
+            blocked.showAndWait();
+            return;
+        }
+
         String info = lekar != null ? "Dr. " + lekar.getCeleMeno() : "Neznámy lekár";
         if (termin != null) {
             info += " — " + DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").format(termin.getDatumCas());
