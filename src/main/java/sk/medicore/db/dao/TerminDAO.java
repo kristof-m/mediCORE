@@ -61,6 +61,30 @@ public class TerminDAO {
         }
     }
 
+    public boolean hasConflictExcluding(int lekarId, LocalDateTime datumCas, int excludeTerminId) {
+        String sql = "SELECT COUNT(*) FROM terminy WHERE lekar_id = ? AND datum_cas = ? AND stav != 'ZRUSENY' AND id != ?";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, lekarId);
+            ps.setString(2, datumCas.format(FMT));
+            ps.setInt(3, excludeTerminId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateDatumCas(int id, LocalDateTime novyDatumCas) {
+        String sql = "UPDATE terminy SET datum_cas = ? WHERE id = ?";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setString(1, novyDatumCas.format(FMT));
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void insert(int lekarId, LocalDateTime datumCas, int trvanieMin) {
         String sql = "INSERT INTO terminy (lekar_id, datum_cas, trvanie_min, stav) VALUES (?, ?, ?, 'DOSTUPNY')";
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {

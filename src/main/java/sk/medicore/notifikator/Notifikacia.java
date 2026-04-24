@@ -7,7 +7,8 @@ public class Notifikacia {
     public enum Typ {
         POTVRDENA("Rezervácia potvrdená"),
         ZRUSENA("Rezervácia zrušená"),
-        PRESUNUTA("Rezervácia presunutá");
+        PRESUNUTA("Rezervácia presunutá"),
+        ZMENENY("Termín bol zmenený lekárom");
 
         private final String popis;
         Typ(String popis) { this.popis = popis; }

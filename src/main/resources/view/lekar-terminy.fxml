@@ -20,7 +20,7 @@
             <!-- Add slot form -->
             <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 24; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 8, 0, 0, 2);"
                   spacing="16">
-                <Label text="Pridať nový termín" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label fx:id="formTitle" text="Pridať nový termín" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
 
                 <HBox spacing="16" alignment="CENTER_LEFT">
                     <VBox spacing="6">
@@ -46,8 +46,11 @@
                 </HBox>
 
                 <HBox spacing="12" alignment="CENTER_LEFT">
-                    <Button text="Pridať termín" onAction="#handleAdd"
+                    <Button fx:id="submitBtn" text="Pridať termín" onAction="#handleAdd"
                             style="-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 24; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                    <Button fx:id="cancelEditBtn" text="Zrušiť úpravu" onAction="#handleCancelEdit"
+                            visible="false" managed="false"
+                            style="-fx-background-color: transparent; -fx-text-fill: #888; -fx-border-color: #ccc; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13px; -fx-padding: 10 20; -fx-cursor: hand;"/>
                     <Label fx:id="feedbackLabel" text=""
                            style="-fx-font-size: 12px; -fx-text-fill: #d32f2f;"/>
                 </HBox>
