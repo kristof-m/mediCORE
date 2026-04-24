@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="sk.medicore.controller.LekarPacientiController"
+      prefWidth="900" prefHeight="650"
+      style="-fx-background-color: #f5f6f8;">
+
+    <fx:include fx:id="sidebar" source="sidebar-lekar.fxml"/>
+
+    <VBox HBox.hgrow="ALWAYS">
+
+        <!-- Page heading -->
+        <HBox alignment="CENTER_LEFT" style="-fx-padding: 24 28 16 28;" spacing="12">
+            <VBox HBox.hgrow="ALWAYS" spacing="2">
+                <Label text="Moji pacienti"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label text="Prehľad všetkých pacientov, ktorí majú u vás minimálne jednu návštevu"
+                       style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8;"/>
+            </VBox>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox spacing="10" style="-fx-padding: 0 28 28 28;">
+
+                <!-- Stats strip -->
+                <HBox spacing="10">
+                    <!-- Total patients -->
+                    <HBox fx:id="statTotalBox" spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 8;
+                                 -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;
+                                 -fx-padding: 10 12;">
+                        <Pane fx:id="iconStatTotal" minWidth="30" minHeight="30" maxWidth="30" maxHeight="30"
+                              style="-fx-background-color: #e8f5f3; -fx-background-radius: 7;"/>
+                        <VBox spacing="2">
+                            <Label fx:id="statTotalLabel" text="0"
+                                   style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                            <Label text="Aktívnych pacientov"
+                                   style="-fx-font-size: 10.5px; -fx-text-fill: #9aa0a8;"/>
+                        </VBox>
+                    </HBox>
+                    <!-- New this month -->
+                    <HBox fx:id="statNewBox" spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 8;
+                                 -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;
+                                 -fx-padding: 10 12;">
+                        <Pane fx:id="iconStatNew" minWidth="30" minHeight="30" maxWidth="30" maxHeight="30"
+                              style="-fx-background-color: #ecfdf5; -fx-background-radius: 7;"/>
+                        <VBox spacing="2">
+                            <Label fx:id="statNewLabel" text="0"
+                                   style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                            <Label text="Nových tento mesiac"
+                                   style="-fx-font-size: 10.5px; -fx-text-fill: #9aa0a8;"/>
+                        </VBox>
+                    </HBox>
+                    <!-- Visits this month -->
+                    <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 8;
+                                 -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;
+                                 -fx-padding: 10 12;">
+                        <Pane fx:id="iconStatVisits" minWidth="30" minHeight="30" maxWidth="30" maxHeight="30"
+                              style="-fx-background-color: #fff7ed; -fx-background-radius: 7;"/>
+                        <VBox spacing="2">
+                            <Label fx:id="statVisitsLabel" text="0"
+                                   style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                            <Label text="Návštev tento mesiac"
+                                   style="-fx-font-size: 10.5px; -fx-text-fill: #9aa0a8;"/>
+                        </VBox>
+                    </HBox>
+                    <!-- Avg visits -->
+                    <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 8;
+                                 -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;
+                                 -fx-padding: 10 12;">
+                        <Pane fx:id="iconStatAvg" minWidth="30" minHeight="30" maxWidth="30" maxHeight="30"
+                              style="-fx-background-color: #eff6ff; -fx-background-radius: 7;"/>
+                        <VBox spacing="2">
+                            <Label fx:id="statAvgLabel" text="0"
+                                   style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                            <Label text="Priemerný počet návštev"
+                                   style="-fx-font-size: 10.5px; -fx-text-fill: #9aa0a8;"/>
+                        </VBox>
+                    </HBox>
+                </HBox>
+
+                <!-- Search + filter row -->
+                <HBox spacing="8" alignment="CENTER_LEFT"
+                      style="-fx-background-color: white; -fx-background-radius: 8;
+                             -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;
+                             -fx-padding: 8 10;">
+                    <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="8"
+                          style="-fx-background-color: #f5f6f8; -fx-background-radius: 6;
+                                 -fx-padding: 4 10; -fx-min-height: 32;">
+                        <Pane fx:id="searchIconPane" minWidth="16" minHeight="16" maxWidth="16" maxHeight="16"/>
+                        <TextField fx:id="searchField" promptText="Hľadať podľa mena alebo e-mailu…"
+                                   HBox.hgrow="ALWAYS"
+                                   style="-fx-background-color: transparent; -fx-border-color: transparent;
+                                          -fx-font-size: 12.5px; -fx-text-fill: #1a1a2e;"/>
+                    </HBox>
+                </HBox>
+
+                <!-- Patient list -->
+                <VBox fx:id="patientListBox" spacing="8"/>
+
+                <Label fx:id="emptyLabel" text="Žiadni pacienti k zobrazeniu." managed="false" visible="false"
+                       style="-fx-font-size: 13px; -fx-text-fill: #9aa0a8; -fx-padding: 20 0;"/>
+
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

@@ -5,10 +5,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.Group;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import sk.medicore.db.dao.LekarDAO;
 import sk.medicore.db.dao.ProceduraDAO;
@@ -35,9 +41,12 @@ public class DashboardController {
     @FXML private Label statNadchadzajuce;
     @FXML private Label statAbsolvovane;
     @FXML private Label statZrusene;
+    @FXML private Pane iconStatNadc;
+    @FXML private Pane iconStatAbs;
+    @FXML private Pane iconStatZrus;
     @FXML private VBox rezervacieContainer;
     @FXML private Label upcomingCountLabel;
-    @FXML private Label emptyLabel;
+    @FXML private VBox emptyLabel;
     @FXML private VBox notifikacieArea;
 
     private final RezervaciaDAO rezervaciaDAO = new RezervaciaDAO();
@@ -52,6 +61,10 @@ public class DashboardController {
 
         greetingLabel.setText(getGreeting() + ", " + user.getMeno() + "!");
         sidebarController.setActivePage("dashboard");
+
+        fillIcon(iconStatNadc, "M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z M16 2v4 M8 2v4 M3 10h18", "#1a9e8f");
+        fillIcon(iconStatAbs,  "M20 6 9 17 4 12", "#388e3c");
+        fillIcon(iconStatZrus, "M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm3-13l-6 6M9 9l6 6", "#8a8f98");
 
         loadStats(user.getId());
         loadUpcoming(user.getId());
@@ -121,8 +134,7 @@ public class DashboardController {
             row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
             row.setStyle("-fx-background-color: " + bg + "; -fx-background-radius: 6; -fx-padding: 10 14;");
 
-            Label icon = new Label("🔔");
-            icon.setStyle("-fx-font-size: 14px;");
+            Pane icon = makeBellIcon(accent);
 
             Label msg = new Label(n.getSprava());
             msg.setStyle("-fx-font-size: 13px; -fx-text-fill: " + accent + "; -fx-font-weight: bold;");
@@ -277,6 +289,37 @@ public class DashboardController {
         if (hour < 12) return "Dobré ráno";
         if (hour < 18) return "Dobrý deň";
         return "Dobrý večer";
+    }
+
+    private static void fillIcon(Pane tile, String pathData, String strokeColor) {
+        tile.getChildren().clear();
+        SVGPath svg = new SVGPath();
+        svg.setContent(pathData);
+        svg.setFill(Color.TRANSPARENT);
+        svg.setStroke(Color.web(strokeColor));
+        svg.setStrokeWidth(2.0);
+        svg.setStrokeLineCap(javafx.scene.shape.StrokeLineCap.ROUND);
+        svg.setStrokeLineJoin(javafx.scene.shape.StrokeLineJoin.ROUND);
+        svg.getTransforms().add(new Scale(17.0 / 24, 17.0 / 24, 0, 0));
+        StackPane center = new StackPane(new Group(svg));
+        center.setMinSize(34, 34);
+        center.setMaxSize(34, 34);
+        tile.getChildren().add(center);
+    }
+
+    private static Pane makeBellIcon(String strokeColor) {
+        SVGPath svg = new SVGPath();
+        svg.setContent("M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 0 1-3.46 0");
+        svg.setFill(Color.TRANSPARENT);
+        svg.setStroke(Color.web(strokeColor));
+        svg.setStrokeWidth(2.0);
+        svg.setStrokeLineCap(javafx.scene.shape.StrokeLineCap.ROUND);
+        svg.setStrokeLineJoin(javafx.scene.shape.StrokeLineJoin.ROUND);
+        svg.getTransforms().add(new Scale(16.0 / 24, 16.0 / 24, 0, 0));
+        StackPane pane = new StackPane(new Group(svg));
+        pane.setMinSize(16, 16);
+        pane.setMaxSize(16, 16);
+        return pane;
     }
 
 }

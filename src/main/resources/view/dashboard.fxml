@@ -10,69 +10,102 @@
 
     <fx:include fx:id="sidebar" source="sidebar-pacient.fxml"/>
 
-    <!-- Main content -->
     <ScrollPane HBox.hgrow="ALWAYS" fitToWidth="true"
                 style="-fx-background: #f5f5f5; -fx-background-color: #f5f5f5; -fx-border-color: transparent;">
-        <VBox spacing="20" style="-fx-padding: 32;">
+        <VBox spacing="18" style="-fx-padding: 28;">
 
-            <!-- Top row: greeting + book button -->
+            <!-- Page heading + action -->
             <HBox alignment="CENTER_LEFT" spacing="12">
-                <VBox HBox.hgrow="ALWAYS">
+                <VBox HBox.hgrow="ALWAYS" spacing="2">
                     <Label fx:id="greetingLabel" text="Dobrý deň!"
-                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
                     <Label text="Tu je prehľad vašich zdravotných rezervácií."
-                           style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
+                           style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8;"/>
                 </VBox>
                 <Button text="+ Rezervovať termín" onAction="#handleNavRezervovat"
-                        style="-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 18; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                        style="-fx-background-color: #1a9e8f; -fx-text-fill: white;
+                               -fx-font-size: 13px; -fx-font-weight: bold;
+                               -fx-padding: 9 16; -fx-background-radius: 7; -fx-cursor: hand;"/>
             </HBox>
 
-            <!-- Stat cards -->
-            <HBox spacing="16">
-                <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);" spacing="6">
-                    <Label text="Nadchádzajúce" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
-                    <Label fx:id="statNadchadzajuce" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f;"/>
-                    <Label text="Aktívne rezervácie" style="-fx-font-size: 11px; -fx-text-fill: #aaa;"/>
-                </VBox>
-                <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);" spacing="6">
-                    <Label text="Absolvované" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
-                    <Label fx:id="statAbsolvovane" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #388e3c;"/>
-                    <Label text="Minulé rezervácie" style="-fx-font-size: 11px; -fx-text-fill: #aaa;"/>
-                </VBox>
-                <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);" spacing="6">
-                    <Label text="Zrušené" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
-                    <Label fx:id="statZrusene" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #e53935;"/>
-                    <Label text="Zrušené rezervácie" style="-fx-font-size: 11px; -fx-text-fill: #aaa;"/>
-                </VBox>
-            </HBox>
-
-            <!-- Notification banner -->
+            <!-- Notification banner area (shown by controller when there are notifications) -->
             <VBox fx:id="notifikacieArea" spacing="8" visible="false" managed="false"/>
 
-            <!-- Upcoming appointments -->
-            <VBox spacing="12">
+            <!-- Stat cards -->
+            <HBox spacing="14">
+                <HBox HBox.hgrow="ALWAYS" alignment="TOP_LEFT" spacing="10"
+                      style="-fx-background-color: white; -fx-background-radius: 8;
+                             -fx-padding: 18 16; -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Nadchádzajúce" style="-fx-font-size: 12px; -fx-text-fill: #9aa0a8;"/>
+                        <Label fx:id="statNadchadzajuce" text="0"
+                               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                        <Label text="Naplánované termíny" style="-fx-font-size: 11px; -fx-text-fill: #c0c5cc;"/>
+                    </VBox>
+                    <Pane fx:id="iconStatNadc" minWidth="34" minHeight="34" maxWidth="34" maxHeight="34"
+                          style="-fx-background-color: #e8f5f3; -fx-background-radius: 7;"/>
+                </HBox>
+                <HBox HBox.hgrow="ALWAYS" alignment="TOP_LEFT" spacing="10"
+                      style="-fx-background-color: white; -fx-background-radius: 8;
+                             -fx-padding: 18 16; -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Absolvované" style="-fx-font-size: 12px; -fx-text-fill: #9aa0a8;"/>
+                        <Label fx:id="statAbsolvovane" text="0"
+                               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                        <Label text="Minulé termíny" style="-fx-font-size: 11px; -fx-text-fill: #c0c5cc;"/>
+                    </VBox>
+                    <Pane fx:id="iconStatAbs" minWidth="34" minHeight="34" maxWidth="34" maxHeight="34"
+                          style="-fx-background-color: #e8f3e9; -fx-background-radius: 7;"/>
+                </HBox>
+                <HBox HBox.hgrow="ALWAYS" alignment="TOP_LEFT" spacing="10"
+                      style="-fx-background-color: white; -fx-background-radius: 8;
+                             -fx-padding: 18 16; -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Zrušené" style="-fx-font-size: 12px; -fx-text-fill: #9aa0a8;"/>
+                        <Label fx:id="statZrusene" text="0"
+                               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                        <Label text="Zrušené termíny" style="-fx-font-size: 11px; -fx-text-fill: #c0c5cc;"/>
+                    </VBox>
+                    <Pane fx:id="iconStatZrus" minWidth="34" minHeight="34" maxWidth="34" maxHeight="34"
+                          style="-fx-background-color: #f2f3f5; -fx-background-radius: 7;"/>
+                </HBox>
+            </HBox>
+
+            <!-- Upcoming appointments section -->
+            <VBox spacing="10">
                 <HBox alignment="CENTER_LEFT">
-                    <Label text="Nadchádzajúce rezervácie" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;" HBox.hgrow="ALWAYS"/>
-                    <Label fx:id="upcomingCountLabel" text="" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
+                    <Label text="Nadchádzajúce rezervácie"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"
+                           HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="upcomingCountLabel" text=""
+                           style="-fx-font-size: 11.5px; -fx-text-fill: #9aa0a8; -fx-background-color: #f0f1f3;
+                                  -fx-background-radius: 10; -fx-padding: 2 8;"/>
                 </HBox>
                 <VBox fx:id="rezervacieContainer" spacing="10"/>
-                <Label fx:id="emptyLabel" text="Žiadne nadchádzajúce rezervácie."
-                       style="-fx-font-size: 13px; -fx-text-fill: #aaa; -fx-padding: 20 0;"
-                       visible="false" managed="false"/>
+                <VBox fx:id="emptyLabel" alignment="CENTER" spacing="6" visible="false" managed="false"
+                      style="-fx-padding: 28 0; -fx-background-color: white; -fx-background-radius: 8;
+                             -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <Label text="Žiadne nadchádzajúce rezervácie"
+                           style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #9aa0a8;"/>
+                    <Label text="Rezervujte si termín cez tlačidlo vyššie"
+                           style="-fx-font-size: 12px; -fx-text-fill: #c0c5cc;"/>
+                </VBox>
             </VBox>
 
-            <!-- Need help -->
-            <HBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);"
-                  spacing="40" alignment="CENTER_LEFT">
-                <VBox spacing="4">
-                    <Label text="Potrebujete pomoc?" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+            <!-- Help card -->
+            <HBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 16 20;
+                         -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;"
+                  spacing="32" alignment="CENTER_LEFT">
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label text="Potrebujete pomoc?"
+                           style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
                 </VBox>
                 <VBox spacing="2">
-                    <Label text="Zavolajte nám" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
-                    <Label text="+421 555 0100" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
+                    <Label text="Zavolajte nám" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
+                    <Label text="+421 (2) 567-8900" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
                 </VBox>
                 <VBox spacing="2">
-                    <Label text="E-mailová podpora" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
+                    <Label text="E-mail podpora" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #555;"/>
                     <Label text="support@medicore.sk" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
                 </VBox>
             </HBox>
