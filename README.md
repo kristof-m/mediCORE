@@ -67,25 +67,9 @@ Pri prvom spustení sa automaticky vytvorí súbor `medicore.db` v koreňovom pr
 
 ## Testovacie prihlasovacie údaje
 
-Všetky účty používajú heslo: **`heslo123`**
+Všetky účty, demo scenáre a prehľad predpripravených dát nájdeš v **[DEMO.md](DEMO.md)**.
 
-### Pacienti
-
-| Meno | E-mail | Predpripravené dáta |
-|------|--------|---------------------|
-| Samuel Thompson | `pacient@medicore.sk` | 3 absolvované, 1 zrušená, 1 dnešná, 2 nadchádzajúce rezervácie |
-| Lukáš Novák | `novak@medicore.sk` | 1 absolvovaná, 1 zrušená, 1 nadchádzajúca |
-| Eva Kozárová | `kozarova@medicore.sk` | 1 absolvovaná, 1 nadchádzajúca |
-| Tomáš Blaho | `blaho@medicore.sk` | 1 dnešná, 1 zrušená |
-| Nina Horváthová | `horvath@medicore.sk` | 2 dnešné, 1 nadchádzajúca |
-
-### Lekári
-
-| Meno | E-mail | Špecializácia |
-|------|--------|---------------|
-| Dr. Sarah Johnson | `johnson@medicore.sk` | Kardiológia |
-| Dr. Emily Parker | `parker@medicore.sk` | Dermatológia |
-| Dr. Michael Chen | `chen@medicore.sk` | Všeobecná prax |
+Skrátene: heslo je `heslo123` pre všetky účty. Systém obsahuje **10 pacientov**, **6 lekárov** a **1 admin** účet.
 
 ---
 
@@ -115,6 +99,16 @@ Prihlásenie ──► Dashboard (dnešné rezervácie, štatistiky)
     (týždenný)    termíny      (pripravujeme)
 ```
 
+### Administrátor
+
+```
+Prihlásenie ──► Dashboard (celoklinické štatistiky, všetci lekári)
+                   │
+              ┌────┘
+              ▼
+           Kalendár (výber lekára → týždenný pohľad)
+```
+
 ---
 
 ## Štruktúra projektu
@@ -142,6 +136,7 @@ src/main/java/sk/medicore/
 │   ├── RegistraciaController.java
 │   ├── SidebarPacientController.java     # Zdieľaný sidebar — pacient
 │   ├── SidebarLekarController.java       # Zdieľaný sidebar — lekár
+│   ├── SidebarAdminController.java       # Zdieľaný sidebar — admin
 │   ├── DashboardController.java
 │   ├── MojeRezervacieController.java
 │   ├── PatientKalendarController.java
@@ -149,7 +144,9 @@ src/main/java/sk/medicore/
 │   ├── RezervaciaWizardController.java
 │   ├── LekarDashboardController.java
 │   ├── LekarKalendarController.java
-│   └── LekarTerminyController.java
+│   ├── LekarTerminyController.java
+│   ├── AdminDashboardController.java
+│   └── AdminKalendarController.java
 └── util/
     ├── PasswordUtil.java                 # SHA-256 hashovanie hesiel
     ├── SessionManager.java               # Singleton — prihlásený používateľ
@@ -159,8 +156,9 @@ src/main/java/sk/medicore/
 src/main/resources/view/                 # FXML obrazovky
 ├── prihlasenie.fxml
 ├── registracia.fxml
-├── sidebar-pacient.fxml                  # Zdieľaný sidebar komponent
-├── sidebar-lekar.fxml
+├── sidebar-pacient.fxml                  # Zdieľaný sidebar komponent — pacient
+├── sidebar-lekar.fxml                    # Zdieľaný sidebar komponent — lekár
+├── sidebar-admin.fxml                    # Zdieľaný sidebar komponent — admin
 ├── dashboard.fxml
 ├── moje-rezervacie.fxml
 ├── patient-kalendar.fxml
@@ -168,7 +166,9 @@ src/main/resources/view/                 # FXML obrazovky
 ├── rezervacia-wizard.fxml
 ├── lekar-dashboard.fxml
 ├── lekar-kalendar.fxml
-└── lekar-terminy.fxml
+├── lekar-terminy.fxml
+├── admin-dashboard.fxml
+└── admin-kalendar.fxml
 ```
 
 ---
