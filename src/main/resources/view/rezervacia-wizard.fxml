@@ -9,88 +9,175 @@
       style="-fx-background-color: #f5f5f5;">
 
     <!-- Top bar -->
-    <HBox style="-fx-background-color: white; -fx-padding: 16 32; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);"
+    <HBox style="-fx-background-color: white; -fx-padding: 14 32 0; -fx-border-color: transparent transparent #eef0f3 transparent; -fx-border-width: 1;"
           alignment="CENTER_LEFT" spacing="16">
         <Button text="← Späť" onAction="#handleBack"
-                style="-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-font-size: 13px; -fx-cursor: hand; -fx-border-color: transparent;"/>
-        <Label text="MediCORE" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f;" HBox.hgrow="ALWAYS"/>
+                style="-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-font-size: 13px;
+                       -fx-cursor: hand; -fx-border-color: transparent; -fx-padding: 0 0 14 0;"/>
+        <Label text="MediCORE"
+               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f; -fx-padding: 0 0 14 0;"
+               HBox.hgrow="ALWAYS"/>
 
-        <!-- Step indicator -->
-        <HBox spacing="8" alignment="CENTER">
-            <Label fx:id="step1Label" text="1. Procedúra"
-                   style="-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 4 12; -fx-background-radius: 12;"/>
-            <Label text="›" style="-fx-text-fill: #aaa;"/>
-            <Label fx:id="step2Label" text="2. Lekár"
-                   style="-fx-background-color: #ddd; -fx-text-fill: #888; -fx-font-size: 12px; -fx-padding: 4 12; -fx-background-radius: 12;"/>
-            <Label text="›" style="-fx-text-fill: #aaa;"/>
-            <Label fx:id="step3Label" text="3. Termín"
-                   style="-fx-background-color: #ddd; -fx-text-fill: #888; -fx-font-size: 12px; -fx-padding: 4 12; -fx-background-radius: 12;"/>
-            <Label text="›" style="-fx-text-fill: #aaa;"/>
-            <Label fx:id="step4Label" text="4. Potvrdenie"
-                   style="-fx-background-color: #ddd; -fx-text-fill: #888; -fx-font-size: 12px; -fx-padding: 4 12; -fx-background-radius: 12;"/>
-        </HBox>
+        <!-- Step rail: circles + text -->
+        <VBox spacing="4" style="-fx-padding: 0 0 10 0;" minWidth="380">
+            <!-- Circle row -->
+            <HBox alignment="CENTER_LEFT" spacing="0" fillHeight="false">
+                <Label fx:id="step1Label" text="1"
+                       style="-fx-background-color: #1a9e8f; -fx-border-color: #1a9e8f; -fx-border-radius: 13;
+                              -fx-background-radius: 13; -fx-text-fill: white; -fx-font-size: 11px;
+                              -fx-font-weight: bold; -fx-alignment: CENTER;
+                              -fx-min-width: 26; -fx-min-height: 26; -fx-max-width: 26; -fx-max-height: 26;"/>
+                <Region HBox.hgrow="ALWAYS" prefHeight="2" maxHeight="2"
+                        style="-fx-background-color: #eef0f3;"/>
+                <Label fx:id="step2Label" text="2"
+                       style="-fx-background-color: white; -fx-border-color: #d0d3d9; -fx-border-radius: 13;
+                              -fx-background-radius: 13; -fx-text-fill: #9aa0a8; -fx-font-size: 11px;
+                              -fx-font-weight: bold; -fx-alignment: CENTER;
+                              -fx-min-width: 26; -fx-min-height: 26; -fx-max-width: 26; -fx-max-height: 26;"/>
+                <Region HBox.hgrow="ALWAYS" prefHeight="2" maxHeight="2"
+                        style="-fx-background-color: #eef0f3;"/>
+                <Label fx:id="step3Label" text="3"
+                       style="-fx-background-color: white; -fx-border-color: #d0d3d9; -fx-border-radius: 13;
+                              -fx-background-radius: 13; -fx-text-fill: #9aa0a8; -fx-font-size: 11px;
+                              -fx-font-weight: bold; -fx-alignment: CENTER;
+                              -fx-min-width: 26; -fx-min-height: 26; -fx-max-width: 26; -fx-max-height: 26;"/>
+                <Region HBox.hgrow="ALWAYS" prefHeight="2" maxHeight="2"
+                        style="-fx-background-color: #eef0f3;"/>
+                <Label fx:id="step4Label" text="4"
+                       style="-fx-background-color: white; -fx-border-color: #d0d3d9; -fx-border-radius: 13;
+                              -fx-background-radius: 13; -fx-text-fill: #9aa0a8; -fx-font-size: 11px;
+                              -fx-font-weight: bold; -fx-alignment: CENTER;
+                              -fx-min-width: 26; -fx-min-height: 26; -fx-max-width: 26; -fx-max-height: 26;"/>
+            </HBox>
+            <!-- Text labels row -->
+            <HBox spacing="0">
+                <Label text="Procedúra"
+                       style="-fx-font-size: 10.5px; -fx-text-fill: #1a9e8f; -fx-font-weight: 600;" minWidth="26"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Lekár"
+                       style="-fx-font-size: 10.5px; -fx-text-fill: #9aa0a8;" minWidth="26" alignment="CENTER"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Termín"
+                       style="-fx-font-size: 10.5px; -fx-text-fill: #9aa0a8;" minWidth="26" alignment="CENTER"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Potvrdenie"
+                       style="-fx-font-size: 10.5px; -fx-text-fill: #9aa0a8;" minWidth="26" alignment="CENTER_RIGHT"/>
+            </HBox>
+        </VBox>
     </HBox>
 
-    <!-- Step panes -->
-    <StackPane VBox.vgrow="ALWAYS" style="-fx-padding: 28 32;">
+    <!-- Step content panes -->
+    <StackPane VBox.vgrow="ALWAYS" style="-fx-padding: 20 32 24;">
 
         <!-- Step 1: Procedures -->
         <ScrollPane fx:id="step1Pane" fitToWidth="true"
-                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
-            <VBox spacing="16">
-                <Label text="Vyberte procedúru" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-                <Label text="Vyhľadajte a vyberte typ vyšetrenia alebo procedúry."
-                       style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
-                <FlowPane fx:id="procedureGrid" hgap="16" vgap="16"/>
+                    style="-fx-background: white; -fx-background-color: white;
+                           -fx-border-color: #eef0f3; -fx-border-radius: 8;
+                           -fx-background-radius: 8; -fx-border-width: 1;">
+            <VBox spacing="12" style="-fx-padding: 18;">
+                <Label text="Aký typ návštevy potrebujete?"
+                       style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label text="Vyberte procedúru alebo typ konzultácie, ktorú si chcete objednať."
+                       style="-fx-font-size: 13px; -fx-text-fill: #9aa0a8;"/>
+
+                <!-- Search row -->
+                <HBox alignment="CENTER_LEFT" spacing="8"
+                      style="-fx-background-color: white; -fx-border-color: #e2e5e9; -fx-border-radius: 8;
+                             -fx-border-width: 1; -fx-padding: 0 12; -fx-min-height: 38;">
+                    <Pane fx:id="wizardSearchIcon" minWidth="16" minHeight="16" maxWidth="16" maxHeight="16"/>
+                    <TextField fx:id="searchField" promptText="Hľadať procedúru alebo špecializáciu…"
+                               HBox.hgrow="ALWAYS"
+                               style="-fx-background-color: transparent; -fx-border-color: transparent;
+                                      -fx-font-size: 12.5px; -fx-text-fill: #1a1a2e;"/>
+                </HBox>
+
+                <!-- Category chips -->
+                <FlowPane fx:id="categoryChips" hgap="6" vgap="6"/>
+
+                <!-- Procedure cards — 3-column rows built by controller -->
+                <VBox fx:id="procedureGrid" spacing="10"/>
             </VBox>
         </ScrollPane>
 
         <!-- Step 2: Doctors -->
         <ScrollPane fx:id="step2Pane" fitToWidth="true" visible="false" managed="false"
-                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
-            <VBox spacing="16">
-                <Label text="Vyberte lekára" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-                <Label fx:id="step2SubLabel" text="" style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
-                <VBox fx:id="doctorList" spacing="12"/>
+                    style="-fx-background: white; -fx-background-color: white;
+                           -fx-border-color: #eef0f3; -fx-border-radius: 8;
+                           -fx-background-radius: 8; -fx-border-width: 1;">
+            <VBox spacing="16" style="-fx-padding: 18;">
+                <Label text="Vyberte lekára"
+                       style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label fx:id="step2SubLabel" text=""
+                       style="-fx-font-size: 13px; -fx-text-fill: #9aa0a8;"/>
+                <VBox fx:id="doctorList" spacing="10"/>
             </VBox>
         </ScrollPane>
 
         <!-- Step 3: Time slots -->
         <ScrollPane fx:id="step3Pane" fitToWidth="true" visible="false" managed="false"
-                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
-            <VBox spacing="16">
-                <Label text="Vyberte termín" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-                <Label fx:id="step3SubLabel" text="" style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
-                <FlowPane fx:id="slotGrid" hgap="12" vgap="12"/>
+                    style="-fx-background: white; -fx-background-color: white;
+                           -fx-border-color: #eef0f3; -fx-border-radius: 8;
+                           -fx-background-radius: 8; -fx-border-width: 1;">
+            <VBox spacing="16" style="-fx-padding: 18;">
+                <Label text="Vyberte termín"
+                       style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label fx:id="step3SubLabel" text=""
+                       style="-fx-font-size: 13px; -fx-text-fill: #9aa0a8;"/>
+                <VBox fx:id="slotGrid" spacing="10"/>
             </VBox>
         </ScrollPane>
 
         <!-- Step 4: Confirmation -->
-        <VBox fx:id="step4Pane" visible="false" managed="false" spacing="20" alignment="TOP_CENTER">
-            <Label text="Potvrdenie rezervácie" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-            <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 28; -fx-max-width: 500; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
-                  spacing="14">
-                <Label text="Zhrnutie rezervácie" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-                <HBox spacing="8">
-                    <Label text="Procedúra:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 120;"/>
-                    <Label fx:id="confirmProcedura" text="" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
-                </HBox>
-                <HBox spacing="8">
-                    <Label text="Lekár:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 120;"/>
-                    <Label fx:id="confirmLekar" text="" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
-                </HBox>
-                <HBox spacing="8">
-                    <Label text="Dátum a čas:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 120;"/>
-                    <Label fx:id="confirmTermin" text="" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
-                </HBox>
-                <HBox spacing="8">
-                    <Label text="Trvanie:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 120;"/>
-                    <Label fx:id="confirmTrvanie" text="" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
-                </HBox>
-                <Separator/>
-                <Button text="Potvrdiť rezerváciu" onAction="#handleConfirm" maxWidth="Infinity"
-                        style="-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 0; -fx-background-radius: 6; -fx-cursor: hand;"/>
-            </VBox>
+        <VBox fx:id="step4Pane" visible="false" managed="false" spacing="16" alignment="TOP_CENTER"
+              style="-fx-background-color: white; -fx-background-radius: 8;
+                     -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;
+                     -fx-padding: 28;">
+            <HBox spacing="20" alignment="TOP_CENTER">
+                <!-- Left: check hero -->
+                <VBox HBox.hgrow="ALWAYS" alignment="CENTER" spacing="12"
+                      style="-fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #f1fbf9, white);
+                             -fx-background-radius: 8; -fx-border-color: #b2dfdb; -fx-border-radius: 8;
+                             -fx-border-width: 1; -fx-padding: 24 18;">
+                    <Label text="✓"
+                           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;
+                                  -fx-background-color: #1a9e8f; -fx-background-radius: 30;
+                                  -fx-min-width: 60; -fx-min-height: 60; -fx-max-width: 60; -fx-max-height: 60;
+                                  -fx-alignment: CENTER;
+                                  -fx-effect: dropshadow(gaussian, rgba(26,158,143,0.4), 10, 0, 0, 4);"/>
+                    <Label text="Takmer hotovo!"
+                           style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                    <Label text="Skontrolujte údaje a potvrďte rezerváciu."
+                           style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8;" wrapText="true"/>
+                </VBox>
+
+                <!-- Right: summary -->
+                <VBox HBox.hgrow="ALWAYS" spacing="0"
+                      style="-fx-background-color: white; -fx-background-radius: 8;
+                             -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <HBox style="-fx-padding: 11 14; -fx-border-color: transparent transparent #eef0f3 transparent; -fx-border-width: 1;">
+                        <Label text="Procedúra" style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8; -fx-min-width: 110;"/>
+                        <Label fx:id="confirmProcedura" text="" style="-fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox style="-fx-padding: 11 14; -fx-border-color: transparent transparent #eef0f3 transparent; -fx-border-width: 1;">
+                        <Label text="Trvanie" style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8; -fx-min-width: 110;"/>
+                        <Label fx:id="confirmTrvanie" text="" style="-fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox style="-fx-padding: 11 14; -fx-border-color: transparent transparent #eef0f3 transparent; -fx-border-width: 1;">
+                        <Label text="Lekár" style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8; -fx-min-width: 110;"/>
+                        <Label fx:id="confirmLekar" text="" style="-fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox style="-fx-padding: 11 14;">
+                        <Label text="Dátum a čas" style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8; -fx-min-width: 110;"/>
+                        <Label fx:id="confirmTermin" text="" style="-fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <Button text="✓ Potvrdiť rezerváciu" onAction="#handleConfirm"
+                    style="-fx-background-color: #1a9e8f; -fx-text-fill: white;
+                           -fx-font-size: 14px; -fx-font-weight: bold;
+                           -fx-padding: 12 0; -fx-background-radius: 7; -fx-cursor: hand;"
+                    maxWidth="Infinity"/>
         </VBox>
 
     </StackPane>

@@ -1,10 +1,16 @@
 package sk.medicore.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.transform.Scale;
 import sk.medicore.db.DatabaseManager;
 import sk.medicore.model.Lekar;
 import sk.medicore.util.DateUtil;
@@ -25,8 +31,10 @@ public class LekarDashboardController {
     @FXML private Label todayLabel;
     @FXML private Label statDnes;
     @FXML private Label statPacienti;
+    @FXML private Pane iconStatDnes;
+    @FXML private Pane iconStatPacienti;
     @FXML private VBox todayContainer;
-    @FXML private Label emptyLabel;
+    @FXML private VBox emptyLabel;
 
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter DT_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -47,8 +55,10 @@ public class LekarDashboardController {
 
         sidebarController.setActivePage("dashboard");
         greetingLabel.setText(getGreeting() + ", Dr. " + lekar.getPriezvisko() + "!");
-
         todayLabel.setText(DateUtil.formatDayHeading(LocalDate.now()));
+
+        fillIcon(iconStatDnes,     "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 6v6l4 2", "#1a9e8f");
+        fillIcon(iconStatPacienti, "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75", "#388e3c");
 
         loadStats(lekar.getId());
         loadTodayAppointments(lekar.getId());
@@ -82,6 +92,8 @@ public class LekarDashboardController {
     private void loadTodayAppointments(int lekarId) {
         List<AppointmentInfo> items = fetchTodayAppointments(lekarId);
         todayContainer.getChildren().clear();
+        emptyLabel.setVisible(false);
+        emptyLabel.setManaged(false);
 
         if (items.isEmpty()) {
             emptyLabel.setVisible(true);
@@ -164,9 +176,15 @@ public class LekarDashboardController {
     private String buildLocation(String budova, String poschodie, String miestnost) {
         StringBuilder sb = new StringBuilder();
         if (budova != null) sb.append(budova);
-        if (poschodie != null) sb.append(", Poschodie ").append(poschodie);
-        if (miestnost != null) sb.append(" / Izba ").append(miestnost);
+        if (poschodie != null) { if (sb.length() > 0) sb.append(", "); sb.append("Poschodie ").append(poschodie); }
+        if (miestnost != null) { if (sb.length() > 0) sb.append(" / "); sb.append("Izba ").append(miestnost); }
         return sb.toString();
+    }
+
+    @FXML
+    private void handleNavTerminy() {
+        javafx.stage.Stage stage = (javafx.stage.Stage) todayContainer.getScene().getWindow();
+        sk.medicore.util.SceneManager.switchTo(stage, "/view/lekar-terminy.fxml");
     }
 
     private String getGreeting() {
@@ -174,5 +192,21 @@ public class LekarDashboardController {
         if (hour < 12) return "Dobré ráno";
         if (hour < 18) return "Dobrý deň";
         return "Dobrý večer";
+    }
+
+    private static void fillIcon(Pane tile, String pathData, String strokeColor) {
+        tile.getChildren().clear();
+        SVGPath svg = new SVGPath();
+        svg.setContent(pathData);
+        svg.setFill(Color.TRANSPARENT);
+        svg.setStroke(Color.web(strokeColor));
+        svg.setStrokeWidth(2.0);
+        svg.setStrokeLineCap(javafx.scene.shape.StrokeLineCap.ROUND);
+        svg.setStrokeLineJoin(javafx.scene.shape.StrokeLineJoin.ROUND);
+        svg.getTransforms().add(new Scale(17.0 / 24, 17.0 / 24, 0, 0));
+        StackPane center = new StackPane(new Group(svg));
+        center.setMinSize(34, 34);
+        center.setMaxSize(34, 34);
+        tile.getChildren().add(center);
     }
 }
