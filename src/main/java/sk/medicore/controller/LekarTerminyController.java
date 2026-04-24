@@ -5,22 +5,31 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import sk.medicore.db.dao.RezervaciaDAO;
 import sk.medicore.db.dao.TerminDAO;
+import sk.medicore.model.Kalendar;
 import sk.medicore.model.Lekar;
+import sk.medicore.model.Rezervacia;
 import sk.medicore.model.Termin;
+import sk.medicore.notifikator.Notifikacia;
+import sk.medicore.notifikator.Notifikator;
 import sk.medicore.util.SessionManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class LekarTerminyController {
 
     @FXML private SidebarLekarController sidebarController;
+    @FXML private Label formTitle;
     @FXML private DatePicker datePicker;
     @FXML private ComboBox<String> hourPicker;
     @FXML private ComboBox<String> minutePicker;
     @FXML private ComboBox<String> durationPicker;
+    @FXML private Button submitBtn;
+    @FXML private Button cancelEditBtn;
     @FXML private Label feedbackLabel;
     @FXML private VBox terminyContainer;
     @FXML private Label emptyLabel;
@@ -28,13 +37,17 @@ public class LekarTerminyController {
     private static final DateTimeFormatter DT_FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private final TerminDAO terminDAO = new TerminDAO();
+    private final RezervaciaDAO rezervaciaDAO = new RezervaciaDAO();
     private Lekar lekar;
+    private Kalendar kalendar;
+    private Integer editingTerminId = null;
 
     @FXML
     public void initialize() {
         var user = SessionManager.getInstance().getCurrentUser();
         if (user == null) return;
         lekar = (Lekar) user;
+        kalendar = new Kalendar(lekar.getId());
 
         sidebarController.setActivePage("terminy");
         datePicker.setValue(LocalDate.now());
@@ -59,34 +72,91 @@ public class LekarTerminyController {
         feedbackLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #d32f2f;");
 
         LocalDate date = datePicker.getValue();
-        if (date == null) {
-            feedbackLabel.setText("Vyberte dátum.");
-            return;
-        }
-        if (date.isBefore(LocalDate.now())) {
-            feedbackLabel.setText("Dátum musí byť dnes alebo v budúcnosti.");
-            return;
-        }
+        if (date == null) { feedbackLabel.setText("Vyberte dátum."); return; }
+        if (date.isBefore(LocalDate.now())) { feedbackLabel.setText("Dátum musí byť dnes alebo v budúcnosti."); return; }
 
         int hour = Integer.parseInt(hourPicker.getValue());
         int minute = Integer.parseInt(minutePicker.getValue());
         LocalDateTime datumCas = date.atTime(hour, minute);
 
-        if (datumCas.isBefore(LocalDateTime.now())) {
-            feedbackLabel.setText("Čas musí byť v budúcnosti.");
+        if (datumCas.isBefore(LocalDateTime.now())) { feedbackLabel.setText("Čas musí byť v budúcnosti."); return; }
+
+        if (editingTerminId != null) {
+            saveEdit(datumCas);
             return;
         }
 
-        if (terminDAO.hasConflict(lekar.getId(), datumCas)) {
+        if (kalendar.skontrolujKonflikt(datumCas)) {
             feedbackLabel.setText("V tomto čase už existuje termín.");
             return;
         }
 
         int trvanie = Integer.parseInt(durationPicker.getValue().split(" ")[0]);
-        terminDAO.insert(lekar.getId(), datumCas, trvanie);
+        kalendar.pridajTermin(datumCas, trvanie);
         feedbackLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #1a9e8f;");
         feedbackLabel.setText("Termín pridaný.");
         loadTerminy();
+    }
+
+    private void saveEdit(LocalDateTime novyDatumCas) {
+        if (kalendar.skontrolujKonflikt(novyDatumCas, editingTerminId)) {
+            feedbackLabel.setText("V tomto čase už existuje iný termín.");
+            return;
+        }
+
+        Rezervacia rezervacia = rezervaciaDAO.findByTerminId(editingTerminId);
+        if (rezervacia != null) {
+            Alert warning = new Alert(Alert.AlertType.CONFIRMATION);
+            warning.setTitle("Termín má rezerváciu");
+            warning.setHeaderText("Tento termín má aktívnu rezerváciu pacienta.");
+            warning.setContentText("Pacient bude o zmene upozornený. Pokračovať?");
+            Optional<ButtonType> result = warning.showAndWait();
+            if (result.isEmpty() || result.get() != ButtonType.OK) return;
+        }
+
+        kalendar.aktualizujTermin(editingTerminId, novyDatumCas);
+
+        if (rezervacia != null) {
+            Notifikator.odosliNotifikaciu(rezervacia.getPacientId(), Notifikacia.Typ.ZMENENY);
+        }
+
+        resetForm();
+        feedbackLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #1a9e8f;");
+        feedbackLabel.setText("Termín aktualizovaný.");
+        loadTerminy();
+    }
+
+    @FXML
+    private void handleCancelEdit() {
+        resetForm();
+        feedbackLabel.setText("");
+    }
+
+    private void resetForm() {
+        editingTerminId = null;
+        formTitle.setText("Pridať nový termín");
+        submitBtn.setText("Pridať termín");
+        cancelEditBtn.setVisible(false);
+        cancelEditBtn.setManaged(false);
+        datePicker.setValue(LocalDate.now());
+        hourPicker.setValue("08");
+        minutePicker.setValue("00");
+        durationPicker.setValue("30 min");
+    }
+
+    private void startEdit(TerminDAO.TerminInfo info) {
+        editingTerminId = info.terminId();
+        formTitle.setText("Upraviť termín");
+        submitBtn.setText("Uložiť zmenu");
+        cancelEditBtn.setVisible(true);
+        cancelEditBtn.setManaged(true);
+        feedbackLabel.setText("");
+
+        datePicker.setValue(info.datumCas().toLocalDate());
+        hourPicker.setValue(String.format("%02d", info.datumCas().getHour()));
+        String minuteStr = String.format("%02d", (info.datumCas().getMinute() / 15) * 15);
+        minutePicker.setValue(minutePicker.getItems().contains(minuteStr) ? minuteStr : "00");
+        durationPicker.setValue(info.trvanieMin() + " min");
     }
 
     private void loadTerminy() {
@@ -132,6 +202,13 @@ public class LekarTerminyController {
 
         row.getChildren().addAll(dateLabel, durLabel, stavLabel, detailLabel);
 
+        if (info.stav() == Termin.Stav.DOSTUPNY || info.stav() == Termin.Stav.REZERVOVANY) {
+            Button editBtn = new Button("Upraviť");
+            editBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-border-color: #1a9e8f; -fx-border-radius: 4; -fx-background-radius: 4; -fx-font-size: 12px; -fx-padding: 4 12; -fx-cursor: hand;");
+            editBtn.setOnAction(e -> startEdit(info));
+            row.getChildren().add(editBtn);
+        }
+
         if (info.stav() == Termin.Stav.DOSTUPNY) {
             Button cancelBtn = new Button("Zrušiť");
             cancelBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #d32f2f; -fx-border-color: #d32f2f; -fx-border-radius: 4; -fx-background-radius: 4; -fx-font-size: 12px; -fx-padding: 4 12; -fx-cursor: hand;");
@@ -143,6 +220,7 @@ public class LekarTerminyController {
                 confirm.showAndWait().ifPresent(result -> {
                     if (result == ButtonType.OK) {
                         terminDAO.updateStav(info.terminId(), Termin.Stav.ZRUSENY);
+                        if (editingTerminId != null && editingTerminId == info.terminId()) resetForm();
                         loadTerminy();
                     }
                 });
@@ -171,5 +249,4 @@ public class LekarTerminyController {
         }
         return badge;
     }
-
 }
