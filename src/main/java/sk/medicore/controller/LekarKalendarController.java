@@ -65,8 +65,6 @@ public class LekarKalendarController {
         weekRangeLabel.setText(DateUtil.formatDate(weekStart) + " — " + DateUtil.formatDate(weekEnd));
 
         weekContainer.getChildren().clear();
-        emptyLabel.setVisible(false);
-        emptyLabel.setManaged(false);
 
         List<TerminDAO.TerminInfo> all = terminDAO.findEnrichedForWeek(lekar.getId(), weekStart, weekEnd);
 
