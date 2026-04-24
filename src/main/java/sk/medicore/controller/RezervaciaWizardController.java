@@ -17,6 +17,8 @@ import sk.medicore.model.Lekar;
 import sk.medicore.model.Procedura;
 import sk.medicore.model.Rezervacia;
 import sk.medicore.model.Termin;
+import sk.medicore.notifikator.Notifikacia;
+import sk.medicore.notifikator.Notifikator;
 import sk.medicore.util.SceneManager;
 import sk.medicore.util.SessionManager;
 
@@ -232,6 +234,7 @@ public class RezervaciaWizardController {
 
         rezervaciaDAO.insert(r);
         terminDAO.updateStav(selectedTermin.getId(), Termin.Stav.REZERVOVANY);
+        Notifikator.odosliNotifikaciu(pacientId, Notifikacia.Typ.POTVRDENA);
 
         Stage stage = (Stage) step1Pane.getScene().getWindow();
         SceneManager.switchTo(stage, "/view/dashboard.fxml");

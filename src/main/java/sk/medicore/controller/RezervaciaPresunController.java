@@ -14,6 +14,8 @@ import sk.medicore.model.Lekar;
 import sk.medicore.model.Procedura;
 import sk.medicore.model.Rezervacia;
 import sk.medicore.model.Termin;
+import sk.medicore.notifikator.Notifikacia;
+import sk.medicore.notifikator.Notifikator;
 import sk.medicore.util.SceneManager;
 import sk.medicore.util.SessionManager;
 
@@ -147,6 +149,7 @@ public class RezervaciaPresunController {
         rezervaciaDAO.updateTermin(rezervacia.getId(), selectedNewTermin.getId());
         // 3. Mark the new slot as taken
         terminDAO.updateStav(selectedNewTermin.getId(), Termin.Stav.REZERVOVANY);
+        Notifikator.odosliNotifikaciu(rezervacia.getPacientId(), Notifikacia.Typ.PRESUNUTA);
 
         SessionManager.getInstance().setRezervaciaToReschedule(null);
 

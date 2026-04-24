@@ -17,6 +17,8 @@ import sk.medicore.model.Lekar;
 import sk.medicore.model.Procedura;
 import sk.medicore.model.Rezervacia;
 import sk.medicore.model.Termin;
+import sk.medicore.notifikator.Notifikacia;
+import sk.medicore.notifikator.Notifikator;
 import sk.medicore.util.SceneManager;
 import sk.medicore.util.SessionManager;
 
@@ -208,6 +210,7 @@ public class MojeRezervacieController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             rezervaciaDAO.updateStav(r.getId(), Rezervacia.Stav.ZRUSENA);
             terminDAO.updateStav(r.getTerminId(), Termin.Stav.DOSTUPNY);
+            Notifikator.odosliNotifikaciu(r.getPacientId(), Notifikacia.Typ.ZRUSENA);
             loadRezervacje(SessionManager.getInstance().getCurrentUser().getId());
         }
     }

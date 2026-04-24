@@ -95,6 +95,17 @@ public class DatabaseManager {
                 )
             """);
 
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS notifikacie (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    pacient_id INTEGER NOT NULL REFERENCES pouzivatelia(id),
+                    typ TEXT NOT NULL,
+                    sprava TEXT NOT NULL,
+                    precitana INTEGER NOT NULL DEFAULT 0,
+                    vytvorena_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """);
+
             seedData(stmt);
             stmt.close();
 

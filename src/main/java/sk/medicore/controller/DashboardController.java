@@ -18,6 +18,8 @@ import sk.medicore.model.Lekar;
 import sk.medicore.model.Procedura;
 import sk.medicore.model.Rezervacia;
 import sk.medicore.model.Termin;
+import sk.medicore.notifikator.Notifikacia;
+import sk.medicore.notifikator.Notifikator;
 import sk.medicore.util.SceneManager;
 import sk.medicore.util.SessionManager;
 
@@ -36,6 +38,7 @@ public class DashboardController {
     @FXML private VBox rezervacieContainer;
     @FXML private Label upcomingCountLabel;
     @FXML private Label emptyLabel;
+    @FXML private VBox notifikacieArea;
 
     private final RezervaciaDAO rezervaciaDAO = new RezervaciaDAO();
     private final LekarDAO lekarDAO = new LekarDAO();
@@ -52,6 +55,7 @@ public class DashboardController {
 
         loadStats(user.getId());
         loadUpcoming(user.getId());
+        loadNotifikacie(user.getId());
     }
 
     private void loadStats(int pacientId) {
@@ -97,6 +101,48 @@ public class DashboardController {
         for (Rezervacia r : upcoming) {
             rezervacieContainer.getChildren().add(buildRezervaciiaCard(r));
         }
+    }
+
+    private void loadNotifikacie(int pacientId) {
+        var neprecitane = Notifikator.getNeprecitane(pacientId);
+        notifikacieArea.getChildren().clear();
+        if (neprecitane.isEmpty()) {
+            notifikacieArea.setVisible(false);
+            notifikacieArea.setManaged(false);
+            return;
+        }
+
+        for (Notifikacia n : neprecitane) {
+            String bg = "#e8f5f3", accent = "#1a9e8f";
+            if (n.getTyp() == Notifikacia.Typ.ZRUSENA)   { bg = "#fce4ec"; accent = "#c62828"; }
+            if (n.getTyp() == Notifikacia.Typ.PRESUNUTA) { bg = "#fff3e0"; accent = "#f57c00"; }
+
+            HBox row = new HBox(10);
+            row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            row.setStyle("-fx-background-color: " + bg + "; -fx-background-radius: 6; -fx-padding: 10 14;");
+
+            Label icon = new Label("🔔");
+            icon.setStyle("-fx-font-size: 14px;");
+
+            Label msg = new Label(n.getSprava());
+            msg.setStyle("-fx-font-size: 13px; -fx-text-fill: " + accent + "; -fx-font-weight: bold;");
+            HBox.setHgrow(msg, Priority.ALWAYS);
+
+            row.getChildren().addAll(icon, msg);
+            notifikacieArea.getChildren().add(row);
+        }
+
+        Button dismiss = new Button("Zatvoriť notifikácie");
+        dismiss.setStyle("-fx-background-color: transparent; -fx-text-fill: #888; -fx-font-size: 12px; -fx-cursor: hand; -fx-border-color: transparent;");
+        dismiss.setOnAction(e -> {
+            Notifikator.oznacVsetkyPrecitane(pacientId);
+            notifikacieArea.setVisible(false);
+            notifikacieArea.setManaged(false);
+        });
+        notifikacieArea.getChildren().add(dismiss);
+
+        notifikacieArea.setVisible(true);
+        notifikacieArea.setManaged(true);
     }
 
     private VBox buildRezervaciiaCard(Rezervacia r) {
@@ -197,8 +243,11 @@ public class DashboardController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             rezervaciaDAO.updateStav(r.getId(), Rezervacia.Stav.ZRUSENA);
             terminDAO.updateStav(r.getTerminId(), Termin.Stav.DOSTUPNY);
-            loadStats(SessionManager.getInstance().getCurrentUser().getId());
-            loadUpcoming(SessionManager.getInstance().getCurrentUser().getId());
+            Notifikator.odosliNotifikaciu(r.getPacientId(), Notifikacia.Typ.ZRUSENA);
+            int uid = SessionManager.getInstance().getCurrentUser().getId();
+            loadStats(uid);
+            loadUpcoming(uid);
+            loadNotifikacie(uid);
         }
     }
 
