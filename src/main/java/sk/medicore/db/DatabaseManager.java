@@ -124,118 +124,241 @@ public class DatabaseManager {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
-        // ── Pracoviska ─────────────────────────────────────────────
+        // ── Pracoviska (IDs 1–6) ────────────────────────────────────────
         stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (1,'Kardiologická ambulancia','Budova A','1','101')");
         stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (2,'Dermatologická ambulancia','Budova B','2','204')");
         stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (3,'Všeobecná ambulancia','Budova C','1','110')");
+        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (4,'Neurologická ambulancia','Budova A','2','212')");
+        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (5,'Ortopedická ambulancia','Budova B','1','105')");
+        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (6,'Oftalmologická ambulancia','Budova C','2','215')");
 
-        // ── Pacienti (IDs 1, 5–8) ─────────────────────────────────
+        // ── Pacienti (IDs 1–10) ─────────────────────────────────────────
         stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (1,'Samuel','Thompson','pacient@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (5,'Lukáš','Novák','novak@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (6,'Eva','Kozárová','kozarova@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (7,'Tomáš','Blaho','blaho@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (8,'Nina','Horváthová','horvath@medicore.sk','" + h + "','PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (2,'Lukáš','Novák','novak@medicore.sk','" + h + "','PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (3,'Eva','Kozárová','kozarova@medicore.sk','" + h + "','PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (4,'Tomáš','Blaho','blaho@medicore.sk','" + h + "','PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (5,'Nina','Horváthová','horvath@medicore.sk','" + h + "','PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (6,'Mária','Kováčová','kovacova@medicore.sk','" + h + "','PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (7,'Peter','Horník','hornik@medicore.sk','" + h + "','PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (8,'Jana','Procházková','prochazka@medicore.sk','" + h + "','PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (9,'Martin','Oravec','oravec@medicore.sk','" + h + "','PACIENT')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (10,'Zuzana','Malá','mala@medicore.sk','" + h + "','PACIENT')");
 
-        // ── Lekári (IDs 2–4) ───────────────────────────────────────
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (2,'Sarah','Johnson','johnson@medicore.sk','" + h + "','LEKAR')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (3,'Emily','Parker','parker@medicore.sk','" + h + "','LEKAR')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (4,'Michael','Chen','chen@medicore.sk','" + h + "','LEKAR')");
-        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (2,'Kardiológia',1)");
-        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (3,'Dermatológia',2)");
-        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (4,'Všeobecná prax',3)");
+        // ── Lekári (IDs 11–16) ──────────────────────────────────────────
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (11,'Sarah','Johnson','johnson@medicore.sk','" + h + "','LEKAR')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (12,'Emily','Parker','parker@medicore.sk','" + h + "','LEKAR')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (13,'Michael','Chen','chen@medicore.sk','" + h + "','LEKAR')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (14,'Jakub','Novotný','novotny@medicore.sk','" + h + "','LEKAR')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (15,'Andrea','Horvat','horvat@medicore.sk','" + h + "','LEKAR')");
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (16,'Petra','Žilková','zilkova@medicore.sk','" + h + "','LEKAR')");
+        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (11,'Kardiológia',1)");
+        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (12,'Dermatológia',2)");
+        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (13,'Všeobecná prax',3)");
+        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (14,'Neurológia',4)");
+        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (15,'Ortopédia',5)");
+        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (16,'Oftalmológia',6)");
 
-        // ── Procedúry ──────────────────────────────────────────────
+        // ── Admin (ID 17) ────────────────────────────────────────────────
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (17,'Admin','Polyklinika','admin@medicore.sk','" + h + "','ADMIN')");
+
+        // ── Procedúry (IDs 1–9) ─────────────────────────────────────────
         stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (1,'Kardiologická prehliadka',45,'Kompletné kardiologické vyšetrenie vrátane EKG a echokardiografie')");
         stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (2,'Dermatologická prehliadka',30,'Vyšetrenie kože, nechtov a kožných ochorení')");
         stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (3,'Všeobecná konzultácia',30,'Základná konzultácia so všeobecným lekárom')");
         stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (4,'EKG',20,'Elektrokardiogram — záznam elektrickej aktivity srdca')");
         stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (5,'Kožné vyšetrenie',30,'Podrobné vyšetrenie kožných zmien a dermatoskopia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (6,'Neurologické vyšetrenie',45,'Komplexné neurologické vyšetrenie reflexov a neurologických funkcií')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (7,'Ortopedická konzultácia',30,'Vyšetrenie pohybového aparátu, kĺbov a chrbtice')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (8,'Meranie zraku',20,'Vyšetrenie zrakovej ostrosti a refrakčných chýb')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis) VALUES (9,'Krvné testy',15,'Odber krvi a základný krvný rozbor')");
 
-        // ── Lekár ↔ Procedúry ──────────────────────────────────────
-        stmt.execute("INSERT INTO lekar_procedury VALUES (2,1)"); // Johnson → Kardiologická prehliadka
-        stmt.execute("INSERT INTO lekar_procedury VALUES (2,4)"); // Johnson → EKG
-        stmt.execute("INSERT INTO lekar_procedury VALUES (3,2)"); // Parker  → Dermatologická prehliadka
-        stmt.execute("INSERT INTO lekar_procedury VALUES (3,5)"); // Parker  → Kožné vyšetrenie
-        stmt.execute("INSERT INTO lekar_procedury VALUES (4,3)"); // Chen    → Všeobecná konzultácia
+        // ── Lekár ↔ Procedúry ────────────────────────────────────────────
+        stmt.execute("INSERT INTO lekar_procedury VALUES (11,1)"); // Johnson → Kardiologická prehliadka
+        stmt.execute("INSERT INTO lekar_procedury VALUES (11,4)"); // Johnson → EKG
+        stmt.execute("INSERT INTO lekar_procedury VALUES (11,9)"); // Johnson → Krvné testy
+        stmt.execute("INSERT INTO lekar_procedury VALUES (12,2)"); // Parker  → Dermatologická prehliadka
+        stmt.execute("INSERT INTO lekar_procedury VALUES (12,5)"); // Parker  → Kožné vyšetrenie
+        stmt.execute("INSERT INTO lekar_procedury VALUES (12,9)"); // Parker  → Krvné testy
+        stmt.execute("INSERT INTO lekar_procedury VALUES (13,3)"); // Chen    → Všeobecná konzultácia
+        stmt.execute("INSERT INTO lekar_procedury VALUES (13,9)"); // Chen    → Krvné testy
+        stmt.execute("INSERT INTO lekar_procedury VALUES (14,6)"); // Novotný → Neurologické vyšetrenie
+        stmt.execute("INSERT INTO lekar_procedury VALUES (14,9)"); // Novotný → Krvné testy
+        stmt.execute("INSERT INTO lekar_procedury VALUES (15,7)"); // Horvat  → Ortopedická konzultácia
+        stmt.execute("INSERT INTO lekar_procedury VALUES (15,9)"); // Horvat  → Krvné testy
+        stmt.execute("INSERT INTO lekar_procedury VALUES (16,8)"); // Žilková → Meranie zraku
+        stmt.execute("INSERT INTO lekar_procedury VALUES (16,9)"); // Žilková → Krvné testy
 
-        // ── Termíny ────────────────────────────────────────────────
-        // IDs 1–9:  past slots (history for absolvované/zrušené)
-        // IDs 10–13: today's slots (for doctor dashboard workload)
-        // IDs 14–43: future slots (10 per doctor × 3 doctors)
-
-        // -- Past terminy (ids 1-9, 3 per doctor) ------------------
-        ins(stmt, fmt, 1, 2, now.minusDays(14).withHour(9).withMinute(0).withSecond(0).withNano(0),  45, "DOSTUPNY");
-        ins(stmt, fmt, 2, 2, now.minusDays(10).withHour(10).withMinute(0).withSecond(0).withNano(0), 45, "DOSTUPNY");
-        ins(stmt, fmt, 3, 2, now.minusDays(7).withHour(9).withMinute(0).withSecond(0).withNano(0),   45, "DOSTUPNY");
-        ins(stmt, fmt, 4, 3, now.minusDays(12).withHour(10).withMinute(0).withSecond(0).withNano(0), 30, "DOSTUPNY");
-        ins(stmt, fmt, 5, 3, now.minusDays(8).withHour(11).withMinute(0).withSecond(0).withNano(0),  30, "DOSTUPNY");
-        ins(stmt, fmt, 6, 3, now.minusDays(3).withHour(14).withMinute(0).withSecond(0).withNano(0),  30, "DOSTUPNY");
-        ins(stmt, fmt, 7, 4, now.minusDays(11).withHour(11).withMinute(0).withSecond(0).withNano(0), 30, "DOSTUPNY");
-        ins(stmt, fmt, 8, 4, now.minusDays(6).withHour(10).withMinute(0).withSecond(0).withNano(0),  30, "DOSTUPNY");
-        ins(stmt, fmt, 9, 4, now.minusDays(2).withHour(9).withMinute(0).withSecond(0).withNano(0),   30, "DOSTUPNY");
-
-        // -- Today's terminy (ids 10-13) ----------------------------
-        ins(stmt, fmt, 10, 2, now.withHour(10).withMinute(0).withSecond(0).withNano(0), 45, "REZERVOVANY"); // Johnson 10:00 → Samuel
-        ins(stmt, fmt, 11, 2, now.withHour(14).withMinute(0).withSecond(0).withNano(0), 45, "REZERVOVANY"); // Johnson 14:00 → Nina
-        ins(stmt, fmt, 12, 3, now.withHour(10).withMinute(0).withSecond(0).withNano(0), 30, "REZERVOVANY"); // Parker  10:00 → Tomáš
-        ins(stmt, fmt, 13, 4, now.withHour(9).withMinute(0).withSecond(0).withNano(0),  30, "REZERVOVANY"); // Chen    09:00 → Nina
-
-        // -- Future terminy (ids 14-43): next 10 business days ------
-        LocalDateTime[] days = new LocalDateTime[10];
+        // ── Next 8 business days ─────────────────────────────────────────
+        LocalDateTime[] days = new LocalDateTime[8];
         int d = 0;
         LocalDateTime cursor = now.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
-        while (d < 10) {
+        while (d < 8) {
             if (cursor.getDayOfWeek().getValue() <= 5) days[d++] = cursor;
             cursor = cursor.plusDays(1);
         }
-        int[] hJ = {8,  9, 10, 11, 13, 14,  8,  9, 10, 11};
-        int[] hP = {9, 10, 11, 14, 15,  9, 10, 11, 14, 15};
-        int[] hC = {8, 10, 13,  9, 14,  8, 11, 13, 10, 14};
 
-        int id = 14;
-        // Johnson (ids 14-23): id=14 (i=0) REZERVOVANY → Samuel upcoming
-        for (int i = 0; i < 10; i++) {
-            String stav = (i == 0) ? "REZERVOVANY" : "DOSTUPNY";
-            ins(stmt, fmt, id++, 2, days[i].withHour(hJ[i]).withMinute(0), 45, stav);
-        }
-        // Parker (ids 24-33): id=24 (i=0) → Lukáš, id=25 (i=1) → Eva
-        for (int i = 0; i < 10; i++) {
-            String stav = (i == 0 || i == 1) ? "REZERVOVANY" : "DOSTUPNY";
-            ins(stmt, fmt, id++, 3, days[i].withHour(hP[i]).withMinute(0), 30, stav);
-        }
-        // Chen (ids 34-43): id=34 (i=0) → Nina upcoming, id=37 (i=3) → Samuel 2nd upcoming
-        for (int i = 0; i < 10; i++) {
-            String stav = (i == 0 || i == 3) ? "REZERVOVANY" : "DOSTUPNY";
-            ins(stmt, fmt, id++, 4, days[i].withHour(hC[i]).withMinute(0), 30, stav);
-        }
+        // ── Termíny — past (IDs 1–30, all DOSTUPNY) ─────────────────────
+        // Johnson (lekarId=11, trvanie=45)
+        ins(stmt,fmt, 1,11,past(now,20,9),45,"DOSTUPNY"); ins(stmt,fmt, 2,11,past(now,15,9),45,"DOSTUPNY");
+        ins(stmt,fmt, 3,11,past(now,12,9),45,"DOSTUPNY"); ins(stmt,fmt, 4,11,past(now, 8,9),45,"DOSTUPNY");
+        ins(stmt,fmt, 5,11,past(now, 5,9),45,"DOSTUPNY");
+        // Parker (lekarId=12, trvanie=30)
+        ins(stmt,fmt, 6,12,past(now,18,10),30,"DOSTUPNY"); ins(stmt,fmt, 7,12,past(now,14,10),30,"DOSTUPNY");
+        ins(stmt,fmt, 8,12,past(now,10,10),30,"DOSTUPNY"); ins(stmt,fmt, 9,12,past(now, 7,10),30,"DOSTUPNY");
+        ins(stmt,fmt,10,12,past(now, 4,10),30,"DOSTUPNY");
+        // Chen (lekarId=13, trvanie=30)
+        ins(stmt,fmt,11,13,past(now,16,9),30,"DOSTUPNY"); ins(stmt,fmt,12,13,past(now,12,9),30,"DOSTUPNY");
+        ins(stmt,fmt,13,13,past(now, 9,9),30,"DOSTUPNY"); ins(stmt,fmt,14,13,past(now, 6,9),30,"DOSTUPNY");
+        ins(stmt,fmt,15,13,past(now, 3,9),30,"DOSTUPNY");
+        // Novotný (lekarId=14, trvanie=45)
+        ins(stmt,fmt,16,14,past(now,19,10),45,"DOSTUPNY"); ins(stmt,fmt,17,14,past(now,13,10),45,"DOSTUPNY");
+        ins(stmt,fmt,18,14,past(now,10,10),45,"DOSTUPNY"); ins(stmt,fmt,19,14,past(now, 7,10),45,"DOSTUPNY");
+        ins(stmt,fmt,20,14,past(now, 5,10),45,"DOSTUPNY");
+        // Horvat (lekarId=15, trvanie=30)
+        ins(stmt,fmt,21,15,past(now,17,9),30,"DOSTUPNY"); ins(stmt,fmt,22,15,past(now,11,9),30,"DOSTUPNY");
+        ins(stmt,fmt,23,15,past(now, 8,9),30,"DOSTUPNY"); ins(stmt,fmt,24,15,past(now, 5,9),30,"DOSTUPNY");
+        ins(stmt,fmt,25,15,past(now, 3,9),30,"DOSTUPNY");
+        // Žilková (lekarId=16, trvanie=20)
+        ins(stmt,fmt,26,16,past(now,20,9),20,"DOSTUPNY"); ins(stmt,fmt,27,16,past(now,14,9),20,"DOSTUPNY");
+        ins(stmt,fmt,28,16,past(now, 9,9),20,"DOSTUPNY"); ins(stmt,fmt,29,16,past(now, 6,9),20,"DOSTUPNY");
+        ins(stmt,fmt,30,16,past(now, 3,9),20,"DOSTUPNY");
 
-        // ── Rezervácie ─────────────────────────────────────────────
-        // Samuel Thompson (pacient=1): 3 absolvované + 1 zrušená + 1 dnes + 2 nadchádzajúce
-        rez(stmt, 1, 2,  1, 1, "POTVRDENA"); // -14d Johnson — Kardiologická (absolvovaná)
-        rez(stmt, 1, 3,  5, 2, "POTVRDENA"); // -8d  Parker  — Dermatologická (absolvovaná)
-        rez(stmt, 1, 4,  7, 3, "POTVRDENA"); // -11d Chen    — Všeobecná (absolvovaná)
-        rez(stmt, 1, 3,  4, 5, "ZRUSENA");   // -12d Parker  — Kožné (zrušená)
-        rez(stmt, 1, 2, 10, 4, "POTVRDENA"); // dnes 10:00 Johnson — EKG
-        rez(stmt, 1, 2, 14, 1, "POTVRDENA"); // day+1 Johnson — Kardiologická (nadchádzajúca)
-        rez(stmt, 1, 4, 37, 3, "POTVRDENA"); // day+4 Chen   — Všeobecná (nadchádzajúca)
+        // ── Termíny — today (IDs 31–42) ──────────────────────────────────
+        ins(stmt,fmt,31,11,today(now, 9,0),45,"REZERVOVANY"); // Johnson  09:00 → Samuel
+        ins(stmt,fmt,32,11,today(now,11,0),45,"REZERVOVANY"); // Johnson  11:00 → Nina
+        ins(stmt,fmt,33,12,today(now,10,0),30,"REZERVOVANY"); // Parker   10:00 → Eva
+        ins(stmt,fmt,34,12,today(now,14,0),30,"REZERVOVANY"); // Parker   14:00 → Zuzana
+        ins(stmt,fmt,35,13,today(now, 9,0),30,"REZERVOVANY"); // Chen     09:00 → Tomáš
+        ins(stmt,fmt,36,13,today(now,11,0),30,"REZERVOVANY"); // Chen     11:00 → Mária
+        ins(stmt,fmt,37,14,today(now,10,0),45,"REZERVOVANY"); // Novotný  10:00 → Peter
+        ins(stmt,fmt,38,14,today(now,15,0),45,"REZERVOVANY"); // Novotný  15:00 → Martin
+        ins(stmt,fmt,39,15,today(now, 9,0),30,"REZERVOVANY"); // Horvat   09:00 → Jana
+        ins(stmt,fmt,40,15,today(now,14,0),30,"DOSTUPNY");    // Horvat   14:00 — voľný
+        ins(stmt,fmt,41,16,today(now, 9,0),20,"REZERVOVANY"); // Žilková  09:00 → Lukáš
+        ins(stmt,fmt,42,16,today(now,11,0),20,"DOSTUPNY");    // Žilková  11:00 — voľný
 
-        // Lukáš Novák (pacient=5): 1 absolvovaná + 1 zrušená + 1 nadchádzajúca
-        rez(stmt, 5, 4,  8, 3, "POTVRDENA"); // -6d Chen   — Všeobecná (absolvovaná)
-        rez(stmt, 5, 2,  2, 4, "ZRUSENA");   // -10d Johnson — EKG (zrušená)
-        rez(stmt, 5, 3, 24, 2, "POTVRDENA"); // day+1 Parker — Dermatologická (nadchádzajúca)
+        // ── Termíny — future (IDs 43–90) ─────────────────────────────────
+        // Johnson (43–50)
+        ins(stmt,fmt,43,11,days[0].withHour( 8),45,"REZERVOVANY"); // → Samuel
+        ins(stmt,fmt,44,11,days[0].withHour(10),45,"REZERVOVANY"); // → Mária
+        ins(stmt,fmt,45,11,days[1].withHour( 9),45,"REZERVOVANY"); // → Tomáš
+        ins(stmt,fmt,46,11,days[1].withHour(11),45,"REZERVOVANY"); // → Zuzana
+        ins(stmt,fmt,47,11,days[2].withHour( 8),45,"DOSTUPNY");
+        ins(stmt,fmt,48,11,days[2].withHour(14),45,"DOSTUPNY");
+        ins(stmt,fmt,49,11,days[3].withHour( 9),45,"DOSTUPNY");
+        ins(stmt,fmt,50,11,days[4].withHour(10),45,"DOSTUPNY");
+        // Parker (51–58)
+        ins(stmt,fmt,51,12,days[0].withHour( 9),30,"REZERVOVANY"); // → Lukáš
+        ins(stmt,fmt,52,12,days[1].withHour(10),30,"REZERVOVANY"); // → Eva
+        ins(stmt,fmt,53,12,days[2].withHour(11),30,"DOSTUPNY");
+        ins(stmt,fmt,54,12,days[2].withHour(14),30,"DOSTUPNY");
+        ins(stmt,fmt,55,12,days[3].withHour( 9),30,"DOSTUPNY");
+        ins(stmt,fmt,56,12,days[4].withHour(10),30,"DOSTUPNY");
+        ins(stmt,fmt,57,12,days[5].withHour(11),30,"DOSTUPNY");
+        ins(stmt,fmt,58,12,days[5].withHour(14),30,"DOSTUPNY");
+        // Chen (59–66)
+        ins(stmt,fmt,59,13,days[0].withHour( 8),30,"REZERVOVANY"); // → Nina
+        ins(stmt,fmt,60,13,days[0].withHour(13),30,"REZERVOVANY"); // → Martin
+        ins(stmt,fmt,61,13,days[1].withHour( 9),30,"DOSTUPNY");
+        ins(stmt,fmt,62,13,days[2].withHour(10),30,"REZERVOVANY"); // → Samuel (2.)
+        ins(stmt,fmt,63,13,days[3].withHour( 8),30,"DOSTUPNY");
+        ins(stmt,fmt,64,13,days[3].withHour(13),30,"DOSTUPNY");
+        ins(stmt,fmt,65,13,days[4].withHour( 9),30,"DOSTUPNY");
+        ins(stmt,fmt,66,13,days[5].withHour(10),30,"DOSTUPNY");
+        // Novotný (67–74)
+        ins(stmt,fmt,67,14,days[0].withHour(10),45,"REZERVOVANY"); // → Peter
+        ins(stmt,fmt,68,14,days[0].withHour(14),45,"REZERVOVANY"); // → Jana
+        ins(stmt,fmt,69,14,days[1].withHour( 9),45,"REZERVOVANY"); // → Mária
+        ins(stmt,fmt,70,14,days[2].withHour(10),45,"DOSTUPNY");
+        ins(stmt,fmt,71,14,days[3].withHour(11),45,"DOSTUPNY");
+        ins(stmt,fmt,72,14,days[4].withHour( 9),45,"DOSTUPNY");
+        ins(stmt,fmt,73,14,days[5].withHour(10),45,"DOSTUPNY");
+        ins(stmt,fmt,74,14,days[6].withHour(11),45,"DOSTUPNY");
+        // Horvat (75–82)
+        ins(stmt,fmt,75,15,days[0].withHour( 8),30,"REZERVOVANY"); // → Martin
+        ins(stmt,fmt,76,15,days[1].withHour( 9),30,"DOSTUPNY");
+        ins(stmt,fmt,77,15,days[2].withHour(10),30,"DOSTUPNY");
+        ins(stmt,fmt,78,15,days[3].withHour( 8),30,"DOSTUPNY");
+        ins(stmt,fmt,79,15,days[4].withHour( 9),30,"DOSTUPNY");
+        ins(stmt,fmt,80,15,days[5].withHour(10),30,"DOSTUPNY");
+        ins(stmt,fmt,81,15,days[6].withHour(11),30,"DOSTUPNY");
+        ins(stmt,fmt,82,15,days[7].withHour( 8),30,"DOSTUPNY");
+        // Žilková (83–90)
+        ins(stmt,fmt,83,16,days[0].withHour( 9),20,"REZERVOVANY"); // → Zuzana
+        ins(stmt,fmt,84,16,days[1].withHour(10),20,"REZERVOVANY"); // → Eva
+        ins(stmt,fmt,85,16,days[2].withHour( 9),20,"REZERVOVANY"); // → Peter
+        ins(stmt,fmt,86,16,days[3].withHour(10),20,"DOSTUPNY");
+        ins(stmt,fmt,87,16,days[4].withHour(11),20,"DOSTUPNY");
+        ins(stmt,fmt,88,16,days[5].withHour( 9),20,"DOSTUPNY");
+        ins(stmt,fmt,89,16,days[6].withHour(10),20,"DOSTUPNY");
+        ins(stmt,fmt,90,16,days[7].withHour(11),20,"DOSTUPNY");
 
-        // Eva Kozárová (pacient=6): 1 absolvovaná + 1 nadchádzajúca
-        rez(stmt, 6, 2,  3, 1, "POTVRDENA"); // -7d Johnson — Kardiologická (absolvovaná)
-        rez(stmt, 6, 3, 25, 5, "POTVRDENA"); // day+2 Parker — Kožné (nadchádzajúca)
+        // ── Rezervácie ───────────────────────────────────────────────────
+        // Samuel Thompson (1): 4 absolvované, 1 zrušená, 1 dnes, 2 nadchádzajúce
+        rez(stmt, 1,11, 1,1,"POTVRDENA"); rez(stmt, 1,12, 8,2,"POTVRDENA");
+        rez(stmt, 1,13,11,3,"POTVRDENA"); rez(stmt, 1,14,16,6,"POTVRDENA");
+        rez(stmt, 1,15,25,7,"ZRUSENA");
+        rez(stmt, 1,11,31,1,"POTVRDENA"); // dnes 09:00 Johnson
+        rez(stmt, 1,11,43,1,"POTVRDENA"); rez(stmt, 1,13,62,3,"POTVRDENA");
 
-        // Tomáš Blaho (pacient=7): dnes + 1 zrušená
-        rez(stmt, 7, 3, 12, 2, "POTVRDENA"); // dnes 10:00 Parker — Dermatologická
-        rez(stmt, 7, 4,  9, 3, "ZRUSENA");   // -2d Chen — Všeobecná (zrušená)
+        // Lukáš Novák (2): 2 absolvované, 1 zrušená, 1 dnes, 1 nadchádzajúca
+        rez(stmt, 2,13,12,3,"POTVRDENA"); rez(stmt, 2,16,27,8,"POTVRDENA");
+        rez(stmt, 2,11, 2,4,"ZRUSENA");
+        rez(stmt, 2,16,41,8,"POTVRDENA"); // dnes 09:00 Žilková
+        rez(stmt, 2,12,51,2,"POTVRDENA");
 
-        // Nina Horváthová (pacient=8): 2 dnes + 1 nadchádzajúca
-        rez(stmt, 8, 4, 13, 3, "POTVRDENA"); // dnes 09:00 Chen — Všeobecná
-        rez(stmt, 8, 2, 11, 1, "POTVRDENA"); // dnes 14:00 Johnson — Kardiologická
-        rez(stmt, 8, 4, 34, 3, "POTVRDENA"); // day+1 Chen — Všeobecná (nadchádzajúca)
+        // Eva Kozárová (3): 2 absolvované, 1 dnes, 2 nadchádzajúce
+        rez(stmt, 3,11, 3,1,"POTVRDENA"); rez(stmt, 3,15,21,7,"POTVRDENA");
+        rez(stmt, 3,12,33,2,"POTVRDENA"); // dnes 10:00 Parker
+        rez(stmt, 3,12,52,5,"POTVRDENA"); rez(stmt, 3,16,84,8,"POTVRDENA");
+
+        // Tomáš Blaho (4): 1 absolvovaná, 1 zrušená, 1 dnes, 1 nadchádzajúca
+        rez(stmt, 4,15,22,7,"POTVRDENA"); rez(stmt, 4,13,15,3,"ZRUSENA");
+        rez(stmt, 4,13,35,3,"POTVRDENA"); // dnes 09:00 Chen
+        rez(stmt, 4,11,45,4,"POTVRDENA");
+
+        // Nina Horváthová (5): 2 absolvované, 1 dnes, 1 nadchádzajúca
+        rez(stmt, 5,12, 9,5,"POTVRDENA"); rez(stmt, 5,13,14,3,"POTVRDENA");
+        rez(stmt, 5,11,32,1,"POTVRDENA"); // dnes 11:00 Johnson
+        rez(stmt, 5,13,59,3,"POTVRDENA");
+
+        // Mária Kováčová (6): 2 absolvované, 1 zrušená, 1 dnes, 2 nadchádzajúce
+        rez(stmt, 6,11, 4,4,"POTVRDENA"); rez(stmt, 6,12, 7,5,"POTVRDENA");
+        rez(stmt, 6,14,18,6,"ZRUSENA");
+        rez(stmt, 6,13,36,3,"POTVRDENA"); // dnes 11:00 Chen
+        rez(stmt, 6,11,44,1,"POTVRDENA"); rez(stmt, 6,14,69,6,"POTVRDENA");
+
+        // Peter Horník (7): 2 absolvované, 1 zrušená, 1 dnes, 2 nadchádzajúce
+        rez(stmt, 7,14,17,6,"POTVRDENA"); rez(stmt, 7,16,26,8,"POTVRDENA");
+        rez(stmt, 7,13,13,3,"ZRUSENA");
+        rez(stmt, 7,14,37,6,"POTVRDENA"); // dnes 10:00 Novotný
+        rez(stmt, 7,14,67,6,"POTVRDENA"); rez(stmt, 7,16,85,8,"POTVRDENA");
+
+        // Jana Procházková (8): 3 absolvované, 1 zrušená, 1 dnes, 1 nadchádzajúca
+        rez(stmt, 8,12, 6,2,"POTVRDENA"); rez(stmt, 8,14,19,6,"POTVRDENA");
+        rez(stmt, 8,15,23,7,"POTVRDENA"); rez(stmt, 8,16,29,8,"ZRUSENA");
+        rez(stmt, 8,15,39,7,"POTVRDENA"); // dnes 09:00 Horvat
+        rez(stmt, 8,14,68,6,"POTVRDENA");
+
+        // Martin Oravec (9): 2 absolvované, 1 zrušená, 1 dnes, 2 nadchádzajúce
+        rez(stmt, 9,12,10,5,"POTVRDENA"); rez(stmt, 9,15,24,7,"POTVRDENA");
+        rez(stmt, 9,16,30,8,"ZRUSENA");
+        rez(stmt, 9,14,38,6,"POTVRDENA"); // dnes 15:00 Novotný
+        rez(stmt, 9,13,60,3,"POTVRDENA"); rez(stmt, 9,15,75,7,"POTVRDENA");
+
+        // Zuzana Malá (10): 3 absolvované, 1 dnes, 2 nadchádzajúce
+        rez(stmt,10,11, 5,4,"POTVRDENA"); rez(stmt,10,14,20,6,"POTVRDENA");
+        rez(stmt,10,16,28,8,"POTVRDENA");
+        rez(stmt,10,12,34,5,"POTVRDENA"); // dnes 14:00 Parker
+        rez(stmt,10,11,46,1,"POTVRDENA"); rez(stmt,10,16,83,8,"POTVRDENA");
+    }
+
+    private static LocalDateTime past(LocalDateTime now, int daysAgo, int hour) {
+        return now.minusDays(daysAgo).withHour(hour).withMinute(0).withSecond(0).withNano(0);
+    }
+
+    private static LocalDateTime today(LocalDateTime now, int hour, int minute) {
+        return now.withHour(hour).withMinute(minute).withSecond(0).withNano(0);
     }
 
     private static void ins(Statement stmt, DateTimeFormatter fmt,
