@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="sk.medicore.controller.AdminDashboardController"
+      prefWidth="900" prefHeight="650"
+      style="-fx-background-color: #f5f5f5;">
+
+    <fx:include fx:id="sidebar" source="sidebar-admin.fxml"/>
+
+    <!-- Main content -->
+    <ScrollPane HBox.hgrow="ALWAYS" fitToWidth="true"
+                style="-fx-background: #f5f5f5; -fx-background-color: #f5f5f5; -fx-border-color: transparent;">
+        <VBox spacing="20" style="-fx-padding: 32;">
+
+            <!-- Greeting + date -->
+            <HBox alignment="CENTER_LEFT">
+                <VBox HBox.hgrow="ALWAYS" spacing="2">
+                    <Label fx:id="greetingLabel" text=""
+                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                    <Label fx:id="todayLabel" text=""
+                           style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Stat cards -->
+            <HBox spacing="16">
+                <VBox HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);"
+                      spacing="6">
+                    <Label text="Dnes" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
+                    <Label fx:id="statDnes" text="0"
+                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f;"/>
+                    <Label text="Rezervácií celej kliniky" style="-fx-font-size: 11px; -fx-text-fill: #aaa;"/>
+                </VBox>
+                <VBox HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);"
+                      spacing="6">
+                    <Label text="Celkovo" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
+                    <Label fx:id="statPacienti" text="0"
+                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #388e3c;"/>
+                    <Label text="Unikátnych pacientov" style="-fx-font-size: 11px; -fx-text-fill: #aaa;"/>
+                </VBox>
+                <VBox HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);"
+                      spacing="6">
+                    <Label text="Lekári" style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
+                    <Label fx:id="statLekari" text="0"
+                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #7b1fa2;"/>
+                    <Label text="Aktívnych lekárov" style="-fx-font-size: 11px; -fx-text-fill: #aaa;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Today's appointments (all doctors) -->
+            <VBox spacing="12">
+                <Label text="Dnešné rezervácie — celá klinika"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <VBox fx:id="todayContainer" spacing="10"/>
+                <Label fx:id="emptyLabel" text="Dnes nie sú žiadne rezervácie."
+                       style="-fx-font-size: 13px; -fx-text-fill: #aaa; -fx-padding: 16 0;"
+                       visible="false" managed="false"/>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+</HBox>
