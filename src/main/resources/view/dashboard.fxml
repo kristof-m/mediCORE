@@ -46,6 +46,9 @@
                 </VBox>
             </HBox>
 
+            <!-- Notification banner -->
+            <VBox fx:id="notifikacieArea" spacing="8" visible="false" managed="false"/>
+
             <!-- Upcoming appointments -->
             <VBox spacing="12">
                 <HBox alignment="CENTER_LEFT">
