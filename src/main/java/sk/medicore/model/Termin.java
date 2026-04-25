@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Termin {
 
     public enum Stav {
-        DOSTUPNY, REZERVOVANY, ZRUSENY
+        PUBLIKOVANY, REZERVOVANY, UKONCENY, ZRUSENY
     }
 
     private int id;

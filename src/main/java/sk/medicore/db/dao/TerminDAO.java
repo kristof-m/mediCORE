@@ -20,13 +20,14 @@ public class TerminDAO {
         LocalDateTime datumCas,
         int trvanieMin,
         Termin.Stav stav,
-        Integer rezervaciaId,      // null if DOSTUPNY/ZRUSENY
+        Integer rezervaciaId,      // null if PUBLIKOVANY/ZRUSENY/UKONCENY
         String pacientMeno,        // null if no reservation
         String pacientPriezvisko,  // null if no reservation
         String proceduraNazov      // null if no reservation
     ) {}
 
     public List<TerminInfo> findEnrichedByLekarId(int lekarId) {
+        autoTransitionUkonceny();
         String sql = "SELECT t.id, t.datum_cas, t.trvanie_min, t.stav, " +
                      "r.id AS rez_id, p.meno, p.priezvisko, proc.nazov AS proc_nazov " +
                      "FROM terminy t " +
@@ -37,7 +38,17 @@ public class TerminDAO {
         return queryEnriched(sql, lekarId, null, null);
     }
 
+    public void autoTransitionUkonceny() {
+        String sql = "UPDATE terminy SET stav = 'UKONCENY' WHERE stav IN ('REZERVOVANY','PUBLIKOVANY') AND datum_cas < datetime('now','localtime')";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<TerminInfo> findEnrichedForWeek(int lekarId, LocalDate from, LocalDate to) {
+        autoTransitionUkonceny();
         String sql = "SELECT t.id, t.datum_cas, t.trvanie_min, t.stav, " +
                      "r.id AS rez_id, p.meno, p.priezvisko, proc.nazov AS proc_nazov " +
                      "FROM terminy t " +
@@ -86,7 +97,7 @@ public class TerminDAO {
     }
 
     public void insert(int lekarId, LocalDateTime datumCas, int trvanieMin) {
-        String sql = "INSERT INTO terminy (lekar_id, datum_cas, trvanie_min, stav) VALUES (?, ?, ?, 'DOSTUPNY')";
+        String sql = "INSERT INTO terminy (lekar_id, datum_cas, trvanie_min, stav) VALUES (?, ?, ?, 'PUBLIKOVANY')";
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
             ps.setInt(1, lekarId);
             ps.setString(2, datumCas.format(FMT));
@@ -129,7 +140,7 @@ public class TerminDAO {
     }
 
     public List<Termin> findAvailable(int lekarId) {
-        String sql = "SELECT * FROM terminy WHERE lekar_id = ? AND stav = 'DOSTUPNY' AND datum_cas > datetime('now','localtime') ORDER BY datum_cas";
+        String sql = "SELECT * FROM terminy WHERE lekar_id = ? AND stav = 'PUBLIKOVANY' AND datum_cas > datetime('now','localtime') ORDER BY datum_cas";
         return query(sql, lekarId);
     }
 

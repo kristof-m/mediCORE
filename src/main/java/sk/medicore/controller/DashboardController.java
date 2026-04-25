@@ -264,7 +264,7 @@ public class DashboardController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             rezervaciaDAO.updateStav(r.getId(), Rezervacia.Stav.ZRUSENA);
-            terminDAO.updateStav(r.getTerminId(), Termin.Stav.DOSTUPNY);
+            terminDAO.updateStav(r.getTerminId(), Termin.Stav.PUBLIKOVANY);
             Notifikator.odosliNotifikaciu(r.getPacientId(), Notifikacia.Typ.ZRUSENA);
             int uid = SessionManager.getInstance().getCurrentUser().getId();
             loadStats(uid);

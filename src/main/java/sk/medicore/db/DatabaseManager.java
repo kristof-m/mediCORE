@@ -81,7 +81,7 @@ public class DatabaseManager {
                     lekar_id INTEGER NOT NULL REFERENCES lekari(id),
                     datum_cas DATETIME NOT NULL,
                     trvanie_min INTEGER NOT NULL,
-                    stav TEXT NOT NULL DEFAULT 'DOSTUPNY'
+                    stav TEXT NOT NULL DEFAULT 'PUBLIKOVANY'
                 )
             """);
 
@@ -220,24 +220,24 @@ public class DatabaseManager {
         }
 
         // ── Past termíny (IDs 1–30) ────────────────────────────────────────────
-        ins(stmt,fmt, 1,11,past(now,20,9),45,"DOSTUPNY"); ins(stmt,fmt, 2,11,past(now,15,9),45,"DOSTUPNY");
-        ins(stmt,fmt, 3,11,past(now,12,9),45,"DOSTUPNY"); ins(stmt,fmt, 4,11,past(now, 8,9),45,"DOSTUPNY");
-        ins(stmt,fmt, 5,11,past(now, 5,9),45,"DOSTUPNY");
-        ins(stmt,fmt, 6,12,past(now,18,10),30,"DOSTUPNY"); ins(stmt,fmt, 7,12,past(now,14,10),30,"DOSTUPNY");
-        ins(stmt,fmt, 8,12,past(now,10,10),30,"DOSTUPNY"); ins(stmt,fmt, 9,12,past(now, 7,10),30,"DOSTUPNY");
-        ins(stmt,fmt,10,12,past(now, 4,10),30,"DOSTUPNY");
-        ins(stmt,fmt,11,13,past(now,16,9),30,"DOSTUPNY"); ins(stmt,fmt,12,13,past(now,12,9),30,"DOSTUPNY");
-        ins(stmt,fmt,13,13,past(now, 9,9),30,"DOSTUPNY"); ins(stmt,fmt,14,13,past(now, 6,9),30,"DOSTUPNY");
-        ins(stmt,fmt,15,13,past(now, 3,9),30,"DOSTUPNY");
-        ins(stmt,fmt,16,14,past(now,19,10),45,"DOSTUPNY"); ins(stmt,fmt,17,14,past(now,13,10),45,"DOSTUPNY");
-        ins(stmt,fmt,18,14,past(now,10,10),45,"DOSTUPNY"); ins(stmt,fmt,19,14,past(now, 7,10),45,"DOSTUPNY");
-        ins(stmt,fmt,20,14,past(now, 5,10),45,"DOSTUPNY");
-        ins(stmt,fmt,21,15,past(now,17,9),30,"DOSTUPNY"); ins(stmt,fmt,22,15,past(now,11,9),30,"DOSTUPNY");
-        ins(stmt,fmt,23,15,past(now, 8,9),30,"DOSTUPNY"); ins(stmt,fmt,24,15,past(now, 5,9),30,"DOSTUPNY");
-        ins(stmt,fmt,25,15,past(now, 3,9),30,"DOSTUPNY");
-        ins(stmt,fmt,26,16,past(now,20,9),20,"DOSTUPNY"); ins(stmt,fmt,27,16,past(now,14,9),20,"DOSTUPNY");
-        ins(stmt,fmt,28,16,past(now, 9,9),20,"DOSTUPNY"); ins(stmt,fmt,29,16,past(now, 6,9),20,"DOSTUPNY");
-        ins(stmt,fmt,30,16,past(now, 3,9),20,"DOSTUPNY");
+        ins(stmt,fmt, 1,11,past(now,20,9),45,\"UKONCENY\"); ins(stmt,fmt, 2,11,past(now,15,9),45,\"UKONCENY\");
+        ins(stmt,fmt, 3,11,past(now,12,9),45,\"UKONCENY\"); ins(stmt,fmt, 4,11,past(now, 8,9),45,\"UKONCENY\");
+        ins(stmt,fmt, 5,11,past(now, 5,9),45,\"UKONCENY\");
+        ins(stmt,fmt, 6,12,past(now,18,10),30,\"UKONCENY\"); ins(stmt,fmt, 7,12,past(now,14,10),30,\"UKONCENY\");
+        ins(stmt,fmt, 8,12,past(now,10,10),30,\"UKONCENY\"); ins(stmt,fmt, 9,12,past(now, 7,10),30,\"UKONCENY\");
+        ins(stmt,fmt,10,12,past(now, 4,10),30,\"UKONCENY\");
+        ins(stmt,fmt,11,13,past(now,16,9),30,\"UKONCENY\"); ins(stmt,fmt,12,13,past(now,12,9),30,\"UKONCENY\");
+        ins(stmt,fmt,13,13,past(now, 9,9),30,\"UKONCENY\"); ins(stmt,fmt,14,13,past(now, 6,9),30,\"UKONCENY\");
+        ins(stmt,fmt,15,13,past(now, 3,9),30,\"UKONCENY\");
+        ins(stmt,fmt,16,14,past(now,19,10),45,\"UKONCENY\"); ins(stmt,fmt,17,14,past(now,13,10),45,\"UKONCENY\");
+        ins(stmt,fmt,18,14,past(now,10,10),45,\"UKONCENY\"); ins(stmt,fmt,19,14,past(now, 7,10),45,\"UKONCENY\");
+        ins(stmt,fmt,20,14,past(now, 5,10),45,\"UKONCENY\");
+        ins(stmt,fmt,21,15,past(now,17,9),30,\"UKONCENY\"); ins(stmt,fmt,22,15,past(now,11,9),30,\"UKONCENY\");
+        ins(stmt,fmt,23,15,past(now, 8,9),30,\"UKONCENY\"); ins(stmt,fmt,24,15,past(now, 5,9),30,\"UKONCENY\");
+        ins(stmt,fmt,25,15,past(now, 3,9),30,\"UKONCENY\");
+        ins(stmt,fmt,26,16,past(now,20,9),20,\"UKONCENY\"); ins(stmt,fmt,27,16,past(now,14,9),20,\"UKONCENY\");
+        ins(stmt,fmt,28,16,past(now, 9,9),20,\"UKONCENY\"); ins(stmt,fmt,29,16,past(now, 6,9),20,\"UKONCENY\");
+        ins(stmt,fmt,30,16,past(now, 3,9),20,\"UKONCENY\");
 
         // ── Today termíny (IDs 31–42) ──────────────────────────────────────────
         ins(stmt,fmt,31,11,today(now, 9,0),45,"REZERVOVANY");
@@ -249,59 +249,59 @@ public class DatabaseManager {
         ins(stmt,fmt,37,14,today(now,10,0),45,"REZERVOVANY");
         ins(stmt,fmt,38,14,today(now,15,0),45,"REZERVOVANY");
         ins(stmt,fmt,39,15,today(now, 9,0),30,"REZERVOVANY");
-        ins(stmt,fmt,40,15,today(now,14,0),30,"DOSTUPNY");
+        ins(stmt,fmt,40,15,today(now,14,0),30,\"UKONCENY\");
         ins(stmt,fmt,41,16,today(now, 9,0),20,"REZERVOVANY");
-        ins(stmt,fmt,42,16,today(now,11,0),20,"DOSTUPNY");
+        ins(stmt,fmt,42,16,today(now,11,0),20,\"UKONCENY\");
 
         // ── Future termíny — days[0]–days[1] with some bookings (IDs 43–90) ────
         ins(stmt,fmt,43,11,days[0].withHour( 8),45,"REZERVOVANY");
         ins(stmt,fmt,44,11,days[0].withHour(10),45,"REZERVOVANY");
         ins(stmt,fmt,45,11,days[1].withHour( 9),45,"REZERVOVANY");
         ins(stmt,fmt,46,11,days[1].withHour(11),45,"REZERVOVANY");
-        ins(stmt,fmt,47,11,days[2].withHour( 8),45,"DOSTUPNY");
-        ins(stmt,fmt,48,11,days[2].withHour(14),45,"DOSTUPNY");
-        ins(stmt,fmt,49,11,days[3].withHour( 9),45,"DOSTUPNY");
-        ins(stmt,fmt,50,11,days[4].withHour(10),45,"DOSTUPNY");
+        ins(stmt,fmt,47,11,days[2].withHour( 8),45,\"UKONCENY\");
+        ins(stmt,fmt,48,11,days[2].withHour(14),45,\"UKONCENY\");
+        ins(stmt,fmt,49,11,days[3].withHour( 9),45,\"UKONCENY\");
+        ins(stmt,fmt,50,11,days[4].withHour(10),45,\"UKONCENY\");
         ins(stmt,fmt,51,12,days[0].withHour( 9),30,"REZERVOVANY");
         ins(stmt,fmt,52,12,days[1].withHour(10),30,"REZERVOVANY");
-        ins(stmt,fmt,53,12,days[2].withHour(11),30,"DOSTUPNY");
-        ins(stmt,fmt,54,12,days[2].withHour(14),30,"DOSTUPNY");
-        ins(stmt,fmt,55,12,days[3].withHour( 9),30,"DOSTUPNY");
-        ins(stmt,fmt,56,12,days[4].withHour(10),30,"DOSTUPNY");
-        ins(stmt,fmt,57,12,days[5].withHour(11),30,"DOSTUPNY");
-        ins(stmt,fmt,58,12,days[5].withHour(14),30,"DOSTUPNY");
+        ins(stmt,fmt,53,12,days[2].withHour(11),30,\"UKONCENY\");
+        ins(stmt,fmt,54,12,days[2].withHour(14),30,\"UKONCENY\");
+        ins(stmt,fmt,55,12,days[3].withHour( 9),30,\"UKONCENY\");
+        ins(stmt,fmt,56,12,days[4].withHour(10),30,\"UKONCENY\");
+        ins(stmt,fmt,57,12,days[5].withHour(11),30,\"UKONCENY\");
+        ins(stmt,fmt,58,12,days[5].withHour(14),30,\"UKONCENY\");
         ins(stmt,fmt,59,13,days[0].withHour( 8),30,"REZERVOVANY");
         ins(stmt,fmt,60,13,days[0].withHour(13),30,"REZERVOVANY");
-        ins(stmt,fmt,61,13,days[1].withHour( 9),30,"DOSTUPNY");
+        ins(stmt,fmt,61,13,days[1].withHour( 9),30,\"UKONCENY\");
         ins(stmt,fmt,62,13,days[2].withHour(10),30,"REZERVOVANY");
-        ins(stmt,fmt,63,13,days[3].withHour( 8),30,"DOSTUPNY");
-        ins(stmt,fmt,64,13,days[3].withHour(13),30,"DOSTUPNY");
-        ins(stmt,fmt,65,13,days[4].withHour( 9),30,"DOSTUPNY");
-        ins(stmt,fmt,66,13,days[5].withHour(10),30,"DOSTUPNY");
+        ins(stmt,fmt,63,13,days[3].withHour( 8),30,\"UKONCENY\");
+        ins(stmt,fmt,64,13,days[3].withHour(13),30,\"UKONCENY\");
+        ins(stmt,fmt,65,13,days[4].withHour( 9),30,\"UKONCENY\");
+        ins(stmt,fmt,66,13,days[5].withHour(10),30,\"UKONCENY\");
         ins(stmt,fmt,67,14,days[0].withHour(10),45,"REZERVOVANY");
         ins(stmt,fmt,68,14,days[0].withHour(14),45,"REZERVOVANY");
         ins(stmt,fmt,69,14,days[1].withHour( 9),45,"REZERVOVANY");
-        ins(stmt,fmt,70,14,days[2].withHour(10),45,"DOSTUPNY");
-        ins(stmt,fmt,71,14,days[3].withHour(11),45,"DOSTUPNY");
-        ins(stmt,fmt,72,14,days[4].withHour( 9),45,"DOSTUPNY");
-        ins(stmt,fmt,73,14,days[5].withHour(10),45,"DOSTUPNY");
-        ins(stmt,fmt,74,14,days[6].withHour(11),45,"DOSTUPNY");
+        ins(stmt,fmt,70,14,days[2].withHour(10),45,\"UKONCENY\");
+        ins(stmt,fmt,71,14,days[3].withHour(11),45,\"UKONCENY\");
+        ins(stmt,fmt,72,14,days[4].withHour( 9),45,\"UKONCENY\");
+        ins(stmt,fmt,73,14,days[5].withHour(10),45,\"UKONCENY\");
+        ins(stmt,fmt,74,14,days[6].withHour(11),45,\"UKONCENY\");
         ins(stmt,fmt,75,15,days[0].withHour( 8),30,"REZERVOVANY");
-        ins(stmt,fmt,76,15,days[1].withHour( 9),30,"DOSTUPNY");
-        ins(stmt,fmt,77,15,days[2].withHour(10),30,"DOSTUPNY");
-        ins(stmt,fmt,78,15,days[3].withHour( 8),30,"DOSTUPNY");
-        ins(stmt,fmt,79,15,days[4].withHour( 9),30,"DOSTUPNY");
-        ins(stmt,fmt,80,15,days[5].withHour(10),30,"DOSTUPNY");
-        ins(stmt,fmt,81,15,days[6].withHour(11),30,"DOSTUPNY");
-        ins(stmt,fmt,82,15,days[7].withHour( 8),30,"DOSTUPNY");
+        ins(stmt,fmt,76,15,days[1].withHour( 9),30,\"UKONCENY\");
+        ins(stmt,fmt,77,15,days[2].withHour(10),30,\"UKONCENY\");
+        ins(stmt,fmt,78,15,days[3].withHour( 8),30,\"UKONCENY\");
+        ins(stmt,fmt,79,15,days[4].withHour( 9),30,\"UKONCENY\");
+        ins(stmt,fmt,80,15,days[5].withHour(10),30,\"UKONCENY\");
+        ins(stmt,fmt,81,15,days[6].withHour(11),30,\"UKONCENY\");
+        ins(stmt,fmt,82,15,days[7].withHour( 8),30,\"UKONCENY\");
         ins(stmt,fmt,83,16,days[0].withHour( 9),20,"REZERVOVANY");
         ins(stmt,fmt,84,16,days[1].withHour(10),20,"REZERVOVANY");
         ins(stmt,fmt,85,16,days[2].withHour( 9),20,"REZERVOVANY");
-        ins(stmt,fmt,86,16,days[3].withHour(10),20,"DOSTUPNY");
-        ins(stmt,fmt,87,16,days[4].withHour(11),20,"DOSTUPNY");
-        ins(stmt,fmt,88,16,days[5].withHour( 9),20,"DOSTUPNY");
-        ins(stmt,fmt,89,16,days[6].withHour(10),20,"DOSTUPNY");
-        ins(stmt,fmt,90,16,days[7].withHour(11),20,"DOSTUPNY");
+        ins(stmt,fmt,86,16,days[3].withHour(10),20,\"UKONCENY\");
+        ins(stmt,fmt,87,16,days[4].withHour(11),20,\"UKONCENY\");
+        ins(stmt,fmt,88,16,days[5].withHour( 9),20,\"UKONCENY\");
+        ins(stmt,fmt,89,16,days[6].withHour(10),20,\"UKONCENY\");
+        ins(stmt,fmt,90,16,days[7].withHour(11),20,\"UKONCENY\");
 
         // ── Additional future termíny — days[2]–days[14] (IDs 91+) ─────────────
         // Johnson (lekarId=11, 45 min): 6 slots/day
@@ -319,12 +319,12 @@ public class DatabaseManager {
 
         int nextId = 91;
         for (int di = 2; di < 15; di++) {
-            for (int hh : jhHours) ins(stmt,fmt,nextId++,11,days[di].withHour(hh),45,"DOSTUPNY");
-            for (int hh : pkHours) ins(stmt,fmt,nextId++,12,days[di].withHour(hh),30,"DOSTUPNY");
-            for (int hh : cnHours) ins(stmt,fmt,nextId++,13,days[di].withHour(hh),30,"DOSTUPNY");
-            for (int hh : nvHours) ins(stmt,fmt,nextId++,14,days[di].withHour(hh),45,"DOSTUPNY");
-            for (int hh : hvHours) ins(stmt,fmt,nextId++,15,days[di].withHour(hh),30,"DOSTUPNY");
-            for (int hh : zlHours) ins(stmt,fmt,nextId++,16,days[di].withHour(hh),20,"DOSTUPNY");
+            for (int hh : jhHours) ins(stmt,fmt,nextId++,11,days[di].withHour(hh),45,\"UKONCENY\");
+            for (int hh : pkHours) ins(stmt,fmt,nextId++,12,days[di].withHour(hh),30,\"UKONCENY\");
+            for (int hh : cnHours) ins(stmt,fmt,nextId++,13,days[di].withHour(hh),30,\"UKONCENY\");
+            for (int hh : nvHours) ins(stmt,fmt,nextId++,14,days[di].withHour(hh),45,\"UKONCENY\");
+            for (int hh : hvHours) ins(stmt,fmt,nextId++,15,days[di].withHour(hh),30,\"UKONCENY\");
+            for (int hh : zlHours) ins(stmt,fmt,nextId++,16,days[di].withHour(hh),20,\"UKONCENY\");
         }
 
         // ── Rezervácie ────────────────────────────────────────────────────────

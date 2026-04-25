@@ -83,7 +83,7 @@ public class LekarDostupnostController {
 
         List<TerminDAO.TerminInfo> slots = terminDAO.findEnrichedForWeek(lekar.getId(), weekStart, weekEnd);
 
-        long volne = slots.stream().filter(s -> s.stav() == Termin.Stav.DOSTUPNY).count();
+        long volne = slots.stream().filter(s -> s.stav() == Termin.Stav.PUBLIKOVANY).count();
         long obs   = slots.stream().filter(s -> s.stav() == Termin.Stav.REZERVOVANY).count();
         statVolneLabel.setText(String.valueOf(volne));
         statObsLabel.setText(String.valueOf(obs));
@@ -163,6 +163,12 @@ public class LekarDostupnostController {
                               "-fx-font-size: 9px; -fx-font-weight: 600; -fx-padding: 3 5;" +
                               "-fx-background-radius: 4;" +
                               "-fx-border-color: #d97706; -fx-border-width: 0 0 0 2; -fx-border-radius: 0 4 4 0;");
+            } else if (slot.stav() == Termin.Stav.UKONCENY) {
+                chip.setText(slot.datumCas().format(DateTimeFormatter.ofPattern("HH:mm")) + " · Ukončený");
+                chip.setStyle("-fx-background-color: #ede7f6; -fx-text-fill: #4527a0;" +
+                              "-fx-font-size: 9px; -fx-font-weight: 600; -fx-padding: 3 5;" +
+                              "-fx-background-radius: 4;" +
+                              "-fx-border-color: #7e57c2; -fx-border-width: 0 0 0 2; -fx-border-radius: 0 4 4 0;");
             } else {
                 chip.setText(slot.datumCas().format(DateTimeFormatter.ofPattern("HH:mm")) + " · Voľné");
                 chip.setStyle("-fx-background-color: #e8f5f3; -fx-text-fill: #1a9e8f;" +
