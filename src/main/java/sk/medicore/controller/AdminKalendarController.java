@@ -78,6 +78,12 @@ public class AdminKalendarController {
         loadWeek();
     }
 
+    @FXML
+    private void handleToday() {
+        weekStart = LocalDate.now().with(DayOfWeek.MONDAY);
+        loadWeek();
+    }
+
     private void loadWeek() {
         updateWeekLabel();
         weekContainer.getChildren().clear();

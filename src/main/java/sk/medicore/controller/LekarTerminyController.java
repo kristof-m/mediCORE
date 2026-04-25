@@ -7,7 +7,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import sk.medicore.db.dao.RezervaciaDAO;
 import sk.medicore.db.dao.TerminDAO;
-import sk.medicore.model.Kalendar;
+import sk.medicore.service.Kalendar;
 import sk.medicore.model.Lekar;
 import sk.medicore.model.Rezervacia;
 import sk.medicore.model.Termin;
@@ -156,7 +156,8 @@ public class LekarTerminyController {
         hourPicker.setValue(String.format("%02d", info.datumCas().getHour()));
         String minuteStr = String.format("%02d", (info.datumCas().getMinute() / 15) * 15);
         minutePicker.setValue(minutePicker.getItems().contains(minuteStr) ? minuteStr : "00");
-        durationPicker.setValue(info.trvanieMin() + " min");
+        String durStr = info.trvanieMin() + " min";
+        durationPicker.setValue(durationPicker.getItems().contains(durStr) ? durStr : "30 min");
     }
 
     private void loadTerminy() {

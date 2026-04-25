@@ -19,12 +19,26 @@ import java.util.List;
 public class ProfilController {
 
     @FXML private SidebarPacientController sidebarController;
+
+    // Banner
     @FXML private Label avatarLabel;
     @FXML private Label fullNameLabel;
-    @FXML private Label typBadge;
-    @FXML private Label menoLabel;
     @FXML private Label emailLabel;
-    @FXML private Label typLabel;
+    @FXML private Label typBadge;
+
+    // Osobné údaje form
+    @FXML private TextField menoField;
+    @FXML private TextField priezviskoField;
+    @FXML private TextField emailProfilField;
+    @FXML private Label profilFeedbackLabel;
+
+    // Zmena hesla form
+    @FXML private PasswordField currentPwField;
+    @FXML private PasswordField newPwField;
+    @FXML private PasswordField confirmPwField;
+    @FXML private Label pwFeedbackLabel;
+
+    // Stats
     @FXML private Label statCelkovo;
     @FXML private Label statAktivne;
     @FXML private Label statZrusene;
@@ -33,24 +47,144 @@ public class ProfilController {
     private final TerminDAO terminDAO = new TerminDAO();
     private final PouzivatelDAO pouzivatelDAO = new PouzivatelDAO();
 
+    private String originalMeno;
+    private String originalPriezvisko;
+    private String originalEmail;
+
     @FXML
     public void initialize() {
         Pouzivatel user = SessionManager.getInstance().getCurrentUser();
         if (user == null) return;
 
-        String initials = user.getMeno().substring(0, 1).toUpperCase()
-            + user.getPriezvisko().substring(0, 1).toUpperCase();
+        String m = user.getMeno(), p = user.getPriezvisko();
+        String initials = (m.isEmpty() ? "?" : m.substring(0, 1).toUpperCase())
+            + (p.isEmpty() ? "?" : p.substring(0, 1).toUpperCase());
         avatarLabel.setText(initials);
         fullNameLabel.setText(user.getCeleMeno());
-        menoLabel.setText(user.getCeleMeno());
         emailLabel.setText(user.getEmail());
 
         String typStr = formatTyp(user.getTyp());
-        typLabel.setText(typStr);
         typBadge.setText(typStr);
         sidebarController.setActivePage("profil");
 
+        originalMeno = user.getMeno();
+        originalPriezvisko = user.getPriezvisko();
+        originalEmail = user.getEmail();
+
+        menoField.setText(originalMeno);
+        priezviskoField.setText(originalPriezvisko);
+        emailProfilField.setText(originalEmail);
+
         loadStats(user.getId());
+    }
+
+    @FXML
+    private void handleSaveProfile() {
+        Pouzivatel user = SessionManager.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        String meno = menoField.getText().trim();
+        String priezvisko = priezviskoField.getText().trim();
+        String email = emailProfilField.getText().trim();
+
+        if (meno.isBlank() || priezvisko.isBlank() || email.isBlank()) {
+            showProfilFeedback("Vyplňte všetky polia.", false);
+            return;
+        }
+        if (!email.contains("@")) {
+            showProfilFeedback("Zadajte platný e-mail.", false);
+            return;
+        }
+        if (!email.equals(user.getEmail()) && pouzivatelDAO.emailExists(email)) {
+            showProfilFeedback("Tento e-mail je už zaregistrovaný.", false);
+            return;
+        }
+
+        pouzivatelDAO.updateProfil(user.getId(), meno, priezvisko, email);
+        user.setMeno(meno);
+        user.setPriezvisko(priezvisko);
+        user.setEmail(email);
+        originalMeno = meno;
+        originalPriezvisko = priezvisko;
+        originalEmail = email;
+
+        // Refresh banner
+        String initials = (meno.isEmpty() ? "?" : meno.substring(0, 1).toUpperCase())
+            + (priezvisko.isEmpty() ? "?" : priezvisko.substring(0, 1).toUpperCase());
+        avatarLabel.setText(initials);
+        fullNameLabel.setText(user.getCeleMeno());
+        emailLabel.setText(email);
+
+        showProfilFeedback("Zmeny boli uložené.", true);
+    }
+
+    @FXML
+    private void handleCancelProfile() {
+        menoField.setText(originalMeno);
+        priezviskoField.setText(originalPriezvisko);
+        emailProfilField.setText(originalEmail);
+        profilFeedbackLabel.setVisible(false);
+        profilFeedbackLabel.setManaged(false);
+    }
+
+    @FXML
+    private void handleChangePassword() {
+        Pouzivatel user = SessionManager.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        String current = currentPwField.getText();
+        String newPw = newPwField.getText();
+        String confirm = confirmPwField.getText();
+
+        if (current.isBlank() || newPw.isBlank() || confirm.isBlank()) {
+            showPwFeedback("Vyplňte všetky polia.", false);
+            return;
+        }
+        if (!PasswordUtil.verify(current, user.getHesloHash())) {
+            showPwFeedback("Aktuálne heslo je nesprávne.", false);
+            return;
+        }
+        if (newPw.length() < 8) {
+            showPwFeedback("Nové heslo musí mať aspoň 8 znakov.", false);
+            return;
+        }
+        if (!newPw.equals(confirm)) {
+            showPwFeedback("Heslá sa nezhodujú.", false);
+            return;
+        }
+
+        String newHash = PasswordUtil.hash(newPw);
+        pouzivatelDAO.updateHeslo(user.getId(), newHash);
+        user.setHesloHash(newHash);
+
+        currentPwField.clear();
+        newPwField.clear();
+        confirmPwField.clear();
+        showPwFeedback("Heslo bolo úspešne zmenené.", true);
+    }
+
+    @FXML
+    private void handleDeleteAccount() {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Zmazať účet");
+        confirm.setHeaderText("Naozaj chcete zmazať svoj účet?");
+        confirm.setContentText("Táto akcia je nevratná. Všetky budúce rezervácie sa zrušia.");
+        confirm.showAndWait().ifPresent(result -> {
+            if (result == ButtonType.OK) {
+                int userId = SessionManager.getInstance().getCurrentUser().getId();
+                pouzivatelDAO.delete(userId);
+                SessionManager.getInstance().logout();
+                Stage stage = (Stage) avatarLabel.getScene().getWindow();
+                SceneManager.switchTo(stage, "/view/prihlasenie.fxml");
+            }
+        });
+    }
+
+    @FXML
+    private void handleLogout() {
+        SessionManager.getInstance().logout();
+        Stage stage = (Stage) avatarLabel.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/prihlasenie.fxml");
     }
 
     private void loadStats(int pacientId) {
@@ -75,80 +209,18 @@ public class ProfilController {
         return t != null ? t.getDatumCas() : LocalDateTime.MIN;
     }
 
-    @FXML
-    private void handleChangePassword() {
-        Pouzivatel user = SessionManager.getInstance().getCurrentUser();
-        if (user == null) return;
+    private void showProfilFeedback(String msg, boolean success) {
+        profilFeedbackLabel.setText(msg);
+        profilFeedbackLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: " + (success ? "#388e3c" : "#d32f2f") + ";");
+        profilFeedbackLabel.setVisible(true);
+        profilFeedbackLabel.setManaged(true);
+    }
 
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Zmena hesla");
-        dialog.setHeaderText("Zadajte nové heslo");
-
-        ButtonType confirmType = new ButtonType("Zmeniť", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(confirmType, ButtonType.CANCEL);
-
-        PasswordField oldPw = new PasswordField();
-        oldPw.setPromptText("Aktuálne heslo");
-
-        PasswordField newPw = new PasswordField();
-        newPw.setPromptText("Nové heslo (min. 8 znakov)");
-
-        PasswordField confirmPw = new PasswordField();
-        confirmPw.setPromptText("Potvrdenie nového hesla");
-
-        Label errorLabel = new Label();
-        errorLabel.setStyle("-fx-text-fill: #d32f2f; -fx-font-size: 12px;");
-
-        javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(10,
-            new Label("Aktuálne heslo:"), oldPw,
-            new Label("Nové heslo:"), newPw,
-            new Label("Potvrdiť heslo:"), confirmPw,
-            errorLabel
-        );
-        content.setStyle("-fx-padding: 10 0 0 0;");
-        dialog.getDialogPane().setContent(content);
-
-        // Disable OK until fields are non-empty
-        javafx.scene.Node okButton = dialog.getDialogPane().lookupButton(confirmType);
-        okButton.setDisable(true);
-        Runnable checkFields = () -> okButton.setDisable(
-            oldPw.getText().isBlank() || newPw.getText().isBlank() || confirmPw.getText().isBlank()
-        );
-        oldPw.textProperty().addListener((o, a, b) -> checkFields.run());
-        newPw.textProperty().addListener((o, a, b) -> checkFields.run());
-        confirmPw.textProperty().addListener((o, a, b) -> checkFields.run());
-
-        // Validate on OK click
-        okButton.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
-            if (!PasswordUtil.verify(oldPw.getText(), user.getHesloHash())) {
-                errorLabel.setText("Aktuálne heslo je nesprávne.");
-                event.consume();
-                return;
-            }
-            if (newPw.getText().length() < 8) {
-                errorLabel.setText("Nové heslo musí mať aspoň 8 znakov.");
-                event.consume();
-                return;
-            }
-            if (!newPw.getText().equals(confirmPw.getText())) {
-                errorLabel.setText("Heslá sa nezhodujú.");
-                event.consume();
-            }
-        });
-
-        dialog.showAndWait().ifPresent(result -> {
-            if (result == confirmType) {
-                String newHash = PasswordUtil.hash(newPw.getText());
-                pouzivatelDAO.updateHeslo(user.getId(), newHash);
-                user.setHesloHash(newHash);
-
-                Alert ok = new Alert(Alert.AlertType.INFORMATION);
-                ok.setTitle("Heslo zmenené");
-                ok.setHeaderText(null);
-                ok.setContentText("Heslo bolo úspešne zmenené.");
-                ok.showAndWait();
-            }
-        });
+    private void showPwFeedback(String msg, boolean success) {
+        pwFeedbackLabel.setText(msg);
+        pwFeedbackLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: " + (success ? "#388e3c" : "#d32f2f") + ";");
+        pwFeedbackLabel.setVisible(true);
+        pwFeedbackLabel.setManaged(true);
     }
 
     private String formatTyp(String typ) {
@@ -157,11 +229,5 @@ public class ProfilController {
             case "ADMIN" -> "Administrátor";
             default -> "Pacient";
         };
-    }
-
-    @FXML private void handleLogout() {
-        SessionManager.getInstance().logout();
-        Stage stage = (Stage) avatarLabel.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/prihlasenie.fxml");
     }
 }

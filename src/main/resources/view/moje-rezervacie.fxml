@@ -10,31 +10,38 @@
 
     <fx:include fx:id="sidebar" source="sidebar-pacient.fxml"/>
 
-    <!-- Main content -->
-    <VBox HBox.hgrow="ALWAYS" style="-fx-padding: 32;" spacing="20">
+    <VBox HBox.hgrow="ALWAYS" spacing="0">
 
-        <HBox alignment="CENTER_LEFT">
-            <Label text="Moje rezervácie" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;" HBox.hgrow="ALWAYS"/>
-            <Button text="+ Rezervovať termín" onAction="#handleNavRezervovat"
-                    style="-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 18; -fx-background-radius: 6; -fx-cursor: hand;"/>
+        <!-- Header bar -->
+        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-padding: 24 28 16 28;">
+            <VBox HBox.hgrow="ALWAYS" spacing="2">
+                <Label text="Moje rezervácie"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label text="Spravujte svoje nadchádzajúce, minulé a zrušené termíny"
+                       style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8;"/>
+            </VBox>
+            <Button text="+ Nový termín" onAction="#handleNavRezervovat"
+                    style="-fx-background-color: #1a9e8f; -fx-text-fill: white;
+                           -fx-font-size: 13px; -fx-font-weight: bold;
+                           -fx-padding: 9 16; -fx-background-radius: 7; -fx-cursor: hand;"/>
         </HBox>
 
         <!-- Tabs -->
-        <TabPane tabClosingPolicy="UNAVAILABLE"
-                 style="-fx-tab-min-width: 120;">
+        <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS"
+                 style="-fx-tab-min-width: 130; -fx-background-color: transparent; -fx-padding: 0 20 20 20;">
             <Tab text="Nadchádzajúce">
                 <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
-                    <VBox fx:id="upcomingContainer" spacing="10" style="-fx-padding: 16 0 0 0;"/>
+                    <VBox fx:id="upcomingContainer" spacing="10" style="-fx-padding: 14 0 0 0;"/>
                 </ScrollPane>
             </Tab>
             <Tab text="Minulé">
                 <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
-                    <VBox fx:id="pastContainer" spacing="10" style="-fx-padding: 16 0 0 0;"/>
+                    <VBox fx:id="pastContainer" spacing="10" style="-fx-padding: 14 0 0 0;"/>
                 </ScrollPane>
             </Tab>
             <Tab text="Zrušené">
                 <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
-                    <VBox fx:id="cancelledContainer" spacing="10" style="-fx-padding: 16 0 0 0;"/>
+                    <VBox fx:id="cancelledContainer" spacing="10" style="-fx-padding: 14 0 0 0;"/>
                 </ScrollPane>
             </Tab>
         </TabPane>

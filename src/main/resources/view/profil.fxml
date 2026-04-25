@@ -10,75 +10,192 @@
 
     <fx:include fx:id="sidebar" source="sidebar-pacient.fxml"/>
 
-    <!-- Main content -->
     <ScrollPane HBox.hgrow="ALWAYS" fitToWidth="true"
                 style="-fx-background: #f5f5f5; -fx-background-color: #f5f5f5; -fx-border-color: transparent;">
-        <VBox spacing="24" style="-fx-padding: 32; -fx-max-width: 600;">
+        <VBox spacing="16" style="-fx-padding: 28 28 28 28;">
 
-            <Label text="Môj profil" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+            <!-- Page heading -->
+            <VBox spacing="2">
+                <Label text="Profil"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label text="Spravujte svoje osobné údaje a nastavenia účtu"
+                       style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8;"/>
+            </VBox>
 
-            <!-- Avatar + identity card -->
-            <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 28; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 8, 0, 0, 2);"
-                  spacing="20" alignment="TOP_LEFT">
+            <!-- Teal header banner -->
+            <HBox alignment="CENTER_LEFT" spacing="16"
+                  style="-fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #1a9e8f, #178b7e);
+                         -fx-background-radius: 8; -fx-padding: 18 20;">
+                <Label fx:id="avatarLabel" text="AB"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;
+                              -fx-min-width: 64; -fx-min-height: 64; -fx-max-width: 64; -fx-max-height: 64;
+                              -fx-background-color: rgba(255,255,255,0.18); -fx-background-radius: 32;
+                              -fx-border-color: rgba(255,255,255,0.35); -fx-border-radius: 32; -fx-border-width: 2;
+                              -fx-alignment: CENTER;"/>
+                <VBox spacing="4">
+                    <Label fx:id="fullNameLabel" text=""
+                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                    <Label fx:id="emailLabel" text=""
+                           style="-fx-font-size: 12.5px; -fx-text-fill: rgba(255,255,255,0.88);"/>
+                    <Label fx:id="typBadge" text="Pacient"
+                           style="-fx-background-color: rgba(255,255,255,0.18); -fx-text-fill: white;
+                                  -fx-font-size: 11px; -fx-font-weight: bold;
+                                  -fx-padding: 3 10; -fx-background-radius: 999;"/>
+                </VBox>
+            </HBox>
 
-                <!-- Avatar row -->
-                <HBox spacing="20" alignment="CENTER_LEFT">
-                    <Label fx:id="avatarLabel" text="AB"
-                           style="-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold; -fx-min-width: 64; -fx-min-height: 64; -fx-max-width: 64; -fx-max-height: 64; -fx-background-radius: 32; -fx-alignment: CENTER;"/>
-                    <VBox spacing="4">
-                        <Label fx:id="fullNameLabel" text=""
-                               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-                        <Label fx:id="typBadge" text="Pacient"
-                               style="-fx-background-color: #e8f5f3; -fx-text-fill: #1a9e8f; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;"/>
+            <!-- Osobné údaje card (editable) -->
+            <VBox spacing="14"
+                  style="-fx-background-color: white; -fx-background-radius: 8;
+                         -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;
+                         -fx-padding: 18 20;">
+                <Label text="Osobné údaje"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label text="Tieto údaje sa zobrazia lekárovi pri vašich termínoch."
+                       style="-fx-font-size: 12px; -fx-text-fill: #9aa0a8;"/>
+
+                <!-- Meno + Priezvisko row -->
+                <HBox spacing="12">
+                    <VBox HBox.hgrow="ALWAYS" spacing="5">
+                        <Label text="Meno" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+                        <TextField fx:id="menoField"
+                                   style="-fx-background-color: #fafbfc; -fx-border-color: #e2e5e9;
+                                          -fx-border-radius: 7; -fx-background-radius: 7;
+                                          -fx-font-size: 13px; -fx-padding: 8 12; -fx-pref-height: 38;"/>
+                    </VBox>
+                    <VBox HBox.hgrow="ALWAYS" spacing="5">
+                        <Label text="Priezvisko" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+                        <TextField fx:id="priezviskoField"
+                                   style="-fx-background-color: #fafbfc; -fx-border-color: #e2e5e9;
+                                          -fx-border-radius: 7; -fx-background-radius: 7;
+                                          -fx-font-size: 13px; -fx-padding: 8 12; -fx-pref-height: 38;"/>
                     </VBox>
                 </HBox>
 
-                <Separator/>
-
-                <!-- Fields -->
-                <VBox spacing="14">
-                    <HBox spacing="0">
-                        <Label text="Meno a priezvisko" style="-fx-font-size: 12px; -fx-text-fill: #888; -fx-min-width: 170;"/>
-                        <Label fx:id="menoLabel" text="" style="-fx-font-size: 13px; -fx-text-fill: #1a1a2e; -fx-font-weight: bold;"/>
-                    </HBox>
-                    <HBox spacing="0">
-                        <Label text="E-mail" style="-fx-font-size: 12px; -fx-text-fill: #888; -fx-min-width: 170;"/>
-                        <Label fx:id="emailLabel" text="" style="-fx-font-size: 13px; -fx-text-fill: #1a1a2e; -fx-font-weight: bold;"/>
-                    </HBox>
-                    <HBox spacing="0">
-                        <Label text="Typ účtu" style="-fx-font-size: 12px; -fx-text-fill: #888; -fx-min-width: 170;"/>
-                        <Label fx:id="typLabel" text="" style="-fx-font-size: 13px; -fx-text-fill: #1a1a2e; -fx-font-weight: bold;"/>
-                    </HBox>
+                <!-- Email -->
+                <VBox spacing="5">
+                    <Label text="E-mail" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+                    <TextField fx:id="emailProfilField"
+                               style="-fx-background-color: #fafbfc; -fx-border-color: #e2e5e9;
+                                      -fx-border-radius: 7; -fx-background-radius: 7;
+                                      -fx-font-size: 13px; -fx-padding: 8 12; -fx-pref-height: 38;"/>
                 </VBox>
+
+                <!-- Profile save feedback -->
+                <Label fx:id="profilFeedbackLabel" text="" visible="false" managed="false"
+                       style="-fx-font-size: 12px; -fx-text-fill: #388e3c;" wrapText="true"/>
+
+                <!-- Buttons -->
+                <HBox alignment="CENTER_RIGHT" spacing="8">
+                    <Button text="Zrušiť" onAction="#handleCancelProfile"
+                            style="-fx-background-color: transparent; -fx-text-fill: #555;
+                                   -fx-border-color: #d0d3d9; -fx-border-radius: 6; -fx-background-radius: 6;
+                                   -fx-font-size: 13px; -fx-padding: 8 16; -fx-cursor: hand;"/>
+                    <Button text="Uložiť zmeny" onAction="#handleSaveProfile"
+                            style="-fx-background-color: #1a9e8f; -fx-text-fill: white;
+                                   -fx-border-color: transparent; -fx-border-radius: 6; -fx-background-radius: 6;
+                                   -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 18; -fx-cursor: hand;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Zmena hesla card (inline) -->
+            <VBox spacing="14"
+                  style="-fx-background-color: white; -fx-background-radius: 8;
+                         -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;
+                         -fx-padding: 18 20;">
+                <Label text="Zmena hesla"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label text="Na zabezpečenie účtu používajte silné heslo, ktoré nezdieľate s inými službami."
+                       style="-fx-font-size: 12px; -fx-text-fill: #9aa0a8;" wrapText="true"/>
+
+                <!-- Current password -->
+                <VBox spacing="5">
+                    <Label text="Aktuálne heslo" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+                    <PasswordField fx:id="currentPwField"
+                                  style="-fx-background-color: #fafbfc; -fx-border-color: #e2e5e9;
+                                         -fx-border-radius: 7; -fx-background-radius: 7;
+                                         -fx-font-size: 13px; -fx-padding: 8 12; -fx-pref-height: 38;"/>
+                </VBox>
+
+                <!-- New + Confirm row -->
+                <HBox spacing="12">
+                    <VBox HBox.hgrow="ALWAYS" spacing="5">
+                        <Label text="Nové heslo" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+                        <PasswordField fx:id="newPwField" promptText="Min. 8 znakov"
+                                      style="-fx-background-color: #fafbfc; -fx-border-color: #e2e5e9;
+                                             -fx-border-radius: 7; -fx-background-radius: 7;
+                                             -fx-font-size: 13px; -fx-padding: 8 12; -fx-pref-height: 38;"/>
+                    </VBox>
+                    <VBox HBox.hgrow="ALWAYS" spacing="5">
+                        <Label text="Potvrdiť nové heslo" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+                        <PasswordField fx:id="confirmPwField" promptText="Zopakujte heslo"
+                                      style="-fx-background-color: #fafbfc; -fx-border-color: #e2e5e9;
+                                             -fx-border-radius: 7; -fx-background-radius: 7;
+                                             -fx-font-size: 13px; -fx-padding: 8 12; -fx-pref-height: 38;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Password feedback -->
+                <Label fx:id="pwFeedbackLabel" text="" visible="false" managed="false"
+                       style="-fx-font-size: 12px; -fx-text-fill: #d32f2f;" wrapText="true"/>
+
+                <HBox alignment="CENTER_RIGHT">
+                    <Button text="Zmeniť heslo" onAction="#handleChangePassword"
+                            style="-fx-background-color: #1a9e8f; -fx-text-fill: white;
+                                   -fx-border-color: transparent; -fx-border-radius: 6; -fx-background-radius: 6;
+                                   -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 18; -fx-cursor: hand;"/>
+                </HBox>
             </VBox>
 
             <!-- Stats card -->
-            <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 24; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 8, 0, 0, 2);"
-                  spacing="16">
-                <Label text="Štatistiky rezervácií" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-                <HBox spacing="16">
-                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #f5f5f5; -fx-background-radius: 8; -fx-padding: 16;" spacing="4" alignment="CENTER">
-                        <Label fx:id="statCelkovo" text="0" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-                        <Label text="Celkovo" style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+            <VBox spacing="14"
+                  style="-fx-background-color: white; -fx-background-radius: 8;
+                         -fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1;
+                         -fx-padding: 18 20;">
+                <Label text="Štatistiky rezervácií"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <HBox spacing="12">
+                    <VBox HBox.hgrow="ALWAYS" alignment="CENTER"
+                          style="-fx-background-color: #f5f5f5; -fx-background-radius: 8; -fx-padding: 16;" spacing="4">
+                        <Label fx:id="statCelkovo" text="0"
+                               style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                        <Label text="Celkovo" style="-fx-font-size: 11px; -fx-text-fill: #9aa0a8;"/>
                     </VBox>
-                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #e8f5f3; -fx-background-radius: 8; -fx-padding: 16;" spacing="4" alignment="CENTER">
-                        <Label fx:id="statAktivne" text="0" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f;"/>
+                    <VBox HBox.hgrow="ALWAYS" alignment="CENTER"
+                          style="-fx-background-color: #e8f5f3; -fx-background-radius: 8; -fx-padding: 16;" spacing="4">
+                        <Label fx:id="statAktivne" text="0"
+                               style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f;"/>
                         <Label text="Aktívne" style="-fx-font-size: 11px; -fx-text-fill: #1a9e8f;"/>
                     </VBox>
-                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #fce4ec; -fx-background-radius: 8; -fx-padding: 16;" spacing="4" alignment="CENTER">
-                        <Label fx:id="statZrusene" text="0" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #c62828;"/>
+                    <VBox HBox.hgrow="ALWAYS" alignment="CENTER"
+                          style="-fx-background-color: #fce4ec; -fx-background-radius: 8; -fx-padding: 16;" spacing="4">
+                        <Label fx:id="statZrusene" text="0"
+                               style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #c62828;"/>
                         <Label text="Zrušené" style="-fx-font-size: 11px; -fx-text-fill: #c62828;"/>
                     </VBox>
                 </HBox>
             </VBox>
 
-            <!-- Actions -->
-            <HBox spacing="12">
-                <Button text="Zmeniť heslo" onAction="#handleChangePassword"
-                        style="-fx-background-color: white; -fx-text-fill: #1a1a2e; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13px; -fx-padding: 10 20; -fx-cursor: hand;"/>
-                <Button text="Odhlásiť sa" onAction="#handleLogout"
-                        style="-fx-background-color: #fce4ec; -fx-text-fill: #c62828; -fx-border-color: transparent; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-cursor: hand;"/>
-            </HBox>
+            <!-- Danger zone -->
+            <VBox spacing="10"
+                  style="-fx-background-color: white; -fx-background-radius: 8;
+                         -fx-border-color: #f0c5c5; -fx-border-radius: 8; -fx-border-width: 1;
+                         -fx-padding: 18 20;">
+                <Label text="Zmazať účet"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #d32f2f;"/>
+                <Label text="Táto akcia je nevratná. Všetky budúce rezervácie sa zrušia a história zostane anonymizovaná."
+                       style="-fx-font-size: 12px; -fx-text-fill: #9aa0a8;" wrapText="true"/>
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <Button text="Odhlásiť sa" onAction="#handleLogout"
+                            style="-fx-background-color: transparent; -fx-text-fill: #888;
+                                   -fx-border-color: #d0d3d9; -fx-border-radius: 6; -fx-background-radius: 6;
+                                   -fx-font-size: 13px; -fx-padding: 8 16; -fx-cursor: hand;"/>
+                    <Button text="Zmazať účet" onAction="#handleDeleteAccount"
+                            style="-fx-background-color: #fce4ec; -fx-text-fill: #c62828;
+                                   -fx-border-color: transparent; -fx-border-radius: 6; -fx-background-radius: 6;
+                                   -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 18; -fx-cursor: hand;"/>
+                </HBox>
+            </VBox>
 
         </VBox>
     </ScrollPane>

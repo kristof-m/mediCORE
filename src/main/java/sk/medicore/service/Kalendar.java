@@ -1,6 +1,7 @@
-package sk.medicore.model;
+package sk.medicore.service;
 
 import sk.medicore.db.dao.TerminDAO;
+import sk.medicore.model.Termin;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

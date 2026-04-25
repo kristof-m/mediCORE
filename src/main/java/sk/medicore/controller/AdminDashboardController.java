@@ -20,7 +20,6 @@ import java.util.List;
 public class AdminDashboardController {
 
     @FXML private SidebarAdminController sidebarController;
-    @FXML private Label greetingLabel;
     @FXML private Label todayLabel;
     @FXML private Label statDnes;
     @FXML private Label statPacienti;
@@ -45,8 +44,7 @@ public class AdminDashboardController {
         if (user == null) return;
 
         sidebarController.setActivePage("dashboard");
-        greetingLabel.setText(getGreeting() + ", " + user.getMeno() + "!");
-        todayLabel.setText(DateUtil.formatDayHeading(LocalDate.now()));
+        todayLabel.setText(DateUtil.formatDayHeading(LocalDate.now()) + " · celoklinický prehľad");
 
         loadStats();
         loadTodayAppointments();

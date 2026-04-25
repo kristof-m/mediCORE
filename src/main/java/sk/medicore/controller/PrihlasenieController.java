@@ -1,10 +1,8 @@
 package sk.medicore.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import sk.medicore.db.dao.PouzivatelDAO;
@@ -49,28 +47,8 @@ public class PrihlasenieController {
 
     @FXML
     private void handleForgotPassword() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Obnovenie hesla");
-        dialog.setHeaderText("Zadajte vašu e-mailovú adresu");
-        dialog.setContentText("E-mail:");
-
-        dialog.showAndWait().ifPresent(email -> {
-            String trimmed = email.trim();
-            if (trimmed.isEmpty()) return;
-
-            if (pouzivatelDAO.findByEmail(trimmed) == null) {
-                showError("Účet s touto e-mailovou adresou neexistuje.");
-                return;
-            }
-
-            Alert info = new Alert(Alert.AlertType.INFORMATION);
-            info.setTitle("E-mail odoslaný");
-            info.setHeaderText(null);
-            info.setContentText("Odkaz na obnovenie hesla bol odoslaný na adresu: " + trimmed);
-            info.showAndWait();
-            errorLabel.setVisible(false);
-            errorLabel.setManaged(false);
-        });
+        Stage stage = (Stage) emailField.getScene().getWindow();
+        SceneManager.switchTo(stage, "/view/zabudnute-heslo.fxml");
     }
 
     @FXML
