@@ -176,7 +176,7 @@ public class PatientKalendarController {
         if (rez.stav() == Rezervacia.Stav.ZRUSENA) {
             color = "#9aa0a8";
             text = rez.datumCas().format(TIME_FMT) + " Dr. " + surname;
-        } else if (rez.datumCas().toLocalDate().isBefore(today)) {
+        } else if (rez.stav() == Rezervacia.Stav.UKONCENA || rez.datumCas().isBefore(java.time.LocalDateTime.now())) {
             color = "#388e3c";
             String proc = rez.proceduraNazov() != null ? rez.proceduraNazov() : "Termín";
             text = "✓ " + proc;
@@ -233,7 +233,7 @@ public class PatientKalendarController {
         if (rez.stav() == Rezervacia.Stav.ZRUSENA) {
             badge.setText("Zrušené");
             badge.setStyle("-fx-background-color: #fce4ec; -fx-text-fill: #c62828; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 4;");
-        } else if (rez.datumCas().toLocalDate().isBefore(today)) {
+        } else if (rez.stav() == Rezervacia.Stav.UKONCENA || rez.datumCas().isBefore(java.time.LocalDateTime.now())) {
             badge.setText("Absolvované");
             badge.setStyle("-fx-background-color: #e8f5e9; -fx-text-fill: #388e3c; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 4;");
         } else {

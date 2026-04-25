@@ -76,8 +76,9 @@ public class DashboardController {
         LocalDateTime now = LocalDateTime.now();
 
         long completed = all.stream().filter(r ->
-            r.getStav() == Rezervacia.Stav.POTVRDENA &&
-            getTerminTime(r.getTerminId()).isBefore(now)).count();
+            r.getStav() == Rezervacia.Stav.UKONCENA ||
+            (r.getStav() == Rezervacia.Stav.POTVRDENA &&
+            getTerminTime(r.getTerminId()).isBefore(now))).count();
         long upcoming2 = all.stream().filter(r ->
             r.getStav() == Rezervacia.Stav.POTVRDENA &&
             getTerminTime(r.getTerminId()).isAfter(now)).count();
@@ -239,6 +240,7 @@ public class DashboardController {
     }
 
     private void handleCancel(Rezervacia r) {
+        if (r.getStav() == Rezervacia.Stav.UKONCENA) return;
         Lekar lekar = lekarDAO.findById(r.getLekarId());
         Termin termin = terminDAO.findById(r.getTerminId());
 

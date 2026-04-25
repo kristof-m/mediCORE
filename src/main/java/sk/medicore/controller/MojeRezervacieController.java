@@ -62,7 +62,7 @@ public class MojeRezervacieController {
             if (r.getStav() == Rezervacia.Stav.ZRUSENA) {
                 card = buildCard(r, "Zrušená", "#757575", "#f5f5f5", false);
                 cancelledContainer.getChildren().add(card);
-            } else if (terminTime.isBefore(now)) {
+            } else if (r.getStav() == Rezervacia.Stav.UKONCENA || terminTime.isBefore(now)) {
                 card = buildCard(r, "Absolvovaná", "#388e3c", "#e8f5e9", false, true);
                 pastContainer.getChildren().add(card);
             } else {
@@ -194,6 +194,7 @@ public class MojeRezervacieController {
     }
 
     private void handleCancel(Rezervacia r) {
+        if (r.getStav() == Rezervacia.Stav.UKONCENA) return;
         Lekar lekar = lekarDAO.findById(r.getLekarId());
         Termin termin = terminDAO.findById(r.getTerminId());
 
