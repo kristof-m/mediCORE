@@ -13,7 +13,19 @@ public class RezervaciaDAO {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    public void autoTransitionUkoncena() {
+        String sql = "UPDATE rezervacie SET stav = 'UKONCENA' " +
+                     "WHERE stav = 'POTVRDENA' " +
+                     "AND termin_id IN (SELECT id FROM terminy WHERE datum_cas < datetime('now','localtime'))";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<Rezervacia> findByPacientId(int pacientId) {
+        autoTransitionUkoncena();
         String sql = "SELECT * FROM rezervacie WHERE pacient_id = ? ORDER BY vytvorena_at DESC";
         List<Rezervacia> list = new ArrayList<>();
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
@@ -88,7 +100,7 @@ public class RezervaciaDAO {
     }
 
     public Rezervacia findByTerminId(int terminId) {
-        String sql = "SELECT * FROM rezervacie WHERE termin_id = ? AND stav = 'POTVRDENA' LIMIT 1";
+        String sql = "SELECT * FROM rezervacie WHERE termin_id = ? AND stav IN ('POTVRDENA','UKONCENA') LIMIT 1";
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
             ps.setInt(1, terminId);
             ResultSet rs = ps.executeQuery();
@@ -166,6 +178,7 @@ public class RezervaciaDAO {
     ) {}
 
     public List<RezervaciaInfo> findEnrichedByPacientIdForMonth(int pacientId, int year, int month) {
+        autoTransitionUkoncena();
         String sql =
             "SELECT r.id, t.datum_cas, t.trvanie_min, " +
             "l.meno AS l_meno, l.priezvisko AS l_priezvisko, " +

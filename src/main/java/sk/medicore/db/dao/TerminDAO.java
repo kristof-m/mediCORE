@@ -31,7 +31,7 @@ public class TerminDAO {
         String sql = "SELECT t.id, t.datum_cas, t.trvanie_min, t.stav, " +
                      "r.id AS rez_id, p.meno, p.priezvisko, proc.nazov AS proc_nazov " +
                      "FROM terminy t " +
-                     "LEFT JOIN rezervacie r ON t.id = r.termin_id AND r.stav = 'POTVRDENA' " +
+                     "LEFT JOIN rezervacie r ON t.id = r.termin_id AND r.stav IN ('POTVRDENA','UKONCENA') " +
                      "LEFT JOIN pouzivatelia p ON r.pacient_id = p.id " +
                      "LEFT JOIN procedury proc ON r.procedura_id = proc.id " +
                      "WHERE t.lekar_id = ? ORDER BY t.datum_cas DESC";
@@ -52,7 +52,7 @@ public class TerminDAO {
         String sql = "SELECT t.id, t.datum_cas, t.trvanie_min, t.stav, " +
                      "r.id AS rez_id, p.meno, p.priezvisko, proc.nazov AS proc_nazov " +
                      "FROM terminy t " +
-                     "LEFT JOIN rezervacie r ON t.id = r.termin_id AND r.stav = 'POTVRDENA' " +
+                     "LEFT JOIN rezervacie r ON t.id = r.termin_id AND r.stav IN ('POTVRDENA','UKONCENA') " +
                      "LEFT JOIN pouzivatelia p ON r.pacient_id = p.id " +
                      "LEFT JOIN procedury proc ON r.procedura_id = proc.id " +
                      "WHERE t.lekar_id = ? AND DATE(t.datum_cas) >= ? AND DATE(t.datum_cas) <= ? " +

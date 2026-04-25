@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Rezervacia {
 
     public enum Stav {
-        POTVRDENA, ZRUSENA, PRESUNUTA
+        POTVRDENA, ZRUSENA, PRESUNUTA, UKONCENA
     }
 
     private int id;

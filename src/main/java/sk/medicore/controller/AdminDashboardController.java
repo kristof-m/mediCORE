@@ -55,7 +55,7 @@ public class AdminDashboardController {
 
         String sqlToday = "SELECT COUNT(*) FROM rezervacie r " +
                           "JOIN terminy t ON r.termin_id = t.id " +
-                          "WHERE DATE(t.datum_cas) = DATE('now','localtime') AND r.stav = 'POTVRDENA'";
+                          "WHERE DATE(t.datum_cas) = DATE('now','localtime') AND r.stav IN ('POTVRDENA','UKONCENA')";
         String sqlPatients = "SELECT COUNT(DISTINCT pacient_id) FROM rezervacie WHERE stav != 'ZRUSENA'";
         String sqlLekari   = "SELECT COUNT(*) FROM lekari";
 
@@ -109,7 +109,7 @@ public class AdminDashboardController {
                      "LEFT JOIN lekari l   ON r.lekar_id   = l.id " +
                      "LEFT JOIN pracoviska prac ON l.pracovisko_id = prac.id " +
                      "WHERE DATE(t.datum_cas) = DATE('now','localtime') " +
-                     "AND r.stav = 'POTVRDENA' " +
+                     "AND r.stav IN ('POTVRDENA','UKONCENA') " +
                      "ORDER BY t.datum_cas";
 
         List<AppointmentInfo> list = new ArrayList<>();
