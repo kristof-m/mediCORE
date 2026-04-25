@@ -41,11 +41,13 @@ public class ProceduraDAO {
     }
 
     private Procedura mapRow(ResultSet rs) throws SQLException {
-        return new Procedura(
+        Procedura p = new Procedura(
             rs.getInt("id"),
             rs.getString("nazov"),
             rs.getInt("trvanie_min"),
             rs.getString("popis")
         );
+        try { p.setKategoria(rs.getString("kategoria")); } catch (SQLException ignored) {}
+        return p;
     }
 }

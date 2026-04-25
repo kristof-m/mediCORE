@@ -1,65 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="sk.medicore.controller.PrihlasenieController"
            prefWidth="900" prefHeight="650"
-           style="-fx-background-color: linear-gradient(to bottom right, #1a9e8f, #1565c0);">
+           style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #16a596 0%, #1a84b8 52%, #1565c0 100%);">
 
-    <VBox alignment="CENTER" maxWidth="420" maxHeight="520"
-          style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 20, 0, 0, 4);"
-          spacing="0">
+    <VBox alignment="CENTER" spacing="18">
 
-        <!-- Header -->
-        <VBox alignment="CENTER" spacing="4" style="-fx-padding: 40 40 24 40;">
-            <Label text="MediCORE" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f;"/>
-            <Label text="Prihlásenie do systému" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-            <Label text="...a pokračujte vo svojich každodenných aktivitách!"
-                   style="-fx-font-size: 12px; -fx-text-fill: #888; -fx-text-alignment: center;"
-                   wrapText="true"/>
-        </VBox>
+        <!-- Brand lockup above card -->
+        <HBox alignment="CENTER" spacing="12">
+            <Label text="+"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f;
+                          -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;
+                          -fx-background-color: white; -fx-background-radius: 9; -fx-alignment: CENTER;"/>
+            <VBox spacing="2">
+                <Label text="MediCORE"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Label text="Healthcare Booking Platform"
+                       style="-fx-font-size: 10.5px; -fx-text-fill: rgba(255,255,255,0.82);"/>
+            </VBox>
+        </HBox>
 
-        <!-- Form -->
-        <VBox spacing="14" style="-fx-padding: 0 40 0 40;">
+        <!-- Card -->
+        <VBox spacing="0" maxWidth="420"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-effect: dropshadow(gaussian, rgba(10,28,60,0.28), 40, 0.0, 0, 10);">
 
-            <VBox spacing="4">
-                <Label text="E-mail" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
-                <TextField fx:id="emailField" promptText="vas@email.com"
-                           style="-fx-font-size: 13px; -fx-padding: 10 12; -fx-background-radius: 6; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-border-width: 1;"/>
+            <VBox spacing="4" style="-fx-padding: 32 36 16 36;">
+                <Label text="Prihláste sa"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label text="Vitajte späť! Zadajte svoje prihlasovacie údaje."
+                       style="-fx-font-size: 12.5px; -fx-text-fill: #6b7280;" wrapText="true"/>
             </VBox>
 
-            <VBox spacing="4">
-                <Label text="Heslo" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
-                <PasswordField fx:id="passwordField" promptText="Zadajte heslo"
-                               style="-fx-font-size: 13px; -fx-padding: 10 12; -fx-background-radius: 6; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-border-width: 1;"/>
+            <VBox spacing="14" style="-fx-padding: 0 36 0 36;">
+
+                <VBox spacing="5">
+                    <Label text="E-mail"
+                           style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #2a2f3a;"/>
+                    <TextField fx:id="emailField" promptText="vas@email.com"
+                               style="-fx-font-size: 12.5px; -fx-pref-height: 38; -fx-padding: 0 11;
+                                      -fx-background-radius: 7; -fx-border-color: #e2e5e9;
+                                      -fx-border-radius: 7; -fx-border-width: 1;"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Heslo"
+                           style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #2a2f3a;"/>
+                    <PasswordField fx:id="passwordField" promptText="Zadajte heslo"
+                                   style="-fx-font-size: 12.5px; -fx-pref-height: 38; -fx-padding: 0 11;
+                                          -fx-background-radius: 7; -fx-border-color: #e2e5e9;
+                                          -fx-border-radius: 7; -fx-border-width: 1;"/>
+                </VBox>
+
+                <Label fx:id="errorLabel" text=""
+                       style="-fx-text-fill: #d32f2f; -fx-font-size: 12px;"
+                       wrapText="true" managed="false" visible="false"/>
+
+                <Button text="Prihlásiť sa" onAction="#handleLogin"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #1a9e8f; -fx-text-fill: white;
+                               -fx-font-size: 14px; -fx-font-weight: bold;
+                               -fx-pref-height: 44; -fx-background-radius: 8; -fx-cursor: hand;"/>
             </VBox>
 
-            <!-- Error label -->
-            <Label fx:id="errorLabel" text=""
-                   style="-fx-text-fill: #d32f2f; -fx-font-size: 12px;"
-                   wrapText="true" managed="false" visible="false"/>
-
-            <!-- Login button -->
-            <Button text="Prihlásiť sa" onAction="#handleLogin"
-                    maxWidth="Infinity"
-                    style="-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 11 0; -fx-background-radius: 6; -fx-cursor: hand;"/>
-
+            <VBox alignment="CENTER" spacing="8" style="-fx-padding: 16 36 28 36;">
+                <Hyperlink text="Zabudli ste heslo?" onAction="#handleForgotPassword"
+                           style="-fx-font-size: 12px; -fx-text-fill: #1a9e8f; -fx-border-color: transparent;"/>
+                <HBox alignment="CENTER" spacing="4">
+                    <Label text="Nemáte účet?" style="-fx-font-size: 12.5px; -fx-text-fill: #4b5360;"/>
+                    <Hyperlink text="Registrovať sa" onAction="#handleGoToRegistracia"
+                               style="-fx-font-size: 12.5px; -fx-text-fill: #1a9e8f; -fx-border-color: transparent;"/>
+                </HBox>
+            </VBox>
         </VBox>
-
-        <!-- Footer links -->
-        <VBox alignment="CENTER" spacing="6" style="-fx-padding: 20 40 32 40;">
-            <Hyperlink text="Zabudli ste heslo? Pošlite odkaz na obnovenie."
-                       onAction="#handleForgotPassword"
-                       style="-fx-font-size: 12px; -fx-text-fill: #1a9e8f;"/>
-            <HBox alignment="CENTER" spacing="4">
-                <Label text="Nemáte účet?" style="-fx-font-size: 12px; -fx-text-fill: #666;"/>
-                <Hyperlink text="Registrovať sa" onAction="#handleGoToRegistracia"
-                           style="-fx-font-size: 12px; -fx-text-fill: #1a9e8f;"/>
-            </HBox>
-        </VBox>
-
     </VBox>
 </StackPane>

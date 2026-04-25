@@ -60,6 +60,12 @@ public class LekarKalendarController {
         loadWeek();
     }
 
+    @FXML
+    private void handleToday() {
+        weekStart = LocalDate.now().with(DayOfWeek.MONDAY);
+        loadWeek();
+    }
+
     private void loadWeek() {
         LocalDate weekEnd = weekStart.plusDays(6);
         weekRangeLabel.setText(DateUtil.formatDate(weekStart) + " — " + DateUtil.formatDate(weekEnd));

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="sk.medicore.controller.ZabudnuteHesloController"
+           prefWidth="900" prefHeight="650"
+           style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #16a596 0%, #1a84b8 52%, #1565c0 100%);">
+
+    <VBox alignment="CENTER" spacing="18">
+
+        <!-- Brand lockup -->
+        <HBox alignment="CENTER" spacing="12">
+            <Label text="+"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a9e8f;
+                          -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;
+                          -fx-background-color: white; -fx-background-radius: 9; -fx-alignment: CENTER;"/>
+            <VBox spacing="2">
+                <Label text="MediCORE"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Label text="Healthcare Booking Platform"
+                       style="-fx-font-size: 10.5px; -fx-text-fill: rgba(255,255,255,0.82);"/>
+            </VBox>
+        </HBox>
+
+        <!-- Card -->
+        <VBox spacing="0" maxWidth="420"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-effect: dropshadow(gaussian, rgba(10,28,60,0.28), 40, 0.0, 0, 10);">
+
+            <!-- ── STATE 1: Enter e-mail ── -->
+            <VBox fx:id="emailPane" spacing="0">
+                <VBox spacing="4" style="-fx-padding: 32 36 16 36;">
+                    <Label text="Obnoviť heslo"
+                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                    <Label text="Zadajte e-mail a my vám umožníme nastaviť nové heslo."
+                           style="-fx-font-size: 12.5px; -fx-text-fill: #6b7280;" wrapText="true"/>
+                </VBox>
+
+                <VBox spacing="14" style="-fx-padding: 0 36 0 36;">
+                    <VBox spacing="5">
+                        <Label text="E-mail"
+                               style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #2a2f3a;"/>
+                        <TextField fx:id="emailField" promptText="vas@email.com"
+                                   style="-fx-font-size: 12.5px; -fx-pref-height: 38; -fx-padding: 0 11;
+                                          -fx-background-radius: 7; -fx-border-color: #e2e5e9;
+                                          -fx-border-radius: 7; -fx-border-width: 1;"/>
+                    </VBox>
+
+                    <Label fx:id="emailErrorLabel" text=""
+                           style="-fx-text-fill: #d32f2f; -fx-font-size: 12px;"
+                           wrapText="true" visible="false" managed="false"/>
+
+                    <Button text="Pokračovať" onAction="#handleCheckEmail"
+                            maxWidth="Infinity"
+                            style="-fx-background-color: #1a9e8f; -fx-text-fill: white;
+                                   -fx-font-size: 14px; -fx-font-weight: bold;
+                                   -fx-pref-height: 44; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                </VBox>
+
+                <HBox alignment="CENTER" style="-fx-padding: 20 36 28 36;">
+                    <Hyperlink text="← Späť na prihlásenie" onAction="#handleBack"
+                               style="-fx-font-size: 12px; -fx-text-fill: #9aa0a8; -fx-border-color: transparent;"/>
+                </HBox>
+            </VBox>
+
+            <!-- ── STATE 2: Set new password ── -->
+            <VBox fx:id="passwordPane" spacing="0" visible="false" managed="false">
+                <VBox spacing="4" style="-fx-padding: 32 36 16 36;">
+                    <Label text="Nové heslo"
+                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                    <Label fx:id="emailConfirmLabel" text=""
+                           style="-fx-font-size: 12.5px; -fx-text-fill: #6b7280;" wrapText="true"/>
+                </VBox>
+
+                <VBox spacing="14" style="-fx-padding: 0 36 0 36;">
+                    <VBox spacing="5">
+                        <Label text="Nové heslo"
+                               style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #2a2f3a;"/>
+                        <PasswordField fx:id="newPwField" promptText="Min. 8 znakov"
+                                      style="-fx-font-size: 12.5px; -fx-pref-height: 38; -fx-padding: 0 11;
+                                             -fx-background-radius: 7; -fx-border-color: #e2e5e9;
+                                             -fx-border-radius: 7; -fx-border-width: 1;"/>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="Potvrdiť nové heslo"
+                               style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #2a2f3a;"/>
+                        <PasswordField fx:id="confirmPwField" promptText="Zopakujte heslo"
+                                      style="-fx-font-size: 12.5px; -fx-pref-height: 38; -fx-padding: 0 11;
+                                             -fx-background-radius: 7; -fx-border-color: #e2e5e9;
+                                             -fx-border-radius: 7; -fx-border-width: 1;"/>
+                    </VBox>
+
+                    <Label fx:id="pwErrorLabel" text=""
+                           style="-fx-text-fill: #d32f2f; -fx-font-size: 12px;"
+                           wrapText="true" visible="false" managed="false"/>
+
+                    <Button text="Nastaviť heslo" onAction="#handleSetPassword"
+                            maxWidth="Infinity"
+                            style="-fx-background-color: #1a9e8f; -fx-text-fill: white;
+                                   -fx-font-size: 14px; -fx-font-weight: bold;
+                                   -fx-pref-height: 44; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                </VBox>
+
+                <HBox alignment="CENTER" style="-fx-padding: 20 36 28 36;">
+                    <Hyperlink text="← Iný e-mail" onAction="#handleBackToEmail"
+                               style="-fx-font-size: 12px; -fx-text-fill: #9aa0a8; -fx-border-color: transparent;"/>
+                </HBox>
+            </VBox>
+
+            <!-- ── STATE 3: Success ── -->
+            <VBox fx:id="successPane" spacing="0" visible="false" managed="false" alignment="CENTER">
+                <VBox spacing="16" alignment="CENTER" style="-fx-padding: 40 36 36 36;">
+                    <Label text="✓"
+                           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;
+                                  -fx-background-color: #1a9e8f; -fx-background-radius: 30;
+                                  -fx-min-width: 60; -fx-min-height: 60; -fx-max-width: 60; -fx-max-height: 60;
+                                  -fx-alignment: CENTER;
+                                  -fx-effect: dropshadow(gaussian, rgba(26,158,143,0.35), 10, 0, 0, 4);"/>
+                    <Label text="Heslo bolo zmenené"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                    <Label text="Môžete sa prihlásiť s novým heslom."
+                           style="-fx-font-size: 13px; -fx-text-fill: #6b7280;" wrapText="true"/>
+                    <Button text="Prihlásiť sa" onAction="#handleBack"
+                            maxWidth="Infinity"
+                            style="-fx-background-color: #1a9e8f; -fx-text-fill: white;
+                                   -fx-font-size: 14px; -fx-font-weight: bold;
+                                   -fx-pref-height: 44; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                </VBox>
+            </VBox>
+
+        </VBox>
+    </VBox>
+</StackPane>

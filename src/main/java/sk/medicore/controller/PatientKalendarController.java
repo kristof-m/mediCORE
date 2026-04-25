@@ -2,206 +2,257 @@ package sk.medicore.controller;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import sk.medicore.db.dao.LekarDAO;
-import sk.medicore.db.dao.ProceduraDAO;
-import sk.medicore.db.dao.TerminDAO;
-import sk.medicore.model.Lekar;
-import sk.medicore.model.Procedura;
-import sk.medicore.model.Termin;
-import sk.medicore.util.SceneManager;
+import sk.medicore.db.dao.RezervaciaDAO;
+import sk.medicore.model.Rezervacia;
 import sk.medicore.util.SessionManager;
 
-import sk.medicore.util.DateUtil;
-
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PatientKalendarController {
 
     @FXML private SidebarPacientController sidebarController;
-    @FXML private ComboBox<Lekar> lekarCombo;
-    @FXML private VBox dniContainer;
-    @FXML private Label emptyLabel;
+    @FXML private Label monthLabel;
+    @FXML private GridPane calGrid;
+    @FXML private Label selectedDayLabel;
+    @FXML private VBox sidePanelRows;
+    @FXML private Label noApptsLabel;
 
-    private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
+    private YearMonth currentYearMonth;
+    private int pacientId;
+    private List<RezervaciaDAO.RezervaciaInfo> currentMonthData = List.of();
+    private final RezervaciaDAO rezervaciaDAO = new RezervaciaDAO();
 
-    private final LekarDAO lekarDAO = new LekarDAO();
-    private final TerminDAO terminDAO = new TerminDAO();
-    private final ProceduraDAO proceduraDAO = new ProceduraDAO();
+    private static final DateTimeFormatter TIME_FMT  = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter MONTH_FMT = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.forLanguageTag("sk"));
+    private static final String[] DOW = {"Po", "Ut", "St", "Št", "Pi", "So", "Ne"};
 
     @FXML
     public void initialize() {
         var user = SessionManager.getInstance().getCurrentUser();
         if (user == null) return;
-
+        pacientId = user.getId();
         sidebarController.setActivePage("kalendar");
-
-        lekarCombo.setCellFactory(lv -> new LekarCell());
-        lekarCombo.setButtonCell(new LekarCell());
-
-        List<Lekar> lekari = lekarDAO.findAll();
-        lekarCombo.getItems().addAll(lekari);
+        currentYearMonth = YearMonth.now();
+        buildCalendar();
+        showSidePanel(LocalDate.now(), filterForDate(LocalDate.now()));
     }
 
     @FXML
-    private void handleLekarSelected() {
-        Lekar selected = lekarCombo.getValue();
-        if (selected == null) return;
-
-        dniContainer.getChildren().clear();
-        emptyLabel.setVisible(false);
-        emptyLabel.setManaged(false);
-
-        LocalDate from = LocalDate.now();
-        LocalDate to = from.plusDays(30);
-        List<TerminDAO.TerminInfo> terminy = terminDAO.findEnrichedForWeek(selected.getId(), from, to);
-
-        if (terminy.isEmpty()) {
-            emptyLabel.setVisible(true);
-            emptyLabel.setManaged(true);
-            return;
-        }
-
-        List<Procedura> doctorProcs = proceduraDAO.findByLekarId(selected.getId());
-
-        Map<LocalDate, List<TerminDAO.TerminInfo>> byDay = terminy.stream()
-            .collect(Collectors.groupingBy(t -> t.datumCas().toLocalDate()));
-
-        byDay.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .forEach(e -> dniContainer.getChildren().add(buildDaySection(e.getKey(), e.getValue(), selected, doctorProcs)));
+    private void handlePrev() {
+        currentYearMonth = currentYearMonth.minusMonths(1);
+        buildCalendar();
+        showSidePanel(currentYearMonth.atDay(1), filterForDate(currentYearMonth.atDay(1)));
     }
 
-    private VBox buildDaySection(LocalDate day, List<TerminDAO.TerminInfo> items, Lekar lekar, List<Procedura> procs) {
-        VBox section = new VBox(8);
-
-        String dayStr = DateUtil.formatDayHeading(day);
-
-        Label dayLabel = new Label(dayStr);
-        dayLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e; -fx-padding: 0 0 4 0;");
-        section.getChildren().add(dayLabel);
-
-        for (var info : items) {
-            section.getChildren().add(buildSlotRow(info, lekar, procs));
-        }
-        return section;
+    @FXML
+    private void handleNext() {
+        currentYearMonth = currentYearMonth.plusMonths(1);
+        buildCalendar();
+        showSidePanel(currentYearMonth.atDay(1), filterForDate(currentYearMonth.atDay(1)));
     }
 
-    private HBox buildSlotRow(TerminDAO.TerminInfo info, Lekar lekar, List<Procedura> procs) {
-        HBox row = new HBox(12);
-        row.setAlignment(Pos.CENTER_LEFT);
+    @FXML
+    private void handleToday() {
+        currentYearMonth = YearMonth.now();
+        buildCalendar();
+        showSidePanel(LocalDate.now(), filterForDate(LocalDate.now()));
+    }
 
-        boolean dostupny = info.stav() == Termin.Stav.DOSTUPNY;
-        String bg = dostupny ? "white" : "#fff8f0";
-        String border = dostupny ? "#e8f5f3" : "#ffcc80";
-        row.setStyle("-fx-background-color: " + bg + "; -fx-background-radius: 8; -fx-padding: 12 16; " +
-                     "-fx-border-color: " + border + "; -fx-border-radius: 8; -fx-border-width: 1.5;");
+    private void buildCalendar() {
+        calGrid.getChildren().clear();
+        calGrid.getRowConstraints().clear();
 
-        Label timeLabel = new Label(info.datumCas().format(TIME_FMT));
-        timeLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e; -fx-min-width: 50;");
+        String raw = currentYearMonth.format(MONTH_FMT);
+        monthLabel.setText(raw.substring(0, 1).toUpperCase() + raw.substring(1));
 
-        Label durLabel = new Label(info.trvanieMin() + " min");
-        durLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #888; -fx-min-width: 55;");
+        // Load reservations for the month — stored in field so cell clicks reuse it
+        currentMonthData = rezervaciaDAO.findEnrichedByPacientIdForMonth(
+            pacientId, currentYearMonth.getYear(), currentYearMonth.getMonthValue());
+        Map<LocalDate, List<RezervaciaDAO.RezervaciaInfo>> byDate = currentMonthData.stream()
+            .collect(Collectors.groupingBy(r -> r.datumCas().toLocalDate()));
 
-        Label stavBadge = buildStavBadge(info.stav());
+        // DOW header row
+        calGrid.getRowConstraints().add(new RowConstraints(28));
+        for (int col = 0; col < 7; col++) {
+            Label h = new Label(DOW[col]);
+            h.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #9aa0a8; -fx-alignment: CENTER; -fx-padding: 6 0;");
+            h.setMaxWidth(Double.MAX_VALUE);
+            GridPane.setFillWidth(h, true);
+            calGrid.add(h, col, 0);
+        }
 
-        // Spacer
-        javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        LocalDate firstOfMonth = currentYearMonth.atDay(1);
+        int startDow = firstOfMonth.getDayOfWeek().getValue() - 1; // Mon=0 … Sun=6
+        int daysInMonth = currentYearMonth.lengthOfMonth();
+        int totalCells = (int) Math.ceil((startDow + daysInMonth) / 7.0) * 7;
+        int totalRows = totalCells / 7;
 
-        row.getChildren().addAll(timeLabel, durLabel, stavBadge, spacer);
+        for (int r = 0; r < totalRows; r++) {
+            RowConstraints rc = new RowConstraints(68);
+            rc.setMinHeight(68);
+            calGrid.getRowConstraints().add(rc);
+        }
 
-        if (dostupny) {
-            if (procs.isEmpty()) {
-                // fallback: no procedures configured for this doctor
-                Button btn = new Button("Rezervovať");
-                btn.setStyle("-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 5; -fx-cursor: hand;");
-                btn.setOnAction(e -> navigateToWizard(lekar, toTermin(info), null));
-                row.getChildren().add(btn);
-            } else if (procs.size() == 1) {
-                Button btn = new Button("Rezervovať");
-                btn.setStyle("-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 5; -fx-cursor: hand;");
-                btn.setOnAction(e -> navigateToWizard(lekar, toTermin(info), procs.get(0)));
-                row.getChildren().add(btn);
+        for (int i = 0; i < totalCells; i++) {
+            int col = i % 7;
+            int gridRow = i / 7 + 1;
+
+            LocalDate date;
+            boolean muted;
+            if (i < startDow) {
+                date = firstOfMonth.minusDays(startDow - i);
+                muted = true;
+            } else if (i < startDow + daysInMonth) {
+                date = currentYearMonth.atDay(i - startDow + 1);
+                muted = false;
             } else {
-                ComboBox<Procedura> procCombo = new ComboBox<>();
-                procCombo.setCellFactory(lv -> new ProceduraCell());
-                procCombo.setButtonCell(new ProceduraCell());
-                procCombo.getItems().addAll(procs);
-                procCombo.setPromptText("Vybrať procedúru");
-                procCombo.setPrefWidth(180);
+                date = currentYearMonth.plusMonths(1).atDay(i - startDow - daysInMonth + 1);
+                muted = true;
+            }
 
-                Button btn = new Button("Rezervovať");
-                btn.setStyle("-fx-background-color: #1a9e8f; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 5; -fx-cursor: hand;");
-                btn.setOnAction(e -> {
-                    Procedura chosen = procCombo.getValue();
-                    if (chosen == null) {
-                        procCombo.setStyle("-fx-border-color: #d32f2f; -fx-border-radius: 4;");
-                        return;
-                    }
-                    navigateToWizard(lekar, toTermin(info), chosen);
-                });
-                row.getChildren().addAll(procCombo, btn);
+            List<RezervaciaDAO.RezervaciaInfo> cellRezs = muted ? List.of() : byDate.getOrDefault(date, List.of());
+            VBox cell = buildCell(date, muted, cellRezs);
+            GridPane.setFillWidth(cell, true);
+            GridPane.setFillHeight(cell, true);
+            calGrid.add(cell, col, gridRow);
+        }
+    }
+
+    private VBox buildCell(LocalDate date, boolean muted, List<RezervaciaDAO.RezervaciaInfo> rezs) {
+        boolean isToday = !muted && date.equals(LocalDate.now());
+
+        VBox cell = new VBox(3);
+        cell.setPrefHeight(68);
+        cell.setMinHeight(68);
+        cell.setMaxWidth(Double.MAX_VALUE);
+
+        String bg = muted ? "#fafafb" : "white";
+        String border = isToday ? "#1a9e8f" : "#eef0f3";
+        String extra = isToday ? " -fx-effect: dropshadow(gaussian, rgba(26,158,143,0.15), 4, 0, 0, 0);" : "";
+        cell.setStyle("-fx-background-color: " + bg + "; -fx-background-radius: 7; " +
+                      "-fx-border-color: " + border + "; -fx-border-radius: 7; -fx-border-width: 1; " +
+                      "-fx-padding: 6 8; -fx-cursor: hand;" + extra);
+
+        String dayColor = muted ? "#c2c6cc" : isToday ? "#1a9e8f" : "#1a1a2e";
+        Label dayNum = new Label(String.valueOf(date.getDayOfMonth()));
+        dayNum.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: " + dayColor + ";");
+        cell.getChildren().add(dayNum);
+
+        LocalDate today = LocalDate.now();
+        int shown = 0;
+        for (RezervaciaDAO.RezervaciaInfo rez : rezs) {
+            if (shown >= 2) {
+                Label more = new Label("+" + (rezs.size() - 2) + " ďalšie");
+                more.setStyle("-fx-font-size: 10px; -fx-text-fill: #1a9e8f; -fx-font-weight: bold;");
+                cell.getChildren().add(more);
+                break;
+            }
+            cell.getChildren().add(buildPill(rez, today));
+            shown++;
+        }
+
+        final LocalDate clickDate = date;
+        final List<RezervaciaDAO.RezervaciaInfo> clickRezs = rezs;
+        cell.setOnMouseClicked(e -> showSidePanel(clickDate, clickRezs));
+        return cell;
+    }
+
+    private Label buildPill(RezervaciaDAO.RezervaciaInfo rez, LocalDate today) {
+        String color;
+        String text;
+        String surname = rez.lekarPriezvisko() != null ? rez.lekarPriezvisko() : "Lekár";
+        if (rez.stav() == Rezervacia.Stav.ZRUSENA) {
+            color = "#9aa0a8";
+            text = rez.datumCas().format(TIME_FMT) + " Dr. " + surname;
+        } else if (rez.datumCas().toLocalDate().isBefore(today)) {
+            color = "#388e3c";
+            String proc = rez.proceduraNazov() != null ? rez.proceduraNazov() : "Termín";
+            text = "✓ " + proc;
+        } else {
+            color = "#1a9e8f";
+            text = rez.datumCas().format(TIME_FMT) + " Dr. " + surname;
+        }
+        Label pill = new Label(text);
+        pill.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; " +
+                      "-fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 5; -fx-background-radius: 3;");
+        pill.setMaxWidth(Double.MAX_VALUE);
+        return pill;
+    }
+
+    private void showSidePanel(LocalDate date, List<RezervaciaDAO.RezervaciaInfo> rezs) {
+        selectedDayLabel.setText("Vybraný deň — " + formatDayLabel(date));
+        sidePanelRows.getChildren().clear();
+
+        if (rezs == null || rezs.isEmpty()) {
+            noApptsLabel.setVisible(true);
+            noApptsLabel.setManaged(true);
+        } else {
+            noApptsLabel.setVisible(false);
+            noApptsLabel.setManaged(false);
+            LocalDate today = LocalDate.now();
+            for (RezervaciaDAO.RezervaciaInfo rez : rezs) {
+                sidePanelRows.getChildren().add(buildMiniRow(rez, today));
             }
         }
+    }
 
+    private HBox buildMiniRow(RezervaciaDAO.RezervaciaInfo rez, LocalDate today) {
+        HBox row = new HBox(10);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setStyle("-fx-padding: 8 0; -fx-border-color: transparent transparent #eef0f3 transparent; -fx-border-width: 0 0 1 0;");
+
+        Label time = new Label(rez.datumCas().format(TIME_FMT));
+        time.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e; -fx-min-width: 48;");
+
+        String meno = rez.lekarMeno() != null ? rez.lekarMeno() : "";
+        String priezvisko = rez.lekarPriezvisko() != null ? rez.lekarPriezvisko() : "Lekár";
+        String doctor = "Dr. " + (meno.isEmpty() ? "" : meno + " ") + priezvisko;
+        String proc = rez.proceduraNazov() != null ? " · " + rez.proceduraNazov() : "";
+        Label detail = new Label(doctor + proc);
+        detail.setStyle("-fx-font-size: 12px; -fx-text-fill: #9aa0a8;");
+        HBox.setHgrow(detail, Priority.ALWAYS);
+
+        row.getChildren().addAll(time, detail, buildStavBadge(rez, today));
         return row;
     }
 
-    private void navigateToWizard(Lekar lekar, Termin termin, Procedura procedura) {
-        termin.setLekarId(lekar.getId());
-        if (procedura != null) {
-            SessionManager.getInstance().setPreselectedBooking(lekar, termin, procedura);
-        }
-        Stage stage = (Stage) dniContainer.getScene().getWindow();
-        SceneManager.switchTo(stage, "/view/rezervacia-wizard.fxml");
-    }
-
-    private Termin toTermin(TerminDAO.TerminInfo info) {
-        Termin t = new Termin();
-        t.setId(info.terminId());
-        t.setDatumCas(info.datumCas());
-        t.setTrvanieMin(info.trvanieMin());
-        t.setStav(info.stav());
-        return t;
-    }
-
-    private Label buildStavBadge(Termin.Stav stav) {
+    private Label buildStavBadge(RezervaciaDAO.RezervaciaInfo rez, LocalDate today) {
         Label badge = new Label();
-        if (stav == Termin.Stav.DOSTUPNY) {
-            badge.setText("Dostupný");
-            badge.setStyle("-fx-background-color: #e8f5f3; -fx-text-fill: #1a9e8f; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;");
+        if (rez.stav() == Rezervacia.Stav.ZRUSENA) {
+            badge.setText("Zrušené");
+            badge.setStyle("-fx-background-color: #fce4ec; -fx-text-fill: #c62828; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 4;");
+        } else if (rez.datumCas().toLocalDate().isBefore(today)) {
+            badge.setText("Absolvované");
+            badge.setStyle("-fx-background-color: #e8f5e9; -fx-text-fill: #388e3c; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 4;");
         } else {
-            badge.setText("Rezervovaný");
-            badge.setStyle("-fx-background-color: #fff3e0; -fx-text-fill: #e65100; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;");
+            badge.setText("Nadchádzajúce");
+            badge.setStyle("-fx-background-color: #e8f5f3; -fx-text-fill: #1a9e8f; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 4;");
         }
         return badge;
     }
 
-    // --- Cell factories ---
-
-    private static class LekarCell extends ListCell<Lekar> {
-        @Override
-        protected void updateItem(Lekar l, boolean empty) {
-            super.updateItem(l, empty);
-            setText(empty || l == null ? null : "Dr. " + l.getCeleMeno() + " — " + l.getSpecializacia());
-        }
+    /** Filter already-loaded month data for a specific date (no DB hit). */
+    private List<RezervaciaDAO.RezervaciaInfo> filterForDate(LocalDate date) {
+        return currentMonthData.stream()
+            .filter(r -> r.datumCas().toLocalDate().equals(date))
+            .collect(Collectors.toList());
     }
 
-    private static class ProceduraCell extends ListCell<Procedura> {
-        @Override
-        protected void updateItem(Procedura p, boolean empty) {
-            super.updateItem(p, empty);
-            setText(empty || p == null ? null : p.getNazov() + " (" + p.getTrvanieMin() + " min)");
-        }
+    private static String formatDayLabel(LocalDate date) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEEE, d. MMMM yyyy", Locale.forLanguageTag("sk"));
+        String s = date.format(fmt);
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
-
 }

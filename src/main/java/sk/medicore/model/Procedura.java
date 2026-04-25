@@ -6,6 +6,7 @@ public class Procedura {
     private String nazov;
     private int trvanieMin;
     private String popis;
+    private String kategoria;
 
     public Procedura() {}
 
@@ -27,4 +28,7 @@ public class Procedura {
 
     public String getPopis() { return popis; }
     public void setPopis(String popis) { this.popis = popis; }
+
+    public String getKategoria() { return kategoria; }
+    public void setKategoria(String kategoria) { this.kategoria = kategoria; }
 }

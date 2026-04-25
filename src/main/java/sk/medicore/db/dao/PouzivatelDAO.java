@@ -53,6 +53,33 @@ public class PouzivatelDAO {
         }
     }
 
+    public void updateProfil(int userId, String meno, String priezvisko, String email) {
+        String sql = "UPDATE pouzivatelia SET meno = ?, priezvisko = ?, email = ? WHERE id = ?";
+        try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
+            ps.setString(1, meno);
+            ps.setString(2, priezvisko);
+            ps.setString(3, email);
+            ps.setInt(4, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void delete(int userId) {
+        String cancelFuture = "UPDATE rezervacie SET stav = 'ZRUSENA' WHERE pacient_id = ? AND stav = 'POTVRDENA'";
+        String deleteUser   = "DELETE FROM pouzivatelia WHERE id = ?";
+        try (PreparedStatement ps1 = DatabaseManager.getConnection().prepareStatement(cancelFuture);
+             PreparedStatement ps2 = DatabaseManager.getConnection().prepareStatement(deleteUser)) {
+            ps1.setInt(1, userId);
+            ps1.executeUpdate();
+            ps2.setInt(1, userId);
+            ps2.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void updateHeslo(int userId, String newHesloHash) {
         String sql = "UPDATE pouzivatelia SET heslo_hash = ? WHERE id = ?";
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {

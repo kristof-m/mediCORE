@@ -10,26 +10,39 @@
 
     <fx:include fx:id="sidebar" source="sidebar-lekar.fxml"/>
 
-    <!-- Main content -->
     <ScrollPane HBox.hgrow="ALWAYS" fitToWidth="true"
                 style="-fx-background: #f5f5f5; -fx-background-color: #f5f5f5; -fx-border-color: transparent;">
-        <VBox spacing="20" style="-fx-padding: 32;">
+        <VBox spacing="16" style="-fx-padding: 28;">
+
+            <!-- Heading -->
+            <VBox spacing="2">
+                <Label text="Môj kalendár"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                <Label text="Termíny a rezervácie v aktuálnom týždni"
+                       style="-fx-font-size: 12.5px; -fx-text-fill: #9aa0a8;"/>
+            </VBox>
 
             <!-- Week navigation -->
-            <HBox alignment="CENTER_LEFT" spacing="16">
-                <VBox HBox.hgrow="ALWAYS" spacing="2">
-                    <Label text="Môj kalendár" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-                    <Label fx:id="weekRangeLabel" text=""
-                           style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
-                </VBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
                 <Button text="← Predchádzajúci" onAction="#handlePrevWeek"
-                        style="-fx-background-color: white; -fx-text-fill: #555; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13px; -fx-padding: 8 16; -fx-cursor: hand;"/>
+                        style="-fx-background-color: white; -fx-text-fill: #555; -fx-border-color: #e2e5e9;
+                               -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 12.5px;
+                               -fx-padding: 7 14; -fx-cursor: hand;"/>
+                <Label fx:id="weekRangeLabel" text=""
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
                 <Button text="Ďalší →" onAction="#handleNextWeek"
-                        style="-fx-background-color: white; -fx-text-fill: #555; -fx-border-color: #ddd; -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 13px; -fx-padding: 8 16; -fx-cursor: hand;"/>
+                        style="-fx-background-color: white; -fx-text-fill: #555; -fx-border-color: #e2e5e9;
+                               -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 12.5px;
+                               -fx-padding: 7 14; -fx-cursor: hand;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Dnes" onAction="#handleToday"
+                        style="-fx-background-color: white; -fx-text-fill: #1a9e8f; -fx-border-color: #1a9e8f;
+                               -fx-border-radius: 6; -fx-background-radius: 6; -fx-font-size: 12.5px;
+                               -fx-padding: 7 14; -fx-cursor: hand;"/>
             </HBox>
 
-            <!-- Week days container (empty state rendered inside by controller) -->
-            <VBox fx:id="weekContainer" spacing="16"/>
+            <!-- Week days (populated by controller) -->
+            <VBox fx:id="weekContainer" spacing="14"/>
 
         </VBox>
     </ScrollPane>
