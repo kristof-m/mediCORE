@@ -152,6 +152,15 @@ public class MojeRezervacieController {
                 Button rescheduleBtn = new Button("Presunúť");
                 rescheduleBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-border-color: #1a9e8f; -fx-border-radius: 5; -fx-background-radius: 5; -fx-font-size: 12px; -fx-padding: 6 14; -fx-cursor: hand;");
                 rescheduleBtn.setOnAction(e -> {
+                    Termin t = terminDAO.findById(r.getTerminId());
+                    if (t != null && t.getDatumCas().isBefore(LocalDateTime.now().plusHours(24))) {
+                        Alert blocked = new Alert(Alert.AlertType.WARNING);
+                        blocked.setTitle("Presun nie je možný");
+                        blocked.setHeaderText("Rezerváciu nie je možné presunúť menej ako 24 hodín pred termínom.");
+                        blocked.setContentText("V prípade potreby kontaktujte recepciu.");
+                        blocked.showAndWait();
+                        return;
+                    }
                     SessionManager.getInstance().setRezervaciaToReschedule(r);
                     Stage stage = (Stage) rescheduleBtn.getScene().getWindow();
                     SceneManager.switchTo(stage, "/view/rezervacia-presun.fxml");

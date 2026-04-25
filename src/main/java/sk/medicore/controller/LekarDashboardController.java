@@ -70,7 +70,7 @@ public class LekarDashboardController {
 
         String sqlToday = "SELECT COUNT(*) FROM rezervacie r " +
                           "JOIN terminy t ON r.termin_id = t.id " +
-                          "WHERE r.lekar_id = ? AND DATE(t.datum_cas) = DATE('now','localtime') AND r.stav = 'POTVRDENA'";
+                          "WHERE r.lekar_id = ? AND DATE(t.datum_cas) = DATE('now','localtime') AND r.stav IN ('POTVRDENA','UKONCENA')";
         String sqlPatients = "SELECT COUNT(DISTINCT pacient_id) FROM rezervacie WHERE lekar_id = ? AND stav != 'ZRUSENA'";
 
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sqlToday)) {
@@ -117,7 +117,7 @@ public class LekarDashboardController {
                      "LEFT JOIN pracoviska prac ON l.pracovisko_id = prac.id " +
                      "WHERE r.lekar_id = ? " +
                      "AND DATE(t.datum_cas) = DATE('now','localtime') " +
-                     "AND r.stav = 'POTVRDENA' " +
+                     "AND r.stav IN ('POTVRDENA','UKONCENA') " +
                      "ORDER BY t.datum_cas";
 
         List<AppointmentInfo> list = new ArrayList<>();
