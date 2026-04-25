@@ -190,7 +190,7 @@ public class LekarKalendarController {
         confirm.showAndWait().ifPresent(result -> {
             if (result == ButtonType.OK) {
                 rezervaciaDAO.updateStav(info.rezervaciaId(), Rezervacia.Stav.ZRUSENA);
-                terminDAO.updateStav(info.terminId(), Termin.Stav.DOSTUPNY);
+                terminDAO.updateStav(info.terminId(), Termin.Stav.PUBLIKOVANY);
                 loadWeek();
             }
         });
@@ -199,13 +199,17 @@ public class LekarKalendarController {
     private Label buildStavBadge(Termin.Stav stav) {
         Label badge = new Label();
         switch (stav) {
-            case DOSTUPNY -> {
-                badge.setText("Dostupný");
+            case PUBLIKOVANY -> {
+                badge.setText("Publikovaný");
                 badge.setStyle("-fx-background-color: #e8f5f3; -fx-text-fill: #1a9e8f; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;");
             }
             case REZERVOVANY -> {
                 badge.setText("Rezervovaný");
                 badge.setStyle("-fx-background-color: #fff3e0; -fx-text-fill: #e65100; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;");
+            }
+            case UKONCENY -> {
+                badge.setText("Ukončený");
+                badge.setStyle("-fx-background-color: #ede7f6; -fx-text-fill: #4527a0; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;");
             }
             case ZRUSENY -> {
                 badge.setText("Zrušený");

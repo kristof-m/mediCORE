@@ -203,14 +203,14 @@ public class LekarTerminyController {
 
         row.getChildren().addAll(dateLabel, durLabel, stavLabel, detailLabel);
 
-        if (info.stav() == Termin.Stav.DOSTUPNY || info.stav() == Termin.Stav.REZERVOVANY) {
+        if (info.stav() == Termin.Stav.PUBLIKOVANY || info.stav() == Termin.Stav.REZERVOVANY) {
             Button editBtn = new Button("Upraviť");
             editBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-border-color: #1a9e8f; -fx-border-radius: 4; -fx-background-radius: 4; -fx-font-size: 12px; -fx-padding: 4 12; -fx-cursor: hand;");
             editBtn.setOnAction(e -> startEdit(info));
             row.getChildren().add(editBtn);
         }
 
-        if (info.stav() == Termin.Stav.DOSTUPNY) {
+        if (info.stav() == Termin.Stav.PUBLIKOVANY) {
             Button cancelBtn = new Button("Zrušiť");
             cancelBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #d32f2f; -fx-border-color: #d32f2f; -fx-border-radius: 4; -fx-background-radius: 4; -fx-font-size: 12px; -fx-padding: 4 12; -fx-cursor: hand;");
             cancelBtn.setOnAction(e -> {
@@ -235,13 +235,17 @@ public class LekarTerminyController {
     private Label buildStavBadge(Termin.Stav stav) {
         Label badge = new Label();
         switch (stav) {
-            case DOSTUPNY -> {
+            case PUBLIKOVANY -> {
                 badge.setText("Dostupný");
                 badge.setStyle("-fx-background-color: #e8f5f3; -fx-text-fill: #1a9e8f; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;");
             }
             case REZERVOVANY -> {
                 badge.setText("Rezervovaný");
                 badge.setStyle("-fx-background-color: #fff3e0; -fx-text-fill: #e65100; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;");
+            }
+            case UKONCENY -> {
+                badge.setText("Ukončený");
+                badge.setStyle("-fx-background-color: #ede7f6; -fx-text-fill: #4527a0; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10; -fx-background-radius: 10;");
             }
             case ZRUSENY -> {
                 badge.setText("Zrušený");

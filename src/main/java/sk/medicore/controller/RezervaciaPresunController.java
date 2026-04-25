@@ -73,8 +73,8 @@ public class RezervaciaPresunController {
         slotGrid.getChildren().clear();
         List<Termin> slots = terminDAO.findAvailable(lekarId);
 
-        // exclude the current slot (it shows as DOSTUPNY while the reservation is active — it's actually REZERVOVANY)
-        // findAvailable only returns DOSTUPNY, so the current termin won't appear anyway
+        // exclude the current slot (it shows as PUBLIKOVANY while the reservation is active — it's actually REZERVOVANY)
+        // findAvailable only returns PUBLIKOVANY, so the current termin won't appear anyway
         if (slots.isEmpty()) {
             noSlotsLabel.setVisible(true);
             noSlotsLabel.setManaged(true);
@@ -144,7 +144,7 @@ public class RezervaciaPresunController {
         }
 
         // 1. Free the old slot
-        terminDAO.updateStav(rezervacia.getTerminId(), Termin.Stav.DOSTUPNY);
+        terminDAO.updateStav(rezervacia.getTerminId(), Termin.Stav.PUBLIKOVANY);
         // 2. Update the reservation to the new slot
         rezervaciaDAO.updateTermin(rezervacia.getId(), selectedNewTermin.getId());
         // 3. Mark the new slot as taken
