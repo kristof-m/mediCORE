@@ -7,7 +7,7 @@ Rezervačný systém pre ambulantnú polykliniku — školský projekt PSI, FIIT
 | Meno | UC |
 |------|----|
 | Marek Kujan-Privrel | UC2, UC8 |
-| Samuel Krechňák | UC4, UC5 |
+| Samuel Krechňák | UC4, UC5, kódová implementácia |
 | Michael Krištof | UC1, UC3, UC7 |
 | Peter Martišovič | UC6, UC9 |
 
@@ -69,7 +69,7 @@ Pri prvom spustení sa automaticky vytvorí súbor `medicore.db` v koreňovom pr
 
 Všetky účty, demo scenáre a prehľad predpripravených dát nájdeš v **[DEMO.md](DEMO.md)**.
 
-Skrátene: heslo je `heslo123` pre všetky účty. Systém obsahuje **10 pacientov**, **6 lekárov** a **1 admin** účet.
+Skrátene: heslo je `heslo123` pre všetky účty. Systém obsahuje **30 pacientov**, **15 lekárov** a **1 admin** účet.
 
 ---
 
