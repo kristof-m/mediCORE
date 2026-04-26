@@ -129,254 +129,208 @@ public class DatabaseManager {
         var rv = stmt.executeQuery("SELECT value FROM meta WHERE key='seed_version'");
         int version = rv.next() ? Integer.parseInt(rv.getString("value")) : 0;
         rv.close();
-        if (version >= 2) return;
+        if (version >= 3) return;
 
-        // ── Wipe and re-seed ────────────────────────────────────────────────
-        stmt.execute("DELETE FROM rezervacie");
-        stmt.execute("DELETE FROM notifikacie");
-        stmt.execute("DELETE FROM terminy");
-        stmt.execute("DELETE FROM lekar_procedury");
-        stmt.execute("DELETE FROM procedury");
-        stmt.execute("DELETE FROM lekari");
-        stmt.execute("DELETE FROM pouzivatelia");
-        stmt.execute("DELETE FROM pracoviska");
+        for (String t : new String[]{"rezervacie","notifikacie","terminy","lekar_procedury","procedury","lekari","pouzivatelia","pracoviska"})
+            stmt.execute("DELETE FROM " + t);
         try { stmt.execute("DELETE FROM sqlite_sequence"); } catch (Exception ignored) {}
 
         String h = PasswordUtil.hash("heslo123");
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
-        // ── Pracoviska ───────────────────────────────────────────────────────
-        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (1,'Kardiologická ambulancia','Budova A','1','101')");
-        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (2,'Dermatologická ambulancia','Budova B','2','204')");
-        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (3,'Všeobecná ambulancia','Budova C','1','110')");
-        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (4,'Neurologická ambulancia','Budova A','2','212')");
-        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (5,'Ortopedická ambulancia','Budova B','1','105')");
-        stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES (6,'Oftalmologická ambulancia','Budova C','2','215')");
+        // ── Pracoviska (15) ─────────────────────────────────────────────
+        String[][] prac = {
+            {"1","Kardiologická ambulancia","Budova A","1","101"},
+            {"2","Kardiologická ambulancia II","Budova A","1","102"},
+            {"3","Dermatologická ambulancia","Budova B","2","204"},
+            {"4","Všeobecná ambulancia I","Budova C","1","110"},
+            {"5","Všeobecná ambulancia II","Budova C","1","112"},
+            {"6","Neurologická ambulancia","Budova A","2","212"},
+            {"7","Ortopedická ambulancia","Budova B","1","105"},
+            {"8","Oftalmologická ambulancia","Budova C","2","215"},
+            {"9","Interná ambulancia","Budova D","1","101"},
+            {"10","Chirurgická ambulancia","Budova B","2","210"},
+            {"11","ORL ambulancia","Budova A","3","301"},
+            {"12","Urologická ambulancia","Budova D","2","205"},
+            {"13","Gynekologická ambulancia","Budova C","3","310"},
+            {"14","Pediatrická ambulancia","Budova D","1","108"},
+            {"15","Pneumologická ambulancia","Budova A","3","305"},
+        };
+        for (String[] p : prac)
+            stmt.execute("INSERT INTO pracoviska (id,nazov,budova,poschodie,miestnost) VALUES ("
+                + p[0] + ",'" + p[1] + "','" + p[2] + "','" + p[3] + "','" + p[4] + "')");
 
-        // ── Pacienti ─────────────────────────────────────────────────────────
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (1,'Samuel','Thompson','pacient@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (2,'Lukáš','Novák','novak@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (3,'Eva','Kozárová','kozarova@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (4,'Tomáš','Blaho','blaho@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (5,'Nina','Horváthová','horvath@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (6,'Mária','Kováčová','kovacova@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (7,'Peter','Horník','hornik@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (8,'Jana','Procházková','prochazka@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (9,'Martin','Oravec','oravec@medicore.sk','" + h + "','PACIENT')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (10,'Zuzana','Malá','mala@medicore.sk','" + h + "','PACIENT')");
+        // ── Pacienti (IDs 1–30) ─────────────────────────────────────────
+        String[][] pat = {
+            {"1","Ján","Novák","novak.jan"},
+            {"2","Mária","Horváthová","horvathova.maria"},
+            {"3","Peter","Sloboda","sloboda.peter"},
+            {"4","Eva","Štefanková","stefankova.eva"},
+            {"5","Tomáš","Holub","holub.tomas"},
+            {"6","Zuzana","Vlčková","vlckova.zuzana"},
+            {"7","Martin","Rusnák","rusnak.martin"},
+            {"8","Jana","Ondrejčíková","ondrejcikova.jana"},
+            {"9","Lukáš","Kamenický","kamenicky.lukas"},
+            {"10","Katarína","Hrušovská","hrusovska.katarina"},
+            {"11","Andrej","Sedlák","sedlak.andrej"},
+            {"12","Lenka","Záborská","zaborska.lenka"},
+            {"13","Michal","Straka","straka.michal"},
+            {"14","Nina","Bartoňová","bartonova.nina"},
+            {"15","Dušan","Mikuš","mikus.dusan"},
+            {"16","Soňa","Kráľovičová","kralovicova.sona"},
+            {"17","Róbert","Jurčík","jurcik.robert"},
+            {"18","Monika","Šimková","simkova.monika"},
+            {"19","Štefan","Dolinský","dolinsky.stefan"},
+            {"20","Iveta","Pálková","palkova.iveta"},
+            {"21","Richard","Kučera","kucera.richard"},
+            {"22","Alena","Blahová","blahova.alena"},
+            {"23","Vladimír","Gašpar","gaspar.vladimir"},
+            {"24","Daniela","Ráczová","raczova.daniela"},
+            {"25","Marek","Kupčík","kupcik.marek"},
+            {"26","Barbora","Tkáčová","tkacova.barbora"},
+            {"27","Filip","Zelinka","zelinka.filip"},
+            {"28","Lucia","Havlíčková","havlickova.lucia"},
+            {"29","Pavol","Šoltés","soltes.pavol"},
+            {"30","Simona","Ďurišová","durisova.simona"},
+        };
+        for (String[] p : pat)
+            stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES ("
+                + p[0] + ",'" + p[1] + "','" + p[2] + "','" + p[3] + "@medicore.sk','" + h + "','PACIENT')");
 
-        // ── Lekári ───────────────────────────────────────────────────────────
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (11,'Sarah','Johnson','johnson@medicore.sk','" + h + "','LEKAR')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (12,'Emily','Parker','parker@medicore.sk','" + h + "','LEKAR')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (13,'Michael','Chen','chen@medicore.sk','" + h + "','LEKAR')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (14,'Jakub','Novotný','novotny@medicore.sk','" + h + "','LEKAR')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (15,'Andrea','Horvat','horvat@medicore.sk','" + h + "','LEKAR')");
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (16,'Petra','Žilková','zilkova@medicore.sk','" + h + "','LEKAR')");
-        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (11,'Kardiológia',1)");
-        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (12,'Dermatológia',2)");
-        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (13,'Všeobecná prax',3)");
-        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (14,'Neurológia',4)");
-        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (15,'Ortopédia',5)");
-        stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES (16,'Oftalmológia',6)");
+        // ── Lekári (IDs 31–45) ──────────────────────────────────────────
+        String[][] doc = {
+            {"31","Mária","Tóthová","tothova.maria","Kardiológia","1"},
+            {"32","Peter","Kováč","kovac.peter","Kardiológia","2"},
+            {"33","Jana","Némethová","nemethova.jana","Dermatológia","3"},
+            {"34","Michal","Horváth","horvath.michal","Všeobecná prax","4"},
+            {"35","Zuzana","Krajčíková","krajcikova.zuzana","Všeobecná prax","5"},
+            {"36","Tomáš","Szabó","szabo.tomas","Neurológia","6"},
+            {"37","Andrej","Baláž","balaz.andrej","Ortopédia","7"},
+            {"38","Eva","Molnárová","molnarova.eva","Oftalmológia","8"},
+            {"39","Martin","Varga","varga.martin","Interná medicína","9"},
+            {"40","Róbert","Fekete","fekete.robert","Chirurgia","10"},
+            {"41","Katarína","Hudáková","hudakova.katarina","ORL","11"},
+            {"42","Juraj","Polák","polak.juraj","Urológia","12"},
+            {"43","Lenka","Benčíková","bencikova.lenka","Gynekológia","13"},
+            {"44","Soňa","Kučerová","kucerova.sona","Pediatria","14"},
+            {"45","Dušan","Mazúr","mazur.dusan","Pneumológia","15"},
+        };
+        for (String[] d : doc) {
+            stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES ("
+                + d[0] + ",'" + d[1] + "','" + d[2] + "','" + d[3] + "@medicore.sk','" + h + "','LEKAR')");
+            stmt.execute("INSERT INTO lekari (id,specializacia,pracovisko_id) VALUES ("
+                + d[0] + ",'" + d[4] + "'," + d[5] + ")");
+        }
 
-        // ── Admin ─────────────────────────────────────────────────────────────
-        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES (17,'Admin','Polyklinika','admin@medicore.sk','" + h + "','ADMIN')");
+        // ── Admin (ID 46) ───────────────────────────────────────────────
+        stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES "
+            + "(46,'Admin','Polyklinika','admin@medicore.sk','" + h + "','ADMIN')");
 
-        // ── Procedúry ─────────────────────────────────────────────────────────
+        // ── Procedúry (20) ──────────────────────────────────────────────
         stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (1,'Kardiologická prehliadka',45,'Kompletné kardiologické vyšetrenie vrátane EKG a echokardiografie','Kardiológia')");
-        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (2,'Dermatologická prehliadka',30,'Vyšetrenie kože, nechtov a kožných ochorení','Dermatológia')");
-        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (3,'Všeobecná konzultácia',30,'Základná konzultácia so všeobecným lekárom','Všeobecná prax')");
-        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (4,'EKG',20,'Elektrokardiogram — záznam elektrickej aktivity srdca','Kardiológia')");
-        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (5,'Kožné vyšetrenie',30,'Podrobné vyšetrenie kožných zmien a dermatoskopia','Dermatológia')");
-        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (6,'Neurologické vyšetrenie',45,'Komplexné neurologické vyšetrenie reflexov a neurologických funkcií','Neurológia')");
-        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (7,'Ortopedická konzultácia',30,'Vyšetrenie pohybového aparátu, kĺbov a chrbtice','Ortopédia')");
-        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (8,'Meranie zraku',20,'Vyšetrenie zrakovej ostrosti a refrakčných chýb','Oftalmológia')");
-        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (9,'Krvné testy',15,'Odber krvi a základný krvný rozbor','Laboratórium')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (2,'EKG',20,'Elektrokardiogram — záznam elektrickej aktivity srdca','Kardiológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (3,'Echokardiografia',30,'Ultrazvukové vyšetrenie srdca','Kardiológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (4,'Dermatologická prehliadka',30,'Vyšetrenie kože, nechtov a kožných ochorení','Dermatológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (5,'Dermatoskopia',20,'Vyšetrenie kožných útvarov dermatoskopom','Dermatológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (6,'Všeobecná konzultácia',30,'Základná konzultácia so všeobecným lekárom','Všeobecná prax')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (7,'Preventívna prehliadka',45,'Komplexná preventívna zdravotná prehliadka','Všeobecná prax')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (8,'Neurologické vyšetrenie',45,'Komplexné neurologické vyšetrenie reflexov a neurologických funkcií','Neurológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (9,'EEG',30,'Elektroencefalogram — záznam elektrickej aktivity mozgu','Neurológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (10,'Ortopedická konzultácia',30,'Vyšetrenie pohybového aparátu, kĺbov a chrbtice','Ortopédia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (11,'Meranie zraku',20,'Vyšetrenie zrakovej ostrosti a refrakčných chýb','Oftalmológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (12,'Očné vyšetrenie',30,'Komplexné oftalmologické vyšetrenie','Oftalmológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (13,'Interné vyšetrenie',45,'Komplexné internistické vyšetrenie','Interná medicína')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (14,'Chirurgická konzultácia',30,'Konzultácia a vyšetrenie pred chirurgickým zákrokom','Chirurgia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (15,'ORL vyšetrenie',30,'Vyšetrenie ucha, nosa a hrdla','ORL')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (16,'Urologické vyšetrenie',30,'Vyšetrenie močových ciest a reprodukčného systému','Urológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (17,'Gynekologická prehliadka',30,'Preventívna gynekologická prehliadka','Gynekológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (18,'Pediatrické vyšetrenie',30,'Vyšetrenie detí a dorastu','Pediatria')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (19,'Pneumologické vyšetrenie',30,'Vyšetrenie dýchacích ciest a pľúc','Pneumológia')");
+        stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (20,'Krvné testy',15,'Odber krvi a základný krvný rozbor','Laboratórium')");
 
-        // ── Lekár ↔ Procedúry ─────────────────────────────────────────────────
-        stmt.execute("INSERT INTO lekar_procedury VALUES (11,1)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (11,4)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (11,9)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (12,2)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (12,5)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (12,9)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (13,3)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (13,9)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (14,6)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (14,9)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (15,7)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (15,9)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (16,8)");
-        stmt.execute("INSERT INTO lekar_procedury VALUES (16,9)");
+        // ── Lekár ↔ Procedúry ───────────────────────────────────────────
+        int[][] lp = {
+            {31,1},{31,2},{31,20},
+            {32,1},{32,3},{32,20},
+            {33,4},{33,5},{33,20},
+            {34,6},{34,7},{34,20},
+            {35,6},{35,7},{35,20},
+            {36,8},{36,9},{36,20},
+            {37,10},{37,20},
+            {38,11},{38,12},{38,20},
+            {39,13},{39,20},
+            {40,14},{40,20},
+            {41,15},{41,20},
+            {42,16},{42,20},
+            {43,17},
+            {44,18},{44,20},
+            {45,19},{45,20},
+        };
+        for (int[] pair : lp)
+            stmt.execute("INSERT INTO lekar_procedury VALUES (" + pair[0] + "," + pair[1] + ")");
 
-        // ── Build next 15 business days ────────────────────────────────────────
-        LocalDateTime[] days = new LocalDateTime[15];
-        int d = 0;
-        LocalDateTime cursor = now.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
-        while (d < 15) {
-            if (cursor.getDayOfWeek().getValue() <= 5) days[d++] = cursor;
-            cursor = cursor.plusDays(1);
+        // ── Termíny & Rezervácie ────────────────────────────────────────
+        int[] lekarIds  = {31,32,33,34,35,36,37,38,39,40,41,42,43,44,45};
+        int[] durations = {45,45,30,30,30,45,30,30,45,30,30,30,30,30,30};
+        int[] defProc   = { 1, 1, 4, 6, 6, 8,10,11,13,14,15,16,17,18,19};
+
+        int tid = 1;
+        int patIdx = 0;
+
+        // Past termíny: 4 per doctor = 60 (UKONCENY + UKONCENA/ZRUSENA rez.)
+        int[] pastDaysAgo = {20, 14, 8, 3};
+        int[] pastHours   = { 9, 10,14,15};
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 4; j++) {
+                ins(stmt, fmt, tid, lekarIds[i], past(now, pastDaysAgo[j], pastHours[j]), durations[i], "UKONCENY");
+                String rezStav = (patIdx % 7 == 6) ? "ZRUSENA" : "UKONCENA";
+                rez(stmt, (patIdx % 30) + 1, lekarIds[i], tid, defProc[i], rezStav);
+                tid++;
+                patIdx++;
+            }
         }
 
-        // ── Past termíny (IDs 1–30) ────────────────────────────────────────────
-        ins(stmt,fmt, 1,11,past(now,20,9),45,\"UKONCENY\"); ins(stmt,fmt, 2,11,past(now,15,9),45,\"UKONCENY\");
-        ins(stmt,fmt, 3,11,past(now,12,9),45,\"UKONCENY\"); ins(stmt,fmt, 4,11,past(now, 8,9),45,\"UKONCENY\");
-        ins(stmt,fmt, 5,11,past(now, 5,9),45,\"UKONCENY\");
-        ins(stmt,fmt, 6,12,past(now,18,10),30,\"UKONCENY\"); ins(stmt,fmt, 7,12,past(now,14,10),30,\"UKONCENY\");
-        ins(stmt,fmt, 8,12,past(now,10,10),30,\"UKONCENY\"); ins(stmt,fmt, 9,12,past(now, 7,10),30,\"UKONCENY\");
-        ins(stmt,fmt,10,12,past(now, 4,10),30,\"UKONCENY\");
-        ins(stmt,fmt,11,13,past(now,16,9),30,\"UKONCENY\"); ins(stmt,fmt,12,13,past(now,12,9),30,\"UKONCENY\");
-        ins(stmt,fmt,13,13,past(now, 9,9),30,\"UKONCENY\"); ins(stmt,fmt,14,13,past(now, 6,9),30,\"UKONCENY\");
-        ins(stmt,fmt,15,13,past(now, 3,9),30,\"UKONCENY\");
-        ins(stmt,fmt,16,14,past(now,19,10),45,\"UKONCENY\"); ins(stmt,fmt,17,14,past(now,13,10),45,\"UKONCENY\");
-        ins(stmt,fmt,18,14,past(now,10,10),45,\"UKONCENY\"); ins(stmt,fmt,19,14,past(now, 7,10),45,\"UKONCENY\");
-        ins(stmt,fmt,20,14,past(now, 5,10),45,\"UKONCENY\");
-        ins(stmt,fmt,21,15,past(now,17,9),30,\"UKONCENY\"); ins(stmt,fmt,22,15,past(now,11,9),30,\"UKONCENY\");
-        ins(stmt,fmt,23,15,past(now, 8,9),30,\"UKONCENY\"); ins(stmt,fmt,24,15,past(now, 5,9),30,\"UKONCENY\");
-        ins(stmt,fmt,25,15,past(now, 3,9),30,\"UKONCENY\");
-        ins(stmt,fmt,26,16,past(now,20,9),20,\"UKONCENY\"); ins(stmt,fmt,27,16,past(now,14,9),20,\"UKONCENY\");
-        ins(stmt,fmt,28,16,past(now, 9,9),20,\"UKONCENY\"); ins(stmt,fmt,29,16,past(now, 6,9),20,\"UKONCENY\");
-        ins(stmt,fmt,30,16,past(now, 3,9),20,\"UKONCENY\");
-
-        // ── Today termíny (IDs 31–42) ──────────────────────────────────────────
-        ins(stmt,fmt,31,11,today(now, 9,0),45,"REZERVOVANY");
-        ins(stmt,fmt,32,11,today(now,11,0),45,"REZERVOVANY");
-        ins(stmt,fmt,33,12,today(now,10,0),30,"REZERVOVANY");
-        ins(stmt,fmt,34,12,today(now,14,0),30,"REZERVOVANY");
-        ins(stmt,fmt,35,13,today(now, 9,0),30,"REZERVOVANY");
-        ins(stmt,fmt,36,13,today(now,11,0),30,"REZERVOVANY");
-        ins(stmt,fmt,37,14,today(now,10,0),45,"REZERVOVANY");
-        ins(stmt,fmt,38,14,today(now,15,0),45,"REZERVOVANY");
-        ins(stmt,fmt,39,15,today(now, 9,0),30,"REZERVOVANY");
-        ins(stmt,fmt,40,15,today(now,14,0),30,\"UKONCENY\");
-        ins(stmt,fmt,41,16,today(now, 9,0),20,"REZERVOVANY");
-        ins(stmt,fmt,42,16,today(now,11,0),20,\"UKONCENY\");
-
-        // ── Future termíny — days[0]–days[1] with some bookings (IDs 43–90) ────
-        ins(stmt,fmt,43,11,days[0].withHour( 8),45,"REZERVOVANY");
-        ins(stmt,fmt,44,11,days[0].withHour(10),45,"REZERVOVANY");
-        ins(stmt,fmt,45,11,days[1].withHour( 9),45,"REZERVOVANY");
-        ins(stmt,fmt,46,11,days[1].withHour(11),45,"REZERVOVANY");
-        ins(stmt,fmt,47,11,days[2].withHour( 8),45,\"UKONCENY\");
-        ins(stmt,fmt,48,11,days[2].withHour(14),45,\"UKONCENY\");
-        ins(stmt,fmt,49,11,days[3].withHour( 9),45,\"UKONCENY\");
-        ins(stmt,fmt,50,11,days[4].withHour(10),45,\"UKONCENY\");
-        ins(stmt,fmt,51,12,days[0].withHour( 9),30,"REZERVOVANY");
-        ins(stmt,fmt,52,12,days[1].withHour(10),30,"REZERVOVANY");
-        ins(stmt,fmt,53,12,days[2].withHour(11),30,\"UKONCENY\");
-        ins(stmt,fmt,54,12,days[2].withHour(14),30,\"UKONCENY\");
-        ins(stmt,fmt,55,12,days[3].withHour( 9),30,\"UKONCENY\");
-        ins(stmt,fmt,56,12,days[4].withHour(10),30,\"UKONCENY\");
-        ins(stmt,fmt,57,12,days[5].withHour(11),30,\"UKONCENY\");
-        ins(stmt,fmt,58,12,days[5].withHour(14),30,\"UKONCENY\");
-        ins(stmt,fmt,59,13,days[0].withHour( 8),30,"REZERVOVANY");
-        ins(stmt,fmt,60,13,days[0].withHour(13),30,"REZERVOVANY");
-        ins(stmt,fmt,61,13,days[1].withHour( 9),30,\"UKONCENY\");
-        ins(stmt,fmt,62,13,days[2].withHour(10),30,"REZERVOVANY");
-        ins(stmt,fmt,63,13,days[3].withHour( 8),30,\"UKONCENY\");
-        ins(stmt,fmt,64,13,days[3].withHour(13),30,\"UKONCENY\");
-        ins(stmt,fmt,65,13,days[4].withHour( 9),30,\"UKONCENY\");
-        ins(stmt,fmt,66,13,days[5].withHour(10),30,\"UKONCENY\");
-        ins(stmt,fmt,67,14,days[0].withHour(10),45,"REZERVOVANY");
-        ins(stmt,fmt,68,14,days[0].withHour(14),45,"REZERVOVANY");
-        ins(stmt,fmt,69,14,days[1].withHour( 9),45,"REZERVOVANY");
-        ins(stmt,fmt,70,14,days[2].withHour(10),45,\"UKONCENY\");
-        ins(stmt,fmt,71,14,days[3].withHour(11),45,\"UKONCENY\");
-        ins(stmt,fmt,72,14,days[4].withHour( 9),45,\"UKONCENY\");
-        ins(stmt,fmt,73,14,days[5].withHour(10),45,\"UKONCENY\");
-        ins(stmt,fmt,74,14,days[6].withHour(11),45,\"UKONCENY\");
-        ins(stmt,fmt,75,15,days[0].withHour( 8),30,"REZERVOVANY");
-        ins(stmt,fmt,76,15,days[1].withHour( 9),30,\"UKONCENY\");
-        ins(stmt,fmt,77,15,days[2].withHour(10),30,\"UKONCENY\");
-        ins(stmt,fmt,78,15,days[3].withHour( 8),30,\"UKONCENY\");
-        ins(stmt,fmt,79,15,days[4].withHour( 9),30,\"UKONCENY\");
-        ins(stmt,fmt,80,15,days[5].withHour(10),30,\"UKONCENY\");
-        ins(stmt,fmt,81,15,days[6].withHour(11),30,\"UKONCENY\");
-        ins(stmt,fmt,82,15,days[7].withHour( 8),30,\"UKONCENY\");
-        ins(stmt,fmt,83,16,days[0].withHour( 9),20,"REZERVOVANY");
-        ins(stmt,fmt,84,16,days[1].withHour(10),20,"REZERVOVANY");
-        ins(stmt,fmt,85,16,days[2].withHour( 9),20,"REZERVOVANY");
-        ins(stmt,fmt,86,16,days[3].withHour(10),20,\"UKONCENY\");
-        ins(stmt,fmt,87,16,days[4].withHour(11),20,\"UKONCENY\");
-        ins(stmt,fmt,88,16,days[5].withHour( 9),20,\"UKONCENY\");
-        ins(stmt,fmt,89,16,days[6].withHour(10),20,\"UKONCENY\");
-        ins(stmt,fmt,90,16,days[7].withHour(11),20,\"UKONCENY\");
-
-        // ── Additional future termíny — days[2]–days[14] (IDs 91+) ─────────────
-        // Johnson (lekarId=11, 45 min): 6 slots/day
-        int[] jhHours  = {8, 9, 10, 11, 13, 14};
-        // Parker (lekarId=12, 30 min): 8 slots/day
-        int[] pkHours  = {8, 9, 10, 11, 13, 14, 15, 16};
-        // Chen (lekarId=13, 30 min): 8 slots/day
-        int[] cnHours  = {8, 9, 10, 11, 13, 14, 15, 16};
-        // Novotný (lekarId=14, 45 min): 6 slots/day
-        int[] nvHours  = {8, 9, 10, 11, 13, 14};
-        // Horvat (lekarId=15, 30 min): 8 slots/day
-        int[] hvHours  = {8, 9, 10, 11, 13, 14, 15, 16};
-        // Žilková (lekarId=16, 20 min): 9 slots/day
-        int[] zlHours  = {8, 9, 10, 11, 12, 13, 14, 15, 16};
-
-        int nextId = 91;
-        for (int di = 2; di < 15; di++) {
-            for (int hh : jhHours) ins(stmt,fmt,nextId++,11,days[di].withHour(hh),45,\"UKONCENY\");
-            for (int hh : pkHours) ins(stmt,fmt,nextId++,12,days[di].withHour(hh),30,\"UKONCENY\");
-            for (int hh : cnHours) ins(stmt,fmt,nextId++,13,days[di].withHour(hh),30,\"UKONCENY\");
-            for (int hh : nvHours) ins(stmt,fmt,nextId++,14,days[di].withHour(hh),45,\"UKONCENY\");
-            for (int hh : hvHours) ins(stmt,fmt,nextId++,15,days[di].withHour(hh),30,\"UKONCENY\");
-            for (int hh : zlHours) ins(stmt,fmt,nextId++,16,days[di].withHour(hh),20,\"UKONCENY\");
+        // Today termíny: 2 per doctor = 30 (REZERVOVANY + POTVRDENA rez.)
+        for (int i = 0; i < 15; i++) {
+            ins(stmt, fmt, tid, lekarIds[i], today(now, 9, 0), durations[i], "REZERVOVANY");
+            rez(stmt, (patIdx % 30) + 1, lekarIds[i], tid, defProc[i], "POTVRDENA");
+            tid++; patIdx++;
+            ins(stmt, fmt, tid, lekarIds[i], today(now, 14, 0), durations[i], "REZERVOVANY");
+            rez(stmt, (patIdx % 30) + 1, lekarIds[i], tid, defProc[i], "POTVRDENA");
+            tid++; patIdx++;
         }
 
-        // ── Rezervácie ────────────────────────────────────────────────────────
-        rez(stmt, 1,11, 1,1,"POTVRDENA"); rez(stmt, 1,12, 8,2,"POTVRDENA");
-        rez(stmt, 1,13,11,3,"POTVRDENA"); rez(stmt, 1,14,16,6,"POTVRDENA");
-        rez(stmt, 1,15,25,7,"ZRUSENA");
-        rez(stmt, 1,11,31,1,"POTVRDENA");
-        rez(stmt, 1,11,43,1,"POTVRDENA"); rez(stmt, 1,13,62,3,"POTVRDENA");
+        // Build next 10 business days
+        LocalDateTime[] futureDays = new LocalDateTime[10];
+        int dIdx = 0;
+        LocalDateTime dayCursor = now.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        while (dIdx < 10) {
+            if (dayCursor.getDayOfWeek().getValue() <= 5) futureDays[dIdx++] = dayCursor;
+            dayCursor = dayCursor.plusDays(1);
+        }
 
-        rez(stmt, 2,13,12,3,"POTVRDENA"); rez(stmt, 2,16,27,8,"POTVRDENA");
-        rez(stmt, 2,11, 2,4,"ZRUSENA");
-        rez(stmt, 2,16,41,8,"POTVRDENA");
-        rez(stmt, 2,12,51,2,"POTVRDENA");
+        // Future termíny: first 2 days have 2 booked slots each, rest PUBLIKOVANY
+        for (int i = 0; i < 15; i++) {
+            int dur = durations[i];
+            int[] hours = dur >= 45
+                ? new int[]{8, 9, 10, 11, 13, 14}
+                : new int[]{8, 9, 10, 11, 13, 14, 15, 16};
+            for (int di = 0; di < 10; di++) {
+                for (int si = 0; si < hours.length; si++) {
+                    boolean booked = di < 2 && si < 2;
+                    ins(stmt, fmt, tid, lekarIds[i], futureDays[di].withHour(hours[si]), dur,
+                        booked ? "REZERVOVANY" : "PUBLIKOVANY");
+                    if (booked) {
+                        rez(stmt, (patIdx % 30) + 1, lekarIds[i], tid, defProc[i], "POTVRDENA");
+                        patIdx++;
+                    }
+                    tid++;
+                }
+            }
+        }
 
-        rez(stmt, 3,11, 3,1,"POTVRDENA"); rez(stmt, 3,15,21,7,"POTVRDENA");
-        rez(stmt, 3,12,33,2,"POTVRDENA");
-        rez(stmt, 3,12,52,5,"POTVRDENA"); rez(stmt, 3,16,84,8,"POTVRDENA");
-
-        rez(stmt, 4,15,22,7,"POTVRDENA"); rez(stmt, 4,13,15,3,"ZRUSENA");
-        rez(stmt, 4,13,35,3,"POTVRDENA");
-        rez(stmt, 4,11,45,4,"POTVRDENA");
-
-        rez(stmt, 5,12, 9,5,"POTVRDENA"); rez(stmt, 5,13,14,3,"POTVRDENA");
-        rez(stmt, 5,11,32,1,"POTVRDENA");
-        rez(stmt, 5,13,59,3,"POTVRDENA");
-
-        rez(stmt, 6,11, 4,4,"POTVRDENA"); rez(stmt, 6,12, 7,5,"POTVRDENA");
-        rez(stmt, 6,14,18,6,"ZRUSENA");
-        rez(stmt, 6,13,36,3,"POTVRDENA");
-        rez(stmt, 6,11,44,1,"POTVRDENA"); rez(stmt, 6,14,69,6,"POTVRDENA");
-
-        rez(stmt, 7,14,17,6,"POTVRDENA"); rez(stmt, 7,16,26,8,"POTVRDENA");
-        rez(stmt, 7,13,13,3,"ZRUSENA");
-        rez(stmt, 7,14,37,6,"POTVRDENA");
-        rez(stmt, 7,14,67,6,"POTVRDENA"); rez(stmt, 7,16,85,8,"POTVRDENA");
-
-        rez(stmt, 8,12, 6,2,"POTVRDENA"); rez(stmt, 8,14,19,6,"POTVRDENA");
-        rez(stmt, 8,15,23,7,"POTVRDENA"); rez(stmt, 8,16,29,8,"ZRUSENA");
-        rez(stmt, 8,15,39,7,"POTVRDENA");
-        rez(stmt, 8,14,68,6,"POTVRDENA");
-
-        rez(stmt, 9,12,10,5,"POTVRDENA"); rez(stmt, 9,15,24,7,"POTVRDENA");
-        rez(stmt, 9,16,30,8,"ZRUSENA");
-        rez(stmt, 9,14,38,6,"POTVRDENA");
-        rez(stmt, 9,13,60,3,"POTVRDENA"); rez(stmt, 9,15,75,7,"POTVRDENA");
-
-        rez(stmt,10,11, 5,4,"POTVRDENA"); rez(stmt,10,14,20,6,"POTVRDENA");
-        rez(stmt,10,16,28,8,"POTVRDENA");
-        rez(stmt,10,12,34,5,"POTVRDENA");
-        rez(stmt,10,11,46,1,"POTVRDENA"); rez(stmt,10,16,83,8,"POTVRDENA");
-
-        stmt.execute("INSERT OR REPLACE INTO meta (key,value) VALUES ('seed_version','2')");
+        stmt.execute("INSERT OR REPLACE INTO meta (key,value) VALUES ('seed_version','3')");
     }
 
     private static LocalDateTime past(LocalDateTime now, int daysAgo, int hour) {
