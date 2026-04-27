@@ -40,8 +40,9 @@ public class RegistraciaController {
             return;
         }
 
-        if (password.length() < 8) {
-            showError("Heslo musí mať aspoň 8 znakov.");
+        String passwordError = PasswordUtil.validate(password);
+        if (passwordError != null) {
+            showError(passwordError);
             return;
         }
 

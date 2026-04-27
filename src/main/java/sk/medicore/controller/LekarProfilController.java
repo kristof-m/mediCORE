@@ -1,5 +1,7 @@
 package sk.medicore.controller;
 
+import java.util.List;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -11,8 +13,6 @@ import sk.medicore.model.Lekar;
 import sk.medicore.util.PasswordUtil;
 import sk.medicore.util.SceneManager;
 import sk.medicore.util.SessionManager;
-
-import java.util.List;
 
 public class LekarProfilController {
 
@@ -78,6 +78,13 @@ public class LekarProfilController {
         if (!newPwField.getText().isBlank()) {
             if (!PasswordUtil.verify(currentPwField.getText(), lekar.getHesloHash())) {
                 pwFeedbackLabel.setText("Nesprávne súčasné heslo.");
+                pwFeedbackLabel.setVisible(true);
+                pwFeedbackLabel.setManaged(true);
+                return;
+            }
+            String passwordError = PasswordUtil.validate(newPwField.getText());
+            if (passwordError != null) {
+                pwFeedbackLabel.setText(passwordError);
                 pwFeedbackLabel.setVisible(true);
                 pwFeedbackLabel.setManaged(true);
                 return;

@@ -1,13 +1,13 @@
 package sk.medicore.db;
 
-import sk.medicore.util.PasswordUtil;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import sk.medicore.util.PasswordUtil;
 
 public class DatabaseManager {
 
@@ -223,11 +223,11 @@ public class DatabaseManager {
                 + d[0] + ",'" + d[4] + "'," + d[5] + ")");
         }
 
-        // ── Admin (ID 46) ───────────────────────────────────────────────
+        // ── Admin (ID 46)───────────────────────────────────────────────
         stmt.execute("INSERT INTO pouzivatelia (id,meno,priezvisko,email,heslo_hash,typ) VALUES "
             + "(46,'Admin','Polyklinika','admin@medicore.sk','" + h + "','ADMIN')");
 
-        // ── Procedúry (20) ──────────────────────────────────────────────
+        // ── Procedúry (20)──────────────────────────────────────────────
         stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (1,'Kardiologická prehliadka',45,'Kompletné kardiologické vyšetrenie vrátane EKG a echokardiografie','Kardiológia')");
         stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (2,'EKG',20,'Elektrokardiogram — záznam elektrickej aktivity srdca','Kardiológia')");
         stmt.execute("INSERT INTO procedury (id,nazov,trvanie_min,popis,kategoria) VALUES (3,'Echokardiografia',30,'Ultrazvukové vyšetrenie srdca','Kardiológia')");

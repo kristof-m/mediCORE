@@ -6,6 +6,16 @@ import java.security.NoSuchAlgorithmException;
 
 public class PasswordUtil {
 
+    public static String validate(String password) {
+        if (password == null || password.length() < 8) {
+            return "Heslo musí mať aspoň 8 znakov.";
+        }
+        if (password.chars().noneMatch(Character::isUpperCase)) {
+            return "Heslo musí obsahovať aspoň jedno veľké písmeno.";
+        }
+        return null;
+    }
+
     public static String hash(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
