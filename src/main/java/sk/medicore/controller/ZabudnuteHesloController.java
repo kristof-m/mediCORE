@@ -55,8 +55,9 @@ public class ZabudnuteHesloController {
             showPwError("Vyplňte obe polia.");
             return;
         }
-        if (newPw.length() < 8) {
-            showPwError("Heslo musí mať aspoň 8 znakov.");
+        String passwordError = PasswordUtil.validate(newPw);
+        if (passwordError != null) {
+            showPwError(passwordError);
             return;
         }
         if (!newPw.equals(confirm)) {

@@ -1,7 +1,14 @@
 package sk.medicore.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import sk.medicore.db.dao.PouzivatelDAO;
 import sk.medicore.db.dao.RezervaciaDAO;
@@ -12,9 +19,6 @@ import sk.medicore.model.Termin;
 import sk.medicore.util.PasswordUtil;
 import sk.medicore.util.SceneManager;
 import sk.medicore.util.SessionManager;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class ProfilController {
 
@@ -144,8 +148,9 @@ public class ProfilController {
             showPwFeedback("Aktuálne heslo je nesprávne.", false);
             return;
         }
-        if (newPw.length() < 8) {
-            showPwFeedback("Nové heslo musí mať aspoň 8 znakov.", false);
+        String passwordError = PasswordUtil.validate(newPw);
+        if (passwordError != null) {
+            showPwFeedback(passwordError, false);
             return;
         }
         if (!newPw.equals(confirm)) {
