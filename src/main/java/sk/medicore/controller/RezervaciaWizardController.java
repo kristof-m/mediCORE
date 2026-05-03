@@ -82,6 +82,14 @@ public class RezervaciaWizardController {
     private static final String CHIP_HOVER  = "-fx-background-color: #1a9e8f; -fx-background-radius: 8; -fx-border-color: #1a9e8f; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 9 14; -fx-cursor: hand;";
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
 
+    private static final double CARD_HEIGHT = 170;
+    private static final String CARD_STYLE_DEFAULT =
+        "-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 13 14;" +
+        "-fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1; -fx-cursor: hand;";
+    private static final String CARD_STYLE_HOVER =
+        "-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 13 14;" +
+        "-fx-border-color: #1a9e8f; -fx-border-radius: 8; -fx-border-width: 1; -fx-cursor: hand;" +
+        "-fx-effect: dropshadow(gaussian, rgba(26,158,143,0.08), 8, 0, 0, 2);";
     private static final String CLOCK_ICON = "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 6v6l4 2";
     private static final String DEFAULT_ICON = "M22 12h-4l-3 9L9 3l-3 9H2";
     private static final Map<String, String> CAT_ICONS;
@@ -184,9 +192,13 @@ public class RezervaciaWizardController {
 
     private VBox buildProcedureCard(Procedura p) {
         VBox card = new VBox(8);
+        card.setMinWidth(0);
+        card.setPrefWidth(0);
         card.setMaxWidth(Double.MAX_VALUE);
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 13 14;" +
-                      "-fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1; -fx-cursor: hand;");
+        card.setPrefHeight(CARD_HEIGHT);
+        card.setMinHeight(CARD_HEIGHT);
+        card.setMaxHeight(CARD_HEIGHT);
+        card.setStyle(CARD_STYLE_DEFAULT);
 
         HBox top = new HBox(8);
         top.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
@@ -204,10 +216,12 @@ public class RezervaciaWizardController {
         Label name = new Label(p.getNazov());
         name.setStyle("-fx-font-size: 12.5px; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;");
         name.setWrapText(true);
+        name.setMaxHeight(36);
 
         Label desc = new Label(p.getPopis() != null ? p.getPopis() : "");
-        desc.setStyle("-fx-font-size: 10.5px; -fx-text-fill: #9aa0a8;");
+        desc.setStyle("-fx-font-size: 10.5px; -fx-text-fill: #9aa0a8; -fx-line-spacing: 1;");
         desc.setWrapText(true);
+        desc.setMinHeight(0);
         VBox.setVgrow(desc, Priority.ALWAYS);
 
         HBox foot = new HBox(5);
@@ -224,11 +238,8 @@ public class RezervaciaWizardController {
 
         card.getChildren().addAll(top, name, desc, foot);
         card.setOnMouseClicked(e -> selectProcedura(p));
-        card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 13 14;" +
-            "-fx-border-color: #1a9e8f; -fx-border-radius: 8; -fx-border-width: 1; -fx-cursor: hand;" +
-            "-fx-effect: dropshadow(gaussian, rgba(26,158,143,0.08), 8, 0, 0, 2);"));
-        card.setOnMouseExited(e -> card.setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 13 14;" +
-            "-fx-border-color: #eef0f3; -fx-border-radius: 8; -fx-border-width: 1; -fx-cursor: hand;"));
+        card.setOnMouseEntered(e -> card.setStyle(CARD_STYLE_HOVER));
+        card.setOnMouseExited(e -> card.setStyle(CARD_STYLE_DEFAULT));
         return card;
     }
 
