@@ -13,6 +13,12 @@ public class PasswordUtil {
         if (password.chars().noneMatch(Character::isUpperCase)) {
             return "Heslo musí obsahovať aspoň jedno veľké písmeno.";
         }
+        if (password.chars().noneMatch(Character::isLowerCase)) {
+            return "Heslo musí obsahovato aspoň jedno malé písmeno.";
+        }
+        if (password.chars().noneMatch(Character::isDigit)) {
+            return "Heslo musí obsahovat aspoň jedno číslo.";
+        }
         return null;
     }
 
