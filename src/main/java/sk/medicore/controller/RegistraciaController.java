@@ -1,6 +1,7 @@
 package sk.medicore.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -16,6 +17,7 @@ public class RegistraciaController {
     @FXML private TextField priezviskoField;
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
+    @FXML private DatePicker datumNarodeniaField;
     @FXML private PasswordField passwordConfirmField;
     @FXML private Label errorLabel;
     @FXML private Label emailHintLabel;
@@ -56,11 +58,17 @@ public class RegistraciaController {
             return;
         }
 
+        if (datumNarodeniaField.getValue() == null) {
+            showError("Zadajte dátum narodenia.");
+            return;
+        }
+
         Pacient pacient = new Pacient();
         pacient.setMeno(meno);
         pacient.setPriezvisko(priezvisko);
         pacient.setEmail(email);
         pacient.setHesloHash(PasswordUtil.hash(password));
+        pacient.setDatumNarodenia(datumNarodeniaField.getValue());
 
         pouzivatelDAO.insert(pacient);
 

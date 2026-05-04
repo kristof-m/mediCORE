@@ -4,6 +4,7 @@ import sk.medicore.db.DatabaseManager;
 import sk.medicore.model.*;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 public class PouzivatelDAO {
 
@@ -35,13 +36,14 @@ public class PouzivatelDAO {
     }
 
     public void insert(Pouzivatel p) {
-        String sql = "INSERT INTO pouzivatelia (meno, priezvisko, email, heslo_hash, typ) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO pouzivatelia (meno, priezvisko, email, heslo_hash, typ, datum_narodenia) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, p.getMeno());
             ps.setString(2, p.getPriezvisko());
             ps.setString(3, p.getEmail());
             ps.setString(4, p.getHesloHash());
             ps.setString(5, p.getTyp());
+            ps.setString(6, p.getDatumNarodenia() != null ? p.getDatumNarodenia().toString() : null);
             ps.executeUpdate();
 
             ResultSet keys = ps.getGeneratedKeys();
@@ -110,6 +112,8 @@ public class PouzivatelDAO {
         p.setEmail(rs.getString("email"));
         p.setHesloHash(rs.getString("heslo_hash"));
         p.setTyp(typ);
+        String dn = rs.getString("datum_narodenia");
+        if (dn != null) p.setDatumNarodenia(LocalDate.parse(dn));
         return p;
     }
 }

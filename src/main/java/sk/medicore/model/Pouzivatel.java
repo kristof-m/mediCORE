@@ -8,6 +8,7 @@ public abstract class Pouzivatel {
     private String email;
     private String hesloHash;
     private String typ;
+    private java.time.LocalDate datumNarodenia;
 
     public Pouzivatel() {}
 
@@ -37,6 +38,9 @@ public abstract class Pouzivatel {
 
     public String getTyp() { return typ; }
     public void setTyp(String typ) { this.typ = typ; }
+
+    public java.time.LocalDate getDatumNarodenia() { return datumNarodenia; }
+    public void setDatumNarodenia(java.time.LocalDate datumNarodenia) { this.datumNarodenia = datumNarodenia; }
 
     public String getCeleMeno() {
         return meno + " " + priezvisko;

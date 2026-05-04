@@ -66,6 +66,7 @@ public class DatabaseManager {
                 )
             """);
             try { stmt.execute("ALTER TABLE procedury ADD COLUMN kategoria TEXT"); } catch (Exception ignored) {}
+            try { stmt.execute("ALTER TABLE pouzivatelia ADD COLUMN datum_narodenia TEXT"); } catch (Exception ignored) {}
 
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS lekar_procedury (
