@@ -157,6 +157,17 @@ public class LekarKalendarController {
         Label stavBadge = buildStavBadge(info.stav());
         card.getChildren().addAll(timeLabel, durLabel, middle, stavBadge);
 
+        if (info.stav() == Termin.Stav.PUBLIKOVANY || info.stav() == Termin.Stav.REZERVOVANY) {
+            Button editBtn = new Button("Upraviť");
+            editBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #1a9e8f; -fx-border-color: #1a9e8f; -fx-border-radius: 4; -fx-background-radius: 4; -fx-font-size: 12px; -fx-padding: 4 12; -fx-cursor: hand;");
+            editBtn.setOnAction(e -> {
+                SessionManager.getInstance().setEditTerminId(info.terminId());
+                Stage stage = (Stage) weekContainer.getScene().getWindow();
+                SceneManager.switchTo(stage, "/view/lekar-terminy.fxml");
+            });
+            card.getChildren().add(editBtn);
+        }
+
         if (isRezerv) {
             Button cancelBtn = new Button("Zrušiť");
             cancelBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #d32f2f; -fx-border-color: #d32f2f; -fx-border-radius: 4; -fx-background-radius: 4; -fx-font-size: 12px; -fx-padding: 4 12; -fx-cursor: hand;");

@@ -64,6 +64,15 @@ public class LekarTerminyController {
         durationPicker.setValue("30 min");
 
         loadTerminy();
+
+        Integer editId = SessionManager.getInstance().consumeEditTerminId();
+        if (editId != null) {
+            terminDAO.findEnrichedByLekarId(lekar.getId()).stream()
+                .filter(t -> editId.equals(t.terminId())
+                          && (t.stav() == Termin.Stav.PUBLIKOVANY || t.stav() == Termin.Stav.REZERVOVANY))
+                .findFirst()
+                .ifPresent(this::startEdit);
+        }
     }
 
     @FXML
@@ -221,7 +230,7 @@ public class LekarTerminyController {
                 confirm.showAndWait().ifPresent(result -> {
                     if (result == ButtonType.OK) {
                         terminDAO.updateStav(info.terminId(), Termin.Stav.ZRUSENY);
-                        if (editingTerminId != null && editingTerminId == info.terminId()) resetForm();
+                        if (editingTerminId != null && editingTerminId.equals(info.terminId())) resetForm();
                         loadTerminy();
                     }
                 });

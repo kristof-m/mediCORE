@@ -14,6 +14,7 @@ public class SessionManager {
     private Lekar preselectedLekar;
     private Termin preselectedTermin;
     private Procedura preselectedProcedura;
+    private Integer editTerminId;
 
     private SessionManager() {}
 
@@ -50,6 +51,14 @@ public class SessionManager {
     public Termin getPreselectedTermin() { return preselectedTermin; }
     public Procedura getPreselectedProcedura() { return preselectedProcedura; }
 
+    public void setEditTerminId(Integer id) { this.editTerminId = id; }
+    public Integer getEditTerminId() { return editTerminId; }
+    public Integer consumeEditTerminId() {
+        Integer id = editTerminId;
+        editTerminId = null;
+        return id;
+    }
+
     public void clearPreselectedBooking() {
         this.preselectedLekar = null;
         this.preselectedTermin = null;
@@ -59,6 +68,7 @@ public class SessionManager {
     public void logout() {
         this.currentUser = null;
         this.rezervaciaToReschedule = null;
+        this.editTerminId = null;
         clearPreselectedBooking();
     }
 }
