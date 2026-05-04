@@ -63,6 +63,16 @@ public class RegistraciaController {
             return;
         }
 
+        java.time.LocalDate dob = datumNarodeniaField.getValue();
+        if (dob.isAfter(java.time.LocalDate.now())) {
+            showError("Dátum narodenia nemôže byť v budúcnosti.");
+            return;
+        }
+        if (java.time.Period.between(dob, java.time.LocalDate.now()).getYears() < 18) {
+            showError("Musíte mať aspoň 18 rokov.");
+            return;
+        }
+
         Pacient pacient = new Pacient();
         pacient.setMeno(meno);
         pacient.setPriezvisko(priezvisko);
